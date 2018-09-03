@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="9"/>
+    <Version Value="10"/>
     <PathDelim Value="\"/>
     <General>
       <SessionStorage Value="InProjectDir"/>
@@ -30,7 +30,7 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="3">
+    <Units Count="2">
       <Unit0>
         <Filename Value="Textadventure.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -39,15 +39,9 @@
         <Filename Value="mainunit.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="Form1"/>
-        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="MainUnit"/>
       </Unit1>
-      <Unit2>
-        <Filename Value="traum.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="TRaum"/>
-      </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
