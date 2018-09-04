@@ -2,7 +2,7 @@
 <CONFIG>
   <ProjectSession>
     <PathDelim Value="\"/>
-    <Version Value="9"/>
+    <Version Value="10"/>
     <BuildModes Active="Default"/>
     <Units Count="3">
       <Unit0>
@@ -21,7 +21,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="MainUnit"/>
-        <IsVisibleTab Value="True"/>
+        <TopLine Value="3"/>
         <CursorPos X="3" Y="29"/>
         <UsageCount Value="21"/>
         <Loaded Value="True"/>
@@ -31,8 +31,9 @@
         <Filename Value="traum.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TRaum"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
-        <CursorPos X="24" Y="24"/>
+        <CursorPos X="73" Y="24"/>
         <UsageCount Value="21"/>
         <Loaded Value="True"/>
       </Unit2>
