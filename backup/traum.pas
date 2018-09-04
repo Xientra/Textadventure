@@ -6,6 +6,10 @@ interface
 
 uses
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> 440f79f3dc5187390049b9e6d692ea55ddea6b8a
 =======
 
 >>>>>>> 440f79f3dc5187390049b9e6d692ea55ddea6b8a
@@ -13,6 +17,7 @@ uses
 
 type
   TRoom = class
+<<<<<<< HEAD
 <<<<<<< HEAD
     private
     description: string;
@@ -48,6 +53,8 @@ begin
 end;
 
 =======
+=======
+>>>>>>> 440f79f3dc5187390049b9e6d692ea55ddea6b8a
   public
     constructor Create();
   private
@@ -76,6 +83,9 @@ end;
 05 06 07 08  I
 09 10 11 12  V
 }          //y
+<<<<<<< HEAD
+>>>>>>> 440f79f3dc5187390049b9e6d692ea55ddea6b8a
+=======
 >>>>>>> 440f79f3dc5187390049b9e6d692ea55ddea6b8a
 end.
 
