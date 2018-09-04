@@ -37,7 +37,7 @@ begin
 
   Room_x := 5;
   Room_y := 5;
-  Room_z := 5;
+  Romm_z := 5;
   SetLength(Room, Room_x);
   for i := 0 to Room_y - 1 do
   begin
