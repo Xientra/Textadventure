@@ -2,7 +2,7 @@
 <CONFIG>
   <ProjectSession>
     <PathDelim Value="\"/>
-    <Version Value="10"/>
+    <Version Value="9"/>
     <BuildModes Active="Default"/>
     <Units Count="3">
       <Unit0>
@@ -21,14 +21,8 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="MainUnit"/>
-<<<<<<< HEAD
         <IsVisibleTab Value="True"/>
-        <TopLine Value="19"/>
-        <CursorPos X="32" Y="50"/>
-=======
-        <TopLine Value="3"/>
         <CursorPos X="3" Y="29"/>
->>>>>>> 440f79f3dc5187390049b9e6d692ea55ddea6b8a
         <UsageCount Value="21"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -37,18 +31,13 @@
         <Filename Value="traum.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TRaum"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
-<<<<<<< HEAD
-        <CursorPos X="29" Y="19"/>
-=======
-        <CursorPos X="73" Y="24"/>
->>>>>>> 440f79f3dc5187390049b9e6d692ea55ddea6b8a
+        <CursorPos X="24" Y="24"/>
         <UsageCount Value="21"/>
         <Loaded Value="True"/>
       </Unit2>
     </Units>
-    <JumpHistory Count="10" HistoryIndex="9">
+    <JumpHistory Count="9" HistoryIndex="8">
       <Position1>
         <Filename Value="mainunit.pas"/>
         <Caret Line="29" Column="6"/>
@@ -85,10 +74,6 @@
         <Filename Value="mainunit.pas"/>
         <Caret Line="25" Column="16" TopLine="4"/>
       </Position9>
-      <Position10>
-        <Filename Value="mainunit.pas"/>
-        <Caret Line="39" Column="117" TopLine="17"/>
-      </Position10>
     </JumpHistory>
   </ProjectSession>
 </CONFIG>
