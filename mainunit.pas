@@ -5,7 +5,7 @@ unit MainUnit;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs;
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, TRaum;
 
 type
 
@@ -21,7 +21,8 @@ type
 
 var
   Form1: TForm1;
-
+  //x,y,z: integer;
+  Room: Array[0..5,0..5,0..5] of TRoom;
 implementation
 
 {$R *.lfm}
