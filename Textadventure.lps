@@ -21,7 +21,6 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="MainUnit"/>
-        <IsVisibleTab Value="True"/>
         <TopLine Value="4"/>
         <CursorPos X="3" Y="29"/>
         <UsageCount Value="21"/>
@@ -32,7 +31,9 @@
         <Filename Value="traum.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TRaum"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
+        <TopLine Value="10"/>
         <CursorPos X="24" Y="24"/>
         <UsageCount Value="21"/>
         <Loaded Value="True"/>
