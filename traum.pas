@@ -15,8 +15,8 @@ type
     public
     function getdescription: string;
     function getvisited: boolean;
-    procedure setdescription(d:string);
-    procedure setvisited(v:boolean);
+    procedure setdescription(d: string);
+    procedure setvisited(v: boolean);
   end;
 
 implementation
