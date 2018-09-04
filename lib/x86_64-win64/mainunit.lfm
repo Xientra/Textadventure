@@ -1,6 +1,5 @@
 object Form1: TForm1
 <<<<<<< HEAD
-<<<<<<< HEAD
   Left = 648
   Height = 638
   Top = 159
@@ -31,8 +30,6 @@ object Form1: TForm1
   end
 =======
 <<<<<<< HEAD
-=======
->>>>>>> 440f79f3dc5187390049b9e6d692ea55ddea6b8a
 <<<<<<< HEAD
 <<<<<<< HEAD
   Left = 995
@@ -80,8 +77,5 @@ object Form1: TForm1
 >>>>>>> 3812579b5b7754a793fbb12f8971f9508e2af514
 =======
 >>>>>>> 3812579b5b7754a793fbb12f8971f9508e2af514
-<<<<<<< HEAD
->>>>>>> 440f79f3dc5187390049b9e6d692ea55ddea6b8a
-=======
 >>>>>>> 440f79f3dc5187390049b9e6d692ea55ddea6b8a
 end

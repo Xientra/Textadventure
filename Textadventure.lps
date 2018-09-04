@@ -22,13 +22,10 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="MainUnit"/>
 <<<<<<< HEAD
-<<<<<<< HEAD
         <IsVisibleTab Value="True"/>
         <TopLine Value="19"/>
         <CursorPos X="32" Y="50"/>
 =======
-=======
->>>>>>> 440f79f3dc5187390049b9e6d692ea55ddea6b8a
         <TopLine Value="3"/>
         <CursorPos X="3" Y="29"/>
 >>>>>>> 440f79f3dc5187390049b9e6d692ea55ddea6b8a
@@ -43,11 +40,7 @@
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
 <<<<<<< HEAD
-<<<<<<< HEAD
         <CursorPos X="29" Y="19"/>
-=======
-        <CursorPos X="73" Y="24"/>
->>>>>>> 440f79f3dc5187390049b9e6d692ea55ddea6b8a
 =======
         <CursorPos X="73" Y="24"/>
 >>>>>>> 440f79f3dc5187390049b9e6d692ea55ddea6b8a
