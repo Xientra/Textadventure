@@ -3,7 +3,9 @@ object Form1: TForm1
   Height = 240
   Top = 217
   Width = 320
-  Caption = 'Form1'
+  Caption = 'Adventure'
+  Color = clWhite
   OnCreate = FormCreate
-  LCLVersion = '1.6.2.0'
+  Position = poScreenCenter
+  LCLVersion = '1.8.4.0'
 end

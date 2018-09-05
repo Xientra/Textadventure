@@ -5,7 +5,9 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, Unit2;
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
+  ExtCtrls{für die Timer},
+  Unit2;
 
 type
 
@@ -21,8 +23,8 @@ type
 
 var
   Form1: TForm1;
-  Room: Array of Array of Array of TRoom;
-  Room_x,Room_y,Room_z:integer;
+  RoomArr: Array of Array of Array of TRoom;
+  Room_x, Room_y, Room_z: integer;
 implementation
 
 {$R *.lfm}
@@ -37,12 +39,12 @@ begin
   Room_x := 5;
   Room_y := 5;
   Room_z := 5;
-  SetLength(Room, Room_x);
+  SetLength(RoomArr, Room_x);
   for i := 0 to Room_y - 1 do
   begin
-    SetLength(Room[i], Room_y);
+    SetLength(RoomArr[i], Room_y);
     for ii := 0 to Room_z - 1 do
-      SetLength(Room[i, ii], Room_z);
+      SetLength(RoomArr[i, ii], Room_z);
   end;
 end;
 
