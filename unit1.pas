@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  ExtCtrls{für die Timer},
+  ExtCtrls{für die Bilder}, StdCtrls{für die Timer}, LCLType{für die Tasteneingaben (wie VK_SPACE)},
   Unit2;
 
 type
@@ -14,17 +14,47 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
+
+    Btn1_Label: TLabel;
+    Btn2_Label: TLabel;
+    Btn3_Label: TLabel;
+    Btn4_Label: TLabel;
+    Btn1_Image: TImage;
+    Btn2_Image: TImage;
+    Btn3_Image: TImage;
+    Btn4_Image: TImage;
+    Button1: TButton;
+    Edit1: TEdit;
+    Edit2: TEdit;
+    Edit3: TEdit;
+    Label_Leave: TLabel;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      //Its a secret!
+    Memo1: TMemo;
+    procedure Btn1Click(Sender: TObject);
+    procedure Btn2Click(Sender: TObject);
+    procedure Btn3Click(Sender: TObject);
+    procedure Btn4Click(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure Label_LeaveClick(Sender: TObject);
   private
-    { private declarations }
+    procedure CreateRooms();
+    procedure CreateARoom(_description: string; _pos_x, _pos_y, _pos_z: integer);
+
+    procedure Button_1();
+    procedure Button_2();
+    procedure Button_3();
+    procedure Button_4();
   public
-    { public declarations }
+
   end;
 
 var
   Form1: TForm1;
   RoomArr: Array of Array of Array of TRoom;
   Room_x, Room_y, Room_z: integer;
+  currendRoom: TRoom;
+
 implementation
 
 {$R *.lfm}
@@ -36,16 +66,75 @@ procedure TForm1.FormCreate(Sender: TObject);
   i, ii: integer;
 begin
 
-  Room_x := 5;
-  Room_y := 5;
-  Room_z := 5;
+  //Set RoomArray size
+  Room_x := 5-1;
+  Room_y := 5-1;
+  Room_z := 5-1;
+  //initilise RoomArray
   SetLength(RoomArr, Room_x);
   for i := 0 to Room_y - 1 do
   begin
     SetLength(RoomArr[i], Room_y);
-    for ii := 0 to Room_z - 1 do
-      SetLength(RoomArr[i, ii], Room_z);
+    for ii := 0 to Room_z - 1 do SetLength(RoomArr[i, ii], Room_z);
   end;
+
+  CreateRooms(); //Get us some content
+end;
+
+procedure TForm1.CreateRooms();
+begin
+  CreateARoom('Be The Room.', 2, 2, 2);
+end;
+
+procedure TForm1.CreateARoom(_description: string; _pos_x, _pos_y, _pos_z: integer);
+begin
+  RoomArr[_pos_x, _pos_y, _pos_z] := TRoom.Create(_description, _pos_x, _pos_y, _pos_z);
+end;
+
+procedure TForm1.Btn1Click(Sender: TObject); begin Button_1(); end;
+procedure TForm1.Btn2Click(Sender: TObject); begin Button_2(); end;
+procedure TForm1.Btn3Click(Sender: TObject); begin Button_3(); end;
+procedure TForm1.Btn4Click(Sender: TObject); begin Button_4(); end;
+
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+  if (RoomArr[StrToInt(Edit1.Text), StrToInt(Edit2.Text), StrToInt(Edit3.Text)] = nil) then
+    Memo1.Lines.Add('nil')
+  else
+    Memo1.Lines.Add(RoomArr[StrToInt(Edit1.Text), StrToInt(Edit2.Text), StrToInt(Edit3.Text)].getDescription);
+
+end;
+
+procedure TForm1.Button_1();
+begin
+  ShowMessage('Button 1 pressed');
+end;
+procedure TForm1.Button_2();
+begin
+  ShowMessage('Button 2 pressed');
+end;
+procedure TForm1.Button_3();
+begin
+  ShowMessage('Button 3 pressed');
+end;
+procedure TForm1.Button_4();
+begin
+  ShowMessage('Button 4 pressed');
+end;
+
+procedure TForm1.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_ESCAPE) then Application.Terminate();
+
+  if (Key = VK_1) then Button_1();
+  if (Key = VK_2) then Button_2();
+  if (Key = VK_3) then Button_3();
+  if (Key = VK_4) then Button_4();
+end;
+
+procedure TForm1.Label_LeaveClick(Sender: TObject);
+begin
+  Application.Terminate();
 end;
 
 end.

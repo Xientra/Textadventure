@@ -1,0 +1,3 @@
+# ToDoList
+
+-das assingen der NachbarRäume muss auf out of array geprüft werden
