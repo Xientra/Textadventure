@@ -200,8 +200,8 @@ object Form1: TForm1
     Left = 88
     Height = 18
     Top = 528
-    Width = 82
-    Caption = 'Btn1_Label'
+    Width = 57
+    Caption = 'x Minus'
     Font.CharSet = ANSI_CHARSET
     Font.Color = clWhite
     Font.Height = -16
@@ -217,8 +217,8 @@ object Form1: TForm1
     Left = 232
     Height = 18
     Top = 528
-    Width = 83
-    Caption = 'Btn2_Label'
+    Width = 43
+    Caption = 'x Plus'
     Font.CharSet = ANSI_CHARSET
     Font.Color = clWhite
     Font.Height = -16
@@ -234,8 +234,8 @@ object Form1: TForm1
     Left = 376
     Height = 18
     Top = 528
-    Width = 83
-    Caption = 'Btn3_Label'
+    Width = 57
+    Caption = 'y Minus'
     Font.CharSet = ANSI_CHARSET
     Font.Color = clWhite
     Font.Height = -16
@@ -251,8 +251,8 @@ object Form1: TForm1
     Left = 520
     Height = 18
     Top = 528
-    Width = 83
-    Caption = 'Btn4_Label'
+    Width = 43
+    Caption = 'y Plus'
     Font.CharSet = ANSI_CHARSET
     Font.Color = clWhite
     Font.Height = -16
@@ -269,6 +269,7 @@ object Form1: TForm1
     Top = 16
     Width = 96
     Caption = 'Test Room'
+    Default = True
     OnClick = Button1Click
     OnKeyDown = FormKeyDown
     TabOrder = 1

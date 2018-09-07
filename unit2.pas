@@ -5,7 +5,7 @@ unit Unit2;
 interface
 
 uses
-  Classes, SysUtils;
+  Classes, SysUtils, Dialogs{für ShowMessage};
 
 type
   TRoom = class
@@ -14,17 +14,20 @@ type
     visited: boolean;
   public
     constructor Create(_description: string; _pos_x, _pos_y, _pos_z: integer);
-    function getDescription: string;
-    function getRoomID(): integer;
-    function getVisited: boolean;
-    procedure setVisited(v: boolean);
+    function GetDescription: string;
+    function GetRoomID(): integer;
+    function GetNeighborRooms(_direction: string): TRoom;
+    function GetVisited: boolean;
+    procedure SetVisited(v: boolean);
+
   private
     RoomArray: Array of Array of Array of TRoom;
     pos_x, pos_y, pos_z: integer;
     RoomID: integer;
     xPos, xNeg, yPos, yNeg, zPos, zNeg: TRoom; //zPos = Up; zNeg = Unten; xPos = rechts(?) usw...
 
-    procedure GetNeighborRooms();
+    procedure SetNeighborRooms();
+
 
   end;
 
@@ -46,7 +49,7 @@ begin
 
 end;
 
-procedure TRoom.GetNeighborRooms();
+procedure TRoom.SetNeighborRooms();
 begin
   if (pos_x + 1 <= Unit1.Room_x) then
     xPos := RoomArray[pos_x + 1, pos_y, pos_z];
@@ -71,22 +74,36 @@ begin
   }
 end;
 
-function TRoom.getDescription: string;
+function TRoom.GetDescription: string;
 begin
   result := description;
 end;
 
-function TRoom.getRoomID: integer;
+function TRoom.GetRoomID: integer;
 begin
   result := RoomID;
 end;
 
-function TRoom.getVisited: boolean;
+function TRoom.GetNeighborRooms(_direction: string): TRoom;
+begin
+  case _direction of
+    'xPos': result := xPos;
+    'xNeg': result := xNeg;
+    'yPos': result := yPos;
+    'yNeg': result := yNeg;
+    'zPos': result := zPos;
+    'zNeg': result := zNeg;
+  else
+    ShowMessage('Rufe GetNeighborRooms nur mit xPos, xNeg, yPos, yNeg, zPos, zNeg auf.');
+  end;
+
+end;
+function TRoom.GetVisited(): boolean;
 begin
   result := visited;
 end;
 
-procedure TRoom.setVisited(v: boolean);
+procedure TRoom.SetVisited(v: boolean);
 begin
   visited := v;
 end;
