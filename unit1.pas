@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   ExtCtrls{für die Bilder}, StdCtrls{für die Timer}, LCLType{für die Tasteneingaben (wie VK_SPACE)},
-  Unit2;
+  Unit2{für TRoom}, PlayerClass{für TPlayer};
 
 type
 
@@ -46,7 +46,7 @@ type
     procedure Button_3_Action();
     procedure Button_4_Action();
 
-    procedure ChangeRoom(btnNum: integer);
+    procedure Move(btnNum: integer);
   public
 
   end;
@@ -55,7 +55,7 @@ var
   Form1: TForm1;
   RoomArr: Array of Array of Array of TRoom;
   Room_x, Room_y, Room_z: integer;
-  currendRoom: TRoom;
+  Player1: TPlayer;
 
 implementation
 
@@ -82,13 +82,25 @@ begin
   end;
 
   CreateRooms(); //Get us some content
-  currendRoom := RoomArr[2, 2, 2]; //Definiere den Start
-  ChangeRoom(0); //Drucke die Beschreibung des start Raumes etc
+  Player1 := TPlayer.Create(RoomArr[2, 2, 2]);
+
+  Memo1.Clear();
+  Memo1.Lines.Add(Player1.GetCurrendRoom().GetDescription());
+  //Memo1.Lines.Add(Unit1.RoomArr[2, 2, 2].GetDescription());
 end;
 
 procedure TForm1.CreateRooms();
 begin
+
   CreateARoom('Be The Room.', 2, 2, 2);
+  //CreateARoom('Be Another Room', 1, 1, 1);
+
+  {
+  CreateARoom('Room to the xPos', 3, 2, 2);
+  CreateARoom('Room to the xNeg', 1, 2, 2);
+  CreateARoom('Room to the yPos', 2, 3, 2);
+  CreateARoom('Room to the yNeg', 2, 1, 2);
+  }
 end;
 
 //ist besser, damit die position an der der Raum erstellt wurde auf jeden fall dem Raum bekannt ist
@@ -107,29 +119,29 @@ begin
   if (RoomArr[StrToInt(Edit1.Text), StrToInt(Edit2.Text), StrToInt(Edit3.Text)] = nil) then
     Memo1.Lines.Add('nil')
   else
-    Memo1.Lines.Add(RoomArr[StrToInt(Edit1.Text), StrToInt(Edit2.Text), StrToInt(Edit3.Text)].getDescription);
+    Memo1.Lines.Add(RoomArr[StrToInt(Edit1.Text), StrToInt(Edit2.Text), StrToInt(Edit3.Text)].GetDescription);
 
 end;
 
 procedure TForm1.Button_1_Action();
 begin
   //ShowMessage('Button 1 pressed');
-  ChangeRoom(1);
+  Move(1);
 end;
 procedure TForm1.Button_2_Action();
 begin
   //ShowMessage('Button 2 pressed');
-  ChangeRoom(2);
+  Move(2);
 end;
 procedure TForm1.Button_3_Action();
 begin
   //ShowMessage('Button 3 pressed');
-  ChangeRoom(3);
+  Move(3);
 end;
 procedure TForm1.Button_4_Action();
 begin
   //ShowMessage('Button 4 pressed');
-  ChangeRoom(4);
+  Move(4);
 end;
 
 procedure TForm1.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -147,19 +159,22 @@ begin
   Application.Terminate();
 end;
 
-procedure TForm1.ChangeRoom(btnNum: integer);
+//dieser Zwischenschritt ist mitlerweile unnötig und sollte entfernt werden.
+procedure TForm1.Move(btnNum: integer);
 begin
   case btnNum of
   0: {this is just to call it once at the start};
-  1: currendRoom := currendRoom.GetNeighborRooms('xPos');
-  2: currendRoom := currendRoom.GetNeighborRooms('xNeg');
-  3: currendRoom := currendRoom.GetNeighborRooms('yPos');
-  4: currendRoom := currendRoom.GetNeighborRooms('yNeg');
+  1: Player1.ChangeRoom('xPos');
+  2: Player1.ChangeRoom('xNeg');
+  3: Player1.ChangeRoom('yPos');
+  4: Player1.ChangeRoom('yNeg');
+  5: Player1.ChangeRoom('zPos');
+  6: Player1.ChangeRoom('zNeg');
   else
-    ShowMessage('ChangeRoom() sollte nicht mit einer Zahl größer als 4 aufgerufen werden!');
+    ShowMessage('Move() sollte nicht mit einer Zahl größer als 6 aufgerufen werden!');
   end;
   Memo1.Clear();
-  Memo1.Lines.Add(currendRoom.getDescription());
+  Memo1.Lines.Add(Player1.GetCurrendRoom().GetDescription());
 end;
 
 end.

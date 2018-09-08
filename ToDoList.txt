@@ -1,3 +1,6 @@
 # ToDoList
 
--das assingen der NachbarRäume muss auf out of array geprüft werden
+-das assingen der NachbarRäume muss auf "out of array" geprüft werden
+-TForm1.Move() sollte entfernt werden da es unnötig geworden ist
+-wenn du herrausfindest wie man etwas in das Nachrichten Fenster unten schreibt sag es mir bitte...
+-unit2.TRoom.SetNeighborRooms() hat das Problen, dass die Räume an dem Zeitpünkt wo es aufgerufen wird noch nicht im Array sind...
