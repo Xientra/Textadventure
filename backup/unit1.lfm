@@ -6,7 +6,7 @@ object Form1: TForm1
   Caption = 'Adventure'
   ClientHeight = 600
   ClientWidth = 800
-  Color = clBlack
+  Color = clWhite
   Font.CharSet = ANSI_CHARSET
   Font.Height = -16
   Font.Name = 'Georgia'
@@ -59,7 +59,7 @@ object Form1: TForm1
     Cursor = crHandPoint
     Left = 72
     Height = 64
-    Top = 520
+    Top = 504
     Width = 128
     OnClick = Btn1Click
     Picture.Data = {
@@ -94,8 +94,8 @@ object Form1: TForm1
   end
   object Memo1: TMemo
     Left = 0
-    Height = 132
-    Top = 368
+    Height = 168
+    Top = 300
     Width = 800
     BorderStyle = bsNone
     Color = clBlack
@@ -118,7 +118,7 @@ object Form1: TForm1
     Cursor = crHandPoint
     Left = 216
     Height = 64
-    Top = 520
+    Top = 504
     Width = 128
     OnClick = Btn2Click
     Picture.Data = {
@@ -145,7 +145,7 @@ object Form1: TForm1
     Cursor = crHandPoint
     Left = 360
     Height = 64
-    Top = 520
+    Top = 504
     Width = 128
     OnClick = Btn3Click
     Picture.Data = {
@@ -172,7 +172,7 @@ object Form1: TForm1
     Cursor = crHandPoint
     Left = 504
     Height = 64
-    Top = 520
+    Top = 504
     Width = 128
     OnClick = Btn4Click
     Picture.Data = {
@@ -199,7 +199,7 @@ object Form1: TForm1
     Cursor = crHandPoint
     Left = 88
     Height = 18
-    Top = 544
+    Top = 528
     Width = 43
     Caption = 'x Plus'
     Font.CharSet = ANSI_CHARSET
@@ -216,7 +216,7 @@ object Form1: TForm1
     Cursor = crHandPoint
     Left = 232
     Height = 18
-    Top = 544
+    Top = 528
     Width = 57
     Caption = 'x Minus'
     Font.CharSet = ANSI_CHARSET
@@ -233,7 +233,7 @@ object Form1: TForm1
     Cursor = crHandPoint
     Left = 376
     Height = 18
-    Top = 544
+    Top = 528
     Width = 43
     Caption = 'y Plus'
     Font.CharSet = ANSI_CHARSET
@@ -250,9 +250,9 @@ object Form1: TForm1
     Cursor = crHandPoint
     Left = 520
     Height = 18
-    Top = 544
-    Width = 57
-    Caption = 'y Minus'
+    Top = 528
+    Width = 56
+    Caption = 'y minus'
     Font.CharSet = ANSI_CHARSET
     Font.Color = clWhite
     Font.Height = -16
@@ -300,13 +300,5 @@ object Form1: TForm1
     NumbersOnly = True
     TabOrder = 4
     Text = '2'
-  end
-  object RoomPicture: TImage
-    Left = 200
-    Height = 360
-    Top = 8
-    Width = 360
-    Center = True
-    Stretch = True
   end
 end
