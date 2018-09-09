@@ -10,19 +10,20 @@ uses
 type
   TRoom = class
   public
-    constructor Create(_description: string; _pos_x, _pos_y, _pos_z: integer);
+    constructor Create(_description: string; _imagePath: string; _pos_x, _pos_y, _pos_z: integer);
     procedure SetNeighborRooms();
     function GetDescription: string;
     function GetRoomID(): integer;
     function GetNeighborRooms(_direction: string): TRoom;
     function GetVisited: boolean;
     procedure SetVisited(v: boolean);
+    function GetPicturePath(): string;
 
   private
 
     description: string;
     visited: boolean;
-
+    ImagePath: string;
     //RoomArray: Array of Array of Array of TRoom;
     pos_x, pos_y, pos_z: integer;
     RoomID: integer;
@@ -35,7 +36,7 @@ implementation
 
 uses Unit1; //entweder machen wir das damit oder wir übergeben das RoomArray über Create (damit der Raum seine pos benutzen kann)
 
-constructor TRoom.Create(_description: string; _pos_x, _pos_y, _pos_z: integer);
+constructor TRoom.Create(_description: string; _imagePath: string; _pos_x, _pos_y, _pos_z: integer);
 begin
   description := _description;
   visited := false;
@@ -55,37 +56,37 @@ begin
 
   if (pos_x + 1 <= Unit1.Room_x) then
     if (Unit1.RoomArr[pos_x + 1, pos_y, pos_z] <> nil) then
-      xPos := Unit1.RoomArr[pos_x + 1, pos_y, pos_z]
+      xPos := Unit1.RoomArr[pos_x + 1, pos_y, pos_z];
     //else Showmessage('Room xPos is nil')
   //else ShowMessage('xPos Out of Array');
 
   if (pos_x - 1 >= 0) then
     if (Unit1.RoomArr[pos_x - 1, pos_y, pos_z] <> nil) then
-      xNeg := Unit1.RoomArr[pos_x - 1, pos_y, pos_z]
+      xNeg := Unit1.RoomArr[pos_x - 1, pos_y, pos_z];
     //else Showmessage('Roo xNeg is nil')
   //else ShowMessage('xNeg Out of Array');
 
   if (pos_y + 1 <= Unit1.Room_y) then
     if (Unit1.RoomArr[pos_x, pos_y + 1, pos_z] <> nil) then
-      yPos := Unit1.RoomArr[pos_x, pos_y + 1, pos_z]
+      yPos := Unit1.RoomArr[pos_x, pos_y + 1, pos_z];
     //else Showmessage('Room yPos is nil')
   //else ShowMessage('yPos Out of Array');
 
   if (pos_y - 1 >= 0) then
     if (Unit1.RoomArr[pos_x, pos_y - 1, pos_z] <> nil) then
-      yNeg := Unit1.RoomArr[pos_x, pos_y - 1, pos_z]
+      yNeg := Unit1.RoomArr[pos_x, pos_y - 1, pos_z];
     //else Showmessage('Room yNeg is nil')
   //else ShowMessage('yNeg Out of Array');
 
   if (pos_z + 1 <= Unit1.Room_z) then
     if (Unit1.RoomArr[pos_x, pos_y, pos_z + 1] <> nil) then
-      zPos := Unit1.RoomArr[pos_x, pos_y, pos_z + 1]
+      zPos := Unit1.RoomArr[pos_x, pos_y, pos_z + 1];
     //else Showmessage('Room zPos is nil')
   //else ShowMessage('zPos Out of Array');
 
   if (pos_z - 1 >= 0) then
     if (Unit1.RoomArr[pos_x, pos_y, pos_z - 1] <> nil) then
-      zNeg := Unit1.RoomArr[pos_x, pos_y, pos_z - 1]
+      zNeg := Unit1.RoomArr[pos_x, pos_y, pos_z - 1];
     //else Showmessage('Room zNeg is nil')
   //else ShowMessage('zNeg Out of Array');
 end;
@@ -123,6 +124,10 @@ begin
   visited := v;
 end;
 
+function TRoom.GetPicturePath(): string;
+begin
+  result := ImagePath;
+end;
 
 end.
 

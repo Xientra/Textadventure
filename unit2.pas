@@ -10,19 +10,20 @@ uses
 type
   TRoom = class
   public
-    constructor Create(_description: string; _pos_x, _pos_y, _pos_z: integer);
+    constructor Create(_description: string; _imagePath: string; _pos_x, _pos_y, _pos_z: integer);
     procedure SetNeighborRooms();
     function GetDescription: string;
     function GetRoomID(): integer;
     function GetNeighborRooms(_direction: string): TRoom;
     function GetVisited: boolean;
     procedure SetVisited(v: boolean);
+    function GetPicturePath(): string;
 
   private
 
     description: string;
     visited: boolean;
-
+    ImagePath: string;
     //RoomArray: Array of Array of Array of TRoom;
     pos_x, pos_y, pos_z: integer;
     RoomID: integer;
@@ -35,9 +36,10 @@ implementation
 
 uses Unit1; //entweder machen wir das damit oder wir übergeben das RoomArray über Create (damit der Raum seine pos benutzen kann)
 
-constructor TRoom.Create(_description: string; _pos_x, _pos_y, _pos_z: integer);
+constructor TRoom.Create(_description: string; _imagePath: string; _pos_x, _pos_y, _pos_z: integer);
 begin
   description := _description;
+  ImagePath := _imagePath;
   visited := false;
   pos_x := _pos_x;
   pos_y := _pos_y;
@@ -123,6 +125,10 @@ begin
   visited := v;
 end;
 
+function TRoom.GetPicturePath(): string;
+begin
+  result := ImagePath;
+end;
 
 end.
 
