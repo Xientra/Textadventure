@@ -37,8 +37,10 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure Label_LeaveClick(Sender: TObject);
+
   private
     procedure CreateRooms();
+    procedure SetAllNeighborRooms();
     procedure CreateARoom(_description: string; _pos_x, _pos_y, _pos_z: integer);
 
     procedure Button_1_Action();
@@ -53,6 +55,8 @@ type
 
 var
   Form1: TForm1;
+  Timer1: TTimer;
+
   RoomArr: Array of Array of Array of TRoom;
   Room_x, Room_y, Room_z: integer;
   Player1: TPlayer;
@@ -64,7 +68,7 @@ implementation
 { TForm1 }
 
 procedure TForm1.FormCreate(Sender: TObject);
-  var
+var
   i, ii: integer;
 begin
 
@@ -81,26 +85,37 @@ begin
     for ii := 0 to Room_z - 1 do SetLength(RoomArr[i, ii], Room_z);
   end;
 
-  CreateRooms(); //Get us some content
-  Player1 := TPlayer.Create(RoomArr[1, 1, 1]);
+  CreateRooms(); //Creates all the Rooms
+  SetAllNeighborRooms(); //after all Room have been created
+  Player1 := TPlayer.Create(RoomArr[0, 0, 0]);
 
   Memo1.Clear();
   Memo1.Lines.Add(Player1.GetCurrendRoom().GetDescription());
-  //Memo1.Lines.Add(Unit1.RoomArr[2, 2, 2].GetDescription());
 end;
 
 procedure TForm1.CreateRooms();
 begin
 
-  //CreateARoom('Be The Room.', 2, 2, 2);
-  CreateARoom('Be Another Room', 1, 1, 1);
+  CreateARoom('Be The Room.', 0, 0, 0);
+  CreateARoom('Be Another Room', 1, 0, 0);
 
-  {
-  CreateARoom('Room to the xPos', 3, 2, 2);
-  CreateARoom('Room to the xNeg', 1, 2, 2);
-  CreateARoom('Room to the yPos', 2, 3, 2);
-  CreateARoom('Room to the yNeg', 2, 1, 2);
-  }
+
+  //CreateARoom('Room to the xPos from 222', 3, 2, 2);
+  //CreateARoom('Room to the xNeg from 222', 1, 2, 2);
+  //CreateARoom('Room to the yPos from 222', 2, 3, 2);
+  //CreateARoom('Room to the yNeg from 222', 2, 1, 2);
+
+end;
+
+procedure TForm1.SetAllNeighborRooms(); //for each created Room we have to set their Neighbor Rooms once all Rooms are created
+var
+  x, y, z: integer;
+begin
+
+  for z := 0 to Room_z - 1 do
+    for y := 0 to Room_y - 1 do
+      for x := 0 to Room_x - 1 do
+        if (RoomArr[x, y, z] <> nil) then RoomArr[x, y, z].SetNeighborRooms();
 end;
 
 //ist besser, damit die position an der der Raum erstellt wurde auf jeden fall dem Raum bekannt ist

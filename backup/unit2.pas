@@ -11,6 +11,7 @@ type
   TRoom = class
   public
     constructor Create(_description: string; _pos_x, _pos_y, _pos_z: integer);
+    procedure SetNeighborRooms();
     function GetDescription: string;
     function GetRoomID(): integer;
     function GetNeighborRooms(_direction: string): TRoom;
@@ -18,6 +19,7 @@ type
     procedure SetVisited(v: boolean);
 
   private
+
     description: string;
     visited: boolean;
 
@@ -26,7 +28,6 @@ type
     RoomID: integer;
     xPos, xNeg, yPos, yNeg, zPos, zNeg: TRoom; //zPos = Up; zNeg = Unten; xPos = rechts(?) usw...
 
-    procedure SetNeighborRooms();
 
   end;
 
@@ -37,6 +38,7 @@ uses Unit1; //entweder machen wir das damit oder wir übergeben das RoomArray ü
 constructor TRoom.Create(_description: string; _pos_x, _pos_y, _pos_z: integer);
 begin
   description := _description;
+  visited := false;
   pos_x := _pos_x;
   pos_y := _pos_y;
   pos_z := _pos_z;
@@ -44,29 +46,48 @@ begin
 
   //RoomArray := Unit1.RoomArr;
 
-  SetNeighborRooms(); //Suchen der NachbarRäume
   //ShowMessage(IntToStr(pos_x) + IntToStr(pos_y) + IntToStr(pos_z));
-  //if (description = 'Be The Room.') then ShowMessage(Unit1.RoomArr[2, 2, 2].GetDescription());
 end;
 
 procedure TRoom.SetNeighborRooms(); //Das kommt absolut nicht klar mit den Rändern des Array (also so gar nicht trotz der if abfragen die da schon sind)
 begin
-  if (pos_x + 1 <= Unit1.Room_x) and (Unit1.RoomArr[pos_x + 1, pos_y, pos_z] <> nil) then
-    xPos := Unit1.RoomArr[pos_x + 1, pos_y, pos_z];
-  if (pos_x - 1 >= 0) and (Unit1.RoomArr[pos_x - 1, pos_y, pos_z] <> nil) then
-    xNeg := Unit1.RoomArr[pos_x - 1, pos_y, pos_z];
+  ShowMessage('SetRooms was called from ' + IntToStr(pos_x) + IntToStr(pos_y) + IntToStr(pos_z));
 
-  if (pos_y + 1 <= Unit1.Room_y) and (Unit1.RoomArr[pos_x, pos_y + 1, pos_z] <> nil) then
-    yPos := Unit1.RoomArr[pos_x, pos_y + 1, pos_z];
-  if (pos_y - 1 >= 0) and (Unit1.RoomArr[pos_x, pos_y - 1, pos_z] <> nil) then
-    yNeg := Unit1.RoomArr[pos_x, pos_y - 1, pos_z];
+  if (pos_x + 1 <= Unit1.Room_x) then
+    if (Unit1.RoomArr[pos_x + 1, pos_y, pos_z] <> nil) then
+      xPos := Unit1.RoomArr[pos_x + 1, pos_y, pos_z]
+    //else Showmessage('Room xPos is nil')
+  //else ShowMessage('xPos Out of Array');
 
-  if (pos_z + 1 <= Unit1.Room_z) and (Unit1.RoomArr[pos_x, pos_y, pos_z + 1] <> nil) then
-    zPos := Unit1.RoomArr[pos_x, pos_y, pos_z + 1];
-  if (pos_z - 1 >= 0) and (Unit1.RoomArr[pos_x, pos_y, pos_z - 1] <> nil) then
-    zNeg := Unit1.RoomArr[pos_x, pos_y, pos_z - 1];
+  if (pos_x - 1 >= 0) then
+    if (Unit1.RoomArr[pos_x - 1, pos_y, pos_z] <> nil) then
+      xNeg := Unit1.RoomArr[pos_x - 1, pos_y, pos_z]
+    //else Showmessage('Roo xNeg is nil')
+  //else ShowMessage('xNeg Out of Array');
 
-  //ShowMessage(xPos.GetDescription());
+  if (pos_y + 1 <= Unit1.Room_y) then
+    if (Unit1.RoomArr[pos_x, pos_y + 1, pos_z] <> nil) then
+      yPos := Unit1.RoomArr[pos_x, pos_y + 1, pos_z]
+    //else Showmessage('Room yPos is nil')
+  //else ShowMessage('yPos Out of Array');
+
+  if (pos_y - 1 >= 0) then
+    if (Unit1.RoomArr[pos_x, pos_y - 1, pos_z] <> nil) then
+      yNeg := Unit1.RoomArr[pos_x, pos_y - 1, pos_z]
+    //else Showmessage('Room yNeg is nil')
+  //else ShowMessage('yNeg Out of Array');
+
+  if (pos_z + 1 <= Unit1.Room_z) then
+    if (Unit1.RoomArr[pos_x, pos_y, pos_z + 1] <> nil) then
+      zPos := Unit1.RoomArr[pos_x, pos_y, pos_z + 1]
+    //else Showmessage('Room zPos is nil')
+  //else ShowMessage('zPos Out of Array');
+
+  if (pos_z - 1 >= 0) then
+    if (Unit1.RoomArr[pos_x, pos_y, pos_z - 1] <> nil) then
+      zNeg := Unit1.RoomArr[pos_x, pos_y, pos_z - 1]
+    //else Showmessage('Room zNeg is nil')
+  //else ShowMessage('zNeg Out of Array');
 end;
 
 function TRoom.GetDescription: string;

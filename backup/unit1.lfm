@@ -200,8 +200,8 @@ object Form1: TForm1
     Left = 88
     Height = 18
     Top = 528
-    Width = 57
-    Caption = 'x Minus'
+    Width = 43
+    Caption = 'x Plus'
     Font.CharSet = ANSI_CHARSET
     Font.Color = clWhite
     Font.Height = -16
@@ -217,8 +217,8 @@ object Form1: TForm1
     Left = 232
     Height = 18
     Top = 528
-    Width = 43
-    Caption = 'x Plus'
+    Width = 57
+    Caption = 'x Minus'
     Font.CharSet = ANSI_CHARSET
     Font.Color = clWhite
     Font.Height = -16
@@ -234,8 +234,8 @@ object Form1: TForm1
     Left = 376
     Height = 18
     Top = 528
-    Width = 57
-    Caption = 'y Minus'
+    Width = 43
+    Caption = 'y Plus'
     Font.CharSet = ANSI_CHARSET
     Font.Color = clWhite
     Font.Height = -16
@@ -251,8 +251,8 @@ object Form1: TForm1
     Left = 520
     Height = 18
     Top = 528
-    Width = 43
-    Caption = 'y Plus'
+    Width = 56
+    Caption = 'y minus'
     Font.CharSet = ANSI_CHARSET
     Font.Color = clWhite
     Font.Height = -16
@@ -281,7 +281,7 @@ object Form1: TForm1
     Width = 32
     NumbersOnly = True
     TabOrder = 2
-    Text = '1'
+    Text = '2'
   end
   object Edit2: TEdit
     Left = 712
@@ -290,7 +290,7 @@ object Form1: TForm1
     Width = 32
     NumbersOnly = True
     TabOrder = 3
-    Text = '1'
+    Text = '2'
   end
   object Edit3: TEdit
     Left = 744
@@ -299,6 +299,6 @@ object Form1: TForm1
     Width = 32
     NumbersOnly = True
     TabOrder = 4
-    Text = '1'
+    Text = '2'
   end
 end
