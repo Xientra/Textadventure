@@ -27,6 +27,7 @@ type
     Edit1: TEdit;
     Edit2: TEdit;
     Edit3: TEdit;
+    RoomPicture: TImage;
     Label_Leave: TLabel;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      //Its a secret!
     Memo1: TMemo;
     procedure Btn1Click(Sender: TObject);
@@ -41,7 +42,7 @@ type
   private
     procedure CreateRooms();
     procedure SetAllNeighborRooms();
-    procedure CreateARoom(_description: string; _pos_x, _pos_y, _pos_z: integer);
+    procedure CreateARoom(_description: string; _imagePath: string; _pos_x, _pos_y, _pos_z: integer);
 
     procedure Button_1_Action();
     procedure Button_2_Action();
@@ -91,13 +92,14 @@ begin
 
   Memo1.Clear();
   Memo1.Lines.Add(Player1.GetCurrendRoom().GetDescription());
+  RoomPicture.Picture.LoadFromFile(Player1.GetCurrendRoom().GetPicturePath());
 end;
 
 procedure TForm1.CreateRooms();
 begin
 
-  CreateARoom('Be The Room.', 0, 0, 0);
-  CreateARoom('Be Another Room', 1, 0, 0);
+  CreateARoom('Be The Room.', 'Images\Rooms\CathedralRoom.png', 0, 0, 0);
+  CreateARoom('Be Another Room','Images\Rooms\CathedralRoom.png', 1, 0, 0);
 
 
   //CreateARoom('Room to the xPos from 222', 3, 2, 2);
@@ -105,6 +107,12 @@ begin
   //CreateARoom('Room to the yPos from 222', 2, 3, 2);
   //CreateARoom('Room to the yNeg from 222', 2, 1, 2);
 
+end;
+
+//ist besser, damit die position an der der Raum erstellt wurde auf jeden fall dem Raum bekannt ist
+procedure TForm1.CreateARoom(_description: string; _imagePath: string; _pos_x, _pos_y, _pos_z: integer);
+begin
+  RoomArr[_pos_x, _pos_y, _pos_z] := TRoom.Create(_description, _imagePath, _pos_x, _pos_y, _pos_z);
 end;
 
 procedure TForm1.SetAllNeighborRooms(); //for each created Room we have to set their Neighbor Rooms once all Rooms are created
@@ -118,11 +126,6 @@ begin
         if (RoomArr[x, y, z] <> nil) then RoomArr[x, y, z].SetNeighborRooms();
 end;
 
-//ist besser, damit die position an der der Raum erstellt wurde auf jeden fall dem Raum bekannt ist
-procedure TForm1.CreateARoom(_description: string; _pos_x, _pos_y, _pos_z: integer);
-begin
-  RoomArr[_pos_x, _pos_y, _pos_z] := TRoom.Create(_description, _pos_x, _pos_y, _pos_z);
-end;
 
 procedure TForm1.Btn1Click(Sender: TObject); begin Button_1_Action(); end;
 procedure TForm1.Btn2Click(Sender: TObject); begin Button_2_Action(); end;
@@ -190,6 +193,7 @@ begin
   end;
   Memo1.Clear();
   Memo1.Lines.Add(Player1.GetCurrendRoom().GetDescription());
+  RoomPicture.Picture.LoadFromFile(Player1.GetCurrendRoom().GetPicturePath());
 end;
 
 end.
