@@ -19,6 +19,7 @@ type
   end;
 
 implementation
+uses unit1;
 
 constructor TPlayer.Create(startRoom: TRoom);
 begin
@@ -29,7 +30,15 @@ end;
 
 procedure TPlayer.ChangeRoom(_direction: string);
 begin
-  currendRoom := currendRoom.GetNeighborRooms(_direction);
+  //currendRoom := currendRoom.GetNeighborRooms(_direction);
+  case _direction of
+  'xPos': currendRoom := Unit1.RoomArr[currendRoom.GetPosX+1,currendRoom.GetPosY,currendRoom.GetPosZ];
+  'yPos': currendRoom := Unit1.RoomArr[currendRoom.GetPosX,currendRoom.GetPosY+1,currendRoom.GetPosZ];
+  'zPos': currendRoom := Unit1.RoomArr[currendRoom.GetPosX,currendRoom.GetPosY,currendRoom.GetPosZ+1];
+  'xNeg': currendRoom := Unit1.RoomArr[currendRoom.GetPosX-1,currendRoom.GetPosY,currendRoom.GetPosZ];
+  'yNeg': currendRoom := Unit1.RoomArr[currendRoom.GetPosX,currendRoom.GetPosY-1,currendRoom.GetPosZ];
+  'zNeg': currendRoom := Unit1.RoomArr[currendRoom.GetPosX,currendRoom.GetPosY,currendRoom.GetPosZ-1];
+  end;
 end;
 
 function TPlayer.GetCurrendRoom(): TRoom;

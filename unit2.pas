@@ -11,12 +11,15 @@ type
   TRoom = class
   public
     constructor Create(_description: string; _pos_x, _pos_y, _pos_z: integer);
-    procedure SetNeighborRooms();
+    //procedure SetNeighborRooms();
     function GetDescription: string;
     function GetRoomID(): integer;
-    function GetNeighborRooms(_direction: string): TRoom;
+    //function GetNeighborRooms(_direction: string): TRoom;
     function GetVisited: boolean;
     procedure SetVisited(v: boolean);
+    function GetPosX:Integer;
+    function GetPosY:Integer;
+    function GetPosZ:Integer;
 
   private
 
@@ -49,6 +52,22 @@ begin
   //ShowMessage(IntToStr(pos_x) + IntToStr(pos_y) + IntToStr(pos_z));
 end;
 
+function TRoom.GetPosX:Integer;
+begin
+  result := pos_x;
+end;
+
+function TRoom.GetPosY:Integer;
+begin
+  result := pos_y;
+end;
+
+function TRoom.GetPosZ:Integer;
+begin
+  result := pos_z;
+end;
+
+{
 procedure TRoom.SetNeighborRooms(); //Das kommt absolut nicht klar mit den Rändern des Array (also so gar nicht trotz der if abfragen die da schon sind)
 begin
   ShowMessage('SetRooms was called from ' + IntToStr(pos_x) + IntToStr(pos_y) + IntToStr(pos_z));
@@ -88,7 +107,7 @@ begin
       zNeg := Unit1.RoomArr[pos_x, pos_y, pos_z - 1];
     //else Showmessage('Room zNeg is nil')
   //else ShowMessage('zNeg Out of Array');
-end;
+end;     }
 
 function TRoom.GetDescription: string;
 begin
@@ -99,7 +118,7 @@ function TRoom.GetRoomID: integer;
 begin
   result := RoomID;
 end;
-
+ {
 function TRoom.GetNeighborRooms(_direction: string): TRoom;
 begin
   case _direction of
@@ -113,7 +132,7 @@ begin
     ShowMessage('Rufe GetNeighborRooms nur mit xPos, xNeg, yPos, yNeg, zPos, zNeg auf.');
   end;
 end;
-
+       }
 function TRoom.GetVisited(): boolean;
 begin
   result := visited;
