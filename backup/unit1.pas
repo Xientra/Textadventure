@@ -27,6 +27,7 @@ type
     Edit1: TEdit;
     Edit2: TEdit;
     Edit3: TEdit;
+    RoomPicture: TImage;
     Label_Leave: TLabel;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      //Its a secret!
     Memo1: TMemo;
     procedure Btn1Click(Sender: TObject);
@@ -40,13 +41,14 @@ type
 
   private
     procedure CreateRooms();
+    procedure CreateARoom(_description: string; _imagePath: string; _pos_x, _pos_y, _pos_z: integer);
     //procedure SetAllNeighborRooms();
-    procedure CreateARoom(_description: string; _pos_x, _pos_y, _pos_z: integer);
 
     procedure Button_1_Action();
     procedure Button_2_Action();
     procedure Button_3_Action();
     procedure Button_4_Action();
+    procedure UpdateUI();
 
   public
 
@@ -85,18 +87,19 @@ begin
   end;
 
   CreateRooms(); //Creates all the Rooms
-  //SetAllNeighborRooms(); //after all Room have been created
+  //SetAllNeighborRooms();
   Player1 := TPlayer.Create(RoomArr[0, 0, 0]);
 
   Memo1.Clear();
   Memo1.Lines.Add(Player1.GetCurrendRoom().GetDescription());
+  RoomPicture.Picture.LoadFromFile(Player1.GetCurrendRoom().GetImagePath());
 end;
 
 procedure TForm1.CreateRooms();
 begin
 
-  CreateARoom('Be The Room.', 0, 0, 0);
-  CreateARoom('Be Another Room', 1, 0, 0);
+  CreateARoom('CathedralRoom.', 'Images/Rooms/CathedralRoom.png', 0, 0, 0);
+  CreateARoom('You are in HELL', 'Images/Rooms/Höle.png', 1, 0, 0);
 
 
   //CreateARoom('Room to the xPos from 222', 3, 2, 2);
@@ -106,7 +109,14 @@ begin
 
 end;
 
-{procedure TForm1.SetAllNeighborRooms(); //for each created Room we have to set their Neighbor Rooms once all Rooms are created
+//ist besser, damit die position an der der Raum erstellt wurde auf jeden fall dem Raum bekannt ist
+procedure TForm1.CreateARoom(_description: string; _imagePath: string; _pos_x, _pos_y, _pos_z: integer);
+begin
+  RoomArr[_pos_x, _pos_y, _pos_z] := TRoom.Create(_description, _imagePath, _pos_x, _pos_y, _pos_z);
+end;
+
+{
+procedure TForm1.SetAllNeighborRooms(); //for each created Room we have to set their Neighbor Rooms once all Rooms are created
 var
   x, y, z: integer;
 begin
@@ -115,13 +125,8 @@ begin
     for y := 0 to Room_y - 1 do
       for x := 0 to Room_x - 1 do
         if (RoomArr[x, y, z] <> nil) then RoomArr[x, y, z].SetNeighborRooms();
-end;}
-
-//ist besser, damit die position an der der Raum erstellt wurde auf jeden fall dem Raum bekannt ist
-procedure TForm1.CreateARoom(_description: string; _pos_x, _pos_y, _pos_z: integer);
-begin
-  RoomArr[_pos_x, _pos_y, _pos_z] := TRoom.Create(_description, _pos_x, _pos_y, _pos_z);
 end;
+}
 
 procedure TForm1.Btn1Click(Sender: TObject); begin Button_1_Action(); end;
 procedure TForm1.Btn2Click(Sender: TObject); begin Button_2_Action(); end;
@@ -141,29 +146,32 @@ procedure TForm1.Button_1_Action();
 begin
   //ShowMessage('Button 1 pressed');
   Player1.ChangeRoom('xPos');
-  Memo1.Clear();
-  Memo1.Lines.Add(Player1.GetCurrendRoom().GetDescription());
+  UpdateUI();
 end;
 procedure TForm1.Button_2_Action();
 begin
   //ShowMessage('Button 2 pressed');
   Player1.ChangeRoom('xNeg');
-  Memo1.Clear();
-  Memo1.Lines.Add(Player1.GetCurrendRoom().GetDescription());
+  UpdateUI();
 end;
 procedure TForm1.Button_3_Action();
 begin
   //ShowMessage('Button 3 pressed');
   Player1.ChangeRoom('yPos');
-  Memo1.Clear();
-  Memo1.Lines.Add(Player1.GetCurrendRoom().GetDescription());
+  UpdateUI();
 end;
 procedure TForm1.Button_4_Action();
 begin
   //ShowMessage('Button 4 pressed');
   Player1.ChangeRoom('yNeg');
+  UpdateUI();
+end;
+
+procedure TForm1.UpdateUI();
+begin
   Memo1.Clear();
   Memo1.Lines.Add(Player1.GetCurrendRoom().GetDescription());
+  RoomPicture.Picture.LoadFromFile(Player1.GetCurrendRoom().GetImagePath());
 end;
 
 procedure TForm1.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);

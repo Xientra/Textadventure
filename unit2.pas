@@ -10,27 +10,31 @@ uses
 type
   TRoom = class
   public
-    constructor Create(_description: string; _pos_x, _pos_y, _pos_z: integer);
+    constructor Create(_description: string; _imagePath: string; _pos_x, _pos_y, _pos_z: integer);
+
     //procedure SetNeighborRooms();
+    //function GetNeighborRooms(_direction: string): TRoom;
+
     function GetDescription: string;
     function GetRoomID(): integer;
-    //function GetNeighborRooms(_direction: string): TRoom;
+    function GetImagePath(): string;
+
     function GetVisited: boolean;
     procedure SetVisited(v: boolean);
-    function GetPosX:Integer;
-    function GetPosY:Integer;
-    function GetPosZ:Integer;
+
+    function GetPosX: Integer;
+    function GetPosY: Integer;
+    function GetPosZ: Integer;
 
   private
 
     description: string;
+    ImagePath: string;
     visited: boolean;
 
-    //RoomArray: Array of Array of Array of TRoom;
     pos_x, pos_y, pos_z: integer;
     RoomID: integer;
-    xPos, xNeg, yPos, yNeg, zPos, zNeg: TRoom; //zPos = Up; zNeg = Unten; xPos = rechts(?) usw...
-
+    //xPos, xNeg, yPos, yNeg, zPos, zNeg: TRoom; //zPos = Up; zNeg = Unten; xPos = rechts(?) usw...
 
   end;
 
@@ -38,16 +42,15 @@ implementation
 
 uses Unit1; //entweder machen wir das damit oder wir übergeben das RoomArray über Create (damit der Raum seine pos benutzen kann)
 
-constructor TRoom.Create(_description: string; _pos_x, _pos_y, _pos_z: integer);
+constructor TRoom.Create(_description: string; _imagePath: string; _pos_x, _pos_y, _pos_z: integer);
 begin
   description := _description;
+  ImagePath := _imagePath;
   visited := false;
   pos_x := _pos_x;
   pos_y := _pos_y;
   pos_z := _pos_z;
   RoomID := _pos_x*100 + _pos_y*10 +_pos_z;
-
-  //RoomArray := Unit1.RoomArr;
 
   //ShowMessage(IntToStr(pos_x) + IntToStr(pos_y) + IntToStr(pos_z));
 end;
@@ -68,7 +71,7 @@ begin
 end;
 
 {
-procedure TRoom.SetNeighborRooms(); //Das kommt absolut nicht klar mit den Rändern des Array (also so gar nicht trotz der if abfragen die da schon sind)
+procedure TRoom.SetNeighborRooms();
 begin
   ShowMessage('SetRooms was called from ' + IntToStr(pos_x) + IntToStr(pos_y) + IntToStr(pos_z));
 
@@ -107,14 +110,15 @@ begin
       zNeg := Unit1.RoomArr[pos_x, pos_y, pos_z - 1];
     //else Showmessage('Room zNeg is nil')
   //else ShowMessage('zNeg Out of Array');
-end;     }
+end;
+}
 
 function TRoom.GetDescription: string;
 begin
   result := description; //wenn hier ein error erscheint ist es sehr warscheinlich, dass der Raum gar nicht existiert
 end;
 
-function TRoom.GetRoomID: integer;
+function TRoom.GetRoomID(): integer;
 begin
   result := RoomID;
 end;
@@ -141,7 +145,10 @@ procedure TRoom.SetVisited(v: boolean);
 begin
   visited := v;
 end;
-
+function TRoom.GetImagePath(): string;
+begin
+  result := ImagePath;
+end;
 
 end.
 

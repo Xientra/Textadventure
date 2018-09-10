@@ -6,8 +6,9 @@ object Form1: TForm1
   Caption = 'Adventure'
   ClientHeight = 600
   ClientWidth = 800
-  Color = clWhite
+  Color = clBlack
   Font.CharSet = ANSI_CHARSET
+  Font.Color = clWhite
   Font.Height = -16
   Font.Name = 'Georgia'
   Font.Pitch = fpVariable
@@ -96,7 +97,7 @@ object Form1: TForm1
   object Memo1: TMemo
     Left = 0
     Height = 168
-    Top = 300
+    Top = 304
     Width = 800
     BorderStyle = bsNone
     Color = clBlack
@@ -301,5 +302,13 @@ object Form1: TForm1
     NumbersOnly = True
     TabOrder = 4
     Text = '2'
+  end
+  object RoomPicture: TImage
+    Left = 216
+    Height = 300
+    Top = 0
+    Width = 300
+    Center = True
+    Stretch = True
   end
 end
