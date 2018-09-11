@@ -145,7 +145,7 @@ procedure TRoom.SetVisited(v: boolean);
 begin
   visited := v;
 end;
-function TRoom.GetRoomPath(): string;
+function TRoom.GetImagePath(): string;
 begin
   result := ImagePath;
 end;

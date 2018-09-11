@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Dialogs{für ShowMessage},
-  Unit2{für TRoom};
+  RoomClass{für TRoom};
 
 type
   TPlayer = class

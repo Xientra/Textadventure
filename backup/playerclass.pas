@@ -32,34 +32,12 @@ procedure TPlayer.ChangeRoom(_direction: string);
 begin
   //currendRoom := currendRoom.GetNeighborRooms(_direction);
   case _direction of
-  'xPos': begin
-          currendRoom := Unit1.RoomArr[currendRoom.GetPosX+1,currendRoom.GetPosY,currendRoom.GetPosZ];
-          Memo1.Clear();
-          Memo1.Lines.Add(Player1.GetCurrendRoom().GetDescription());
-          end;
-  'yPos': begin
-          currendRoom := Unit1.RoomArr[currendRoom.GetPosX,currendRoom.GetPosY+1,currendRoom.GetPosZ];
-          Memo1.Clear();
-          Memo1.Lines.Add(Player1.GetCurrendRoom().GetDescription());
-          end;
-  'zPos': begin
-          currendRoom := Unit1.RoomArr[currendRoom.GetPosX,currendRoom.GetPosY,currendRoom.GetPosZ+1];
-          Memo1.Clear();
-          Memo1.Lines.Add(Player1.GetCurrendRoom().GetDescription());
-          end;
-  'xNeg': begin
-          currendRoom := Unit1.RoomArr[currendRoom.GetPosX-1,currendRoom.GetPosY,currendRoom.GetPosZ];
-          Memo1.Clear();
-          Memo1.Lines.Add(Player1.GetCurrendRoom().GetDescription());
-          end;
-  'yNeg': begin
-          currendRoom := Unit1.RoomArr[currendRoom.GetPosX,currendRoom.GetPosY-1,currendRoom.GetPosZ];
-          Memo1.Clear();
-          Memo1.Lines.Add(Player1.GetCurrendRoom().GetDescription());
+  'xPos': currendRoom := Unit1.RoomArr[currendRoom.GetPosX+1,currendRoom.GetPosY,currendRoom.GetPosZ];
+  'yPos': currendRoom := Unit1.RoomArr[currendRoom.GetPosX,currendRoom.GetPosY+1,currendRoom.GetPosZ];
+  'zPos': currendRoom := Unit1.RoomArr[currendRoom.GetPosX,currendRoom.GetPosY,currendRoom.GetPosZ+1];
+  'xNeg': currendRoom := Unit1.RoomArr[currendRoom.GetPosX-1,currendRoom.GetPosY,currendRoom.GetPosZ];
+  'yNeg': currendRoom := Unit1.RoomArr[currendRoom.GetPosX,currendRoom.GetPosY-1,currendRoom.GetPosZ];
   'zNeg': currendRoom := Unit1.RoomArr[currendRoom.GetPosX,currendRoom.GetPosY,currendRoom.GetPosZ-1];
-  Memo1.Clear();
-  Memo1.Lines.Add(Player1.GetCurrendRoom().GetDescription());
-  end;
   end;
 end;
 
