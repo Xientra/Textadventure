@@ -69,6 +69,7 @@ begin
   //IsHealing := false;
   //IsDamageUp := false;
   IsDefenseUp := true;
+  DefenseUpFactor := _factor;
 end;
 
 end.

@@ -1,12 +1,12 @@
 object Form1: TForm1
-  Left = 971
+  Left = 1072
   Height = 600
-  Top = 165
+  Top = 146
   Width = 800
   Caption = 'Adventure'
   ClientHeight = 600
   ClientWidth = 800
-  Color = clBlack
+  Color = clWhite
   Font.CharSet = ANSI_CHARSET
   Font.Color = clWhite
   Font.Height = -16

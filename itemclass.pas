@@ -23,7 +23,8 @@ type
 
     IsHealing,
     IsDamageUp,
-    IsDefenseUp
+    IsDefenseUp,
+    IsBomb
     : boolean;
 
     HealingFactor,

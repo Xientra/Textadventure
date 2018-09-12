@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   ExtCtrls{für die Bilder}, StdCtrls{für die Timer}, LCLType{für die Tasteneingaben (wie VK_SPACE)},
-  Unit2{für TRoom}, PlayerClass{für TPlayer};
+  RoomClass{für TRoom}, PlayerClass{für TPlayer};
 
 type
 
