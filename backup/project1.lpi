@@ -30,7 +30,7 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="4">
+    <Units Count="8">
       <Unit0>
         <Filename Value="project1.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -53,6 +53,26 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="PlayerClass"/>
       </Unit3>
+      <Unit4>
+        <Filename Value="itemclass.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ItemClass"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="keyclass.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="KeyClass"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="enemyclass.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="EnemyClass"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="weaponclass.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="WeaponClass"/>
+      </Unit7>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

@@ -6,11 +6,14 @@ interface
 
 uses
   Classes, SysUtils, Dialogs{für ShowMessage},
-  ItemClass{für TItem};
+  ItemClass{für TItem}, EnemyClass{für TEnemy};
 
 type
   TRoom = class
   public
+    EnemyArr: Array of TEnemy; //da man anscheinend keine Array of ... mit functions returnen kann müssen diese Array public sein
+    ItemArr: Array of TItem;
+
     constructor Create(_description: string; _imagePath: string; _pos_x, _pos_y, _pos_z: integer);
 
     //procedure SetNeighborRooms();
@@ -28,6 +31,8 @@ type
     function GetPosZ: Integer;
 
     procedure AddItem(_item: TItem);
+    procedure AddEnemy(_enemy: TEnemy);
+    //function GetEnemyArr(): Array of TEnemy;
   private
 
     description: string;
@@ -38,7 +43,7 @@ type
     RoomID: integer;
     //xPos, xNeg, yPos, yNeg, zPos, zNeg: TRoom; //zPos = Up; zNeg = Unten; xPos = rechts(?) usw...
 
-    Items: Array of TItem;
+
 
   end;
 
@@ -159,5 +164,15 @@ begin
 
 end;
 
+procedure TRoom.AddEnemy(_enemy: TEnemy);
+begin
+  SetLength(EnemyArr, Length(EnemyArr) + 1);
+  EnemyArr[Length(EnemyArr) - 1] := _enemy;
+end;
+{
+function TRoom.GetEnemyArr(): Array of TEnemy;
+begin
+end;
+}
 end.
 

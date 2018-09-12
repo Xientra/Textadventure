@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   ExtCtrls{für die Bilder}, StdCtrls{für die Timer}, LCLType{für die Tasteneingaben (wie VK_SPACE)},
-  RoomClass{für TRoom}, PlayerClass{für TPlayer};
+  RoomClass{für TRoom}, PlayerClass{für TPlayer}, EnemyClass{für TEnemy}, WeaponClass{für TWeapon};
 
 type
 
@@ -39,6 +39,10 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure Label_LeaveClick(Sender: TObject);
 
+
+  public
+    procedure OnEnterRoom();
+
   private
     procedure CreateRooms();
     procedure CreateARoom(_description: string; _imagePath: string; _pos_x, _pos_y, _pos_z: integer);
@@ -48,9 +52,8 @@ type
     procedure Button_2_Action();
     procedure Button_3_Action();
     procedure Button_4_Action();
-    procedure UpdateUI();
 
-  public
+    procedure UpdateUI();
 
   end;
 
@@ -61,6 +64,10 @@ var
   RoomArr: Array of Array of Array of TRoom;
   Room_x, Room_y, Room_z: integer;
   Player1: TPlayer;
+  FightingEnemy: TEnemy;
+  currendSituation: integer; //0 = map; 1 = combat;  = interact with RoomObjects;
+  //0: Btn1: Norden; Btn2: Westen; Btn3: Süden; Btn: Osten;
+  //1: Btn1: Angriff; Btn2: Skills; Btn3: Items; Btn4: Flee;
 
 implementation
 
@@ -72,6 +79,7 @@ procedure TForm1.FormCreate(Sender: TObject);
 var
   i, ii: integer;
 begin
+  currendSituation := 0;
 
   //Set RoomArray size
   Room_x := 5-1;
@@ -88,11 +96,9 @@ begin
 
   CreateRooms(); //Creates all the Rooms
   //SetAllNeighborRooms();
-  Player1 := TPlayer.Create(RoomArr[0, 0, 0]);
+  Player1 := TPlayer.Create(RoomArr[0, 0, 0], TWeapon.Create('Fists', 'Just your good old hands.', 10, 0, 0, 0));
 
-  Memo1.Clear();
-  Memo1.Lines.Add(Player1.GetCurrendRoom().GetDescription());
-  RoomPicture.Picture.LoadFromFile(Player1.GetCurrendRoom().GetImagePath());
+  UpdateUI();
 end;
 
 procedure TForm1.CreateRooms();
@@ -100,13 +106,8 @@ begin
 
   CreateARoom('CathedralRoom.', 'Images/Rooms/CathedralRoom.png', 0, 0, 0);
   CreateARoom('You are in HELL', 'Images/Rooms/Höle.png', 1, 0, 0);
-
-
-  //CreateARoom('Room to the xPos from 222', 3, 2, 2);
-  //CreateARoom('Room to the xNeg from 222', 1, 2, 2);
-  //CreateARoom('Room to the yPos from 222', 2, 3, 2);
-  //CreateARoom('Room to the yNeg from 222', 2, 1, 2);
-
+  CreateARoom('HereShould be a Enemy', 'Images/Rooms/Höle.png', 0, 1, 0);
+  RoomArr[0, 1, 0].AddEnemy(TEnemy.Create(100));
 end;
 
 //ist besser, damit die position an der der Raum erstellt wurde auf jeden fall dem Raum bekannt ist
@@ -143,28 +144,43 @@ begin
 end;
 
 procedure TForm1.Button_1_Action();
+var
+  _dmg: real;
 begin
   //ShowMessage('Button 1 pressed');
-  Player1.ChangeRoom('xPos');
-  UpdateUI();
+  if (currendSituation = 0) then
+  begin
+    Player1.ChangeRoom('xPos');
+    UpdateUI();
+    OnEnterRoom();
+  end;
+  if (currendSituation = 1) then
+  begin
+    _dmg := FightingEnemy.DoDamage(Player1.GetCurrendWeapon().GetStrikeDmg(), Player1.GetCurrendWeapon().GetThrustDmg(), Player1.GetCurrendWeapon().GetSlashDmg(), Player1.GetCurrendWeapon().GetMagicDmg());
+    Memo1.Clear();
+    Memo1.Lines.Add('You delt: ' + FloatToStr(_dmg) + ' The Enemy now has ' + FloatToStr(FightingEnemy.GetHealth()) + 'health left');
+  end;
 end;
 procedure TForm1.Button_2_Action();
 begin
   //ShowMessage('Button 2 pressed');
   Player1.ChangeRoom('xNeg');
   UpdateUI();
+  OnEnterRoom();
 end;
 procedure TForm1.Button_3_Action();
 begin
   //ShowMessage('Button 3 pressed');
   Player1.ChangeRoom('yPos');
   UpdateUI();
+  OnEnterRoom();
 end;
 procedure TForm1.Button_4_Action();
 begin
   //ShowMessage('Button 4 pressed');
   Player1.ChangeRoom('yNeg');
   UpdateUI();
+  OnEnterRoom();
 end;
 
 procedure TForm1.UpdateUI();
@@ -172,6 +188,32 @@ begin
   Memo1.Clear();
   Memo1.Lines.Add(Player1.GetCurrendRoom().GetDescription());
   RoomPicture.Picture.LoadFromFile(Player1.GetCurrendRoom().GetImagePath());
+end;
+
+procedure TForm1.OnEnterRoom();
+var
+  i: integer;
+begin
+  ShowMessage('Entered a Room');
+
+  //1. check nach Gegnern
+  if (length(Player1.GetCurrendRoom().EnemyArr) - 1 >= 0) then
+    for i := 0 to length(Player1.GetCurrendRoom().EnemyArr) - 1 do
+    begin
+      //start Fight
+      currendSituation := 1;
+      FightingEnemy := Player1.GetCurrendRoom().EnemyArr[i];
+    end;
+
+  //2. check nach items
+  //3. check nach RoomObjects
+
+  if (currendSituation = 0) then UpdateUI();
+  if (currendSituation = 1) then
+  begin
+    Memo1.Clear();
+    Memo1.Lines.Add('You ar now fighting! The Enemy has ' + FloatToStr(FightingEnemy.GetHealth()) + ' health left.');
+  end;
 end;
 
 procedure TForm1.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);

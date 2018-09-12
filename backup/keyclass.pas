@@ -15,12 +15,14 @@ uses
     end;
 
 implementation
+
 constructor TKey.Create(_KeyIndex: integer);
 begin
   inherited Create;
   KeyIndex := _KeyIndex;
 end;
-function GetKeyIndex: integer;
+
+function TKey.GetKeyIndex: integer;
 begin
      result := KeyIndex;
 end;

@@ -8,27 +8,54 @@ uses
   Classes, SysUtils;
   type
     TWeapon = class
-      public
-        constructor Create(_name: string; _description: String;_StrikeDamage,_ThurstDamage,_SlashDamage,_MagicDamage: real);
-      private
-        name : string;
-        description : string;
-        StrikeDamage: real;
-        ThrustDamage: real;
-        SlashDamage: real;
-        MagicDamage: real;
+    public
+      constructor Create(_name: string; _description: String; _StrikeDmg, _ThrustDmg, _SlashDmg, _MagicDmg: real);
+      function GetStrikeDmg(): real;
+      function GetThrustDamage(): real;
+      function GetSlashDamage(): real;
+      function GetMagicDamage(): real;
+    private
+      name : string;
+      description : string;
+
+      StrikeDamage,
+      ThrustDamage,
+      SlashDamage
+      : real;
+
+      MagicDamage: real;
     end;
 
 implementation
-constructor TWeapon.Create (_name: string; _description: String;_StrikeDamage,_ThurstDamage,_SlashDamage,_MagicDamage: real);
+
+constructor TWeapon.Create (_name: string; _description: String; _StrikeDmg, _ThrustDmg, _SlashDmg, _MagicDmg: real);
 begin
      inherited Create;
      name := _name;
      description := _description;
-     StrikeDamage := _StrikeDamage;
-     ThrustDamage := _ThrustDamage;
-     SlashDamage := _SlashDamage;
-     MagicDamage := MagicDamage;
+
+     StrikeDamage := _StrikeDmg;
+     ThrustDamage := _ThrustDmg;
+     SlashDamage := _SlashDmg;
+     MagicDamage := _MagicDmg;
 end;
+
+function TWeapon.GetStrikeDmg(): real;
+begin
+  result := StrikeDamage;
+end;
+function TWeapon.GetThrustDmg(): real;
+begin
+  result := ThrustDamage;
+end;
+function TWeapon.GetSlashDmg(): real;
+begin
+  result := SlashDamage;
+end;
+function TWeapon.GetMagicDmg(): real;
+begin
+  result := MagicDamage;
+end;
+
 end.
 

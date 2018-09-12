@@ -15,6 +15,9 @@ type
     procedure SetHealing(_factor: integer);
     procedure SetDamageUp(_factor: integer);
     procedure SetDefenseUp(_factor: integer);
+    procedure SetKey(_keyIndex: integer);
+    function GetKeyIndex: integer;
+
   private
     ItemName: string;
     ItemDescription: string;
@@ -23,12 +26,15 @@ type
 
     IsHealing,
     IsDamageUp,
-    IsDefenseUp
+    IsDefenseUp,
+    IsBomb,
+    IsKey
     : boolean;
 
     HealingFactor,
     DamageUpFactor,
-    DefenseUpFactor
+    DefenseUpFactor,
+    KeyIndex
     : integer;
 
   end;
@@ -37,6 +43,7 @@ implementation
 
 constructor TItem.Create(_name: string; _description: String);
 begin
+  inherited Create;
   itemName := _name;
   ItemDescription := _description;
 
@@ -44,6 +51,8 @@ begin
   IsHealing := false;
   IsDamageUp := false;
   IsDefenseUp := false;
+  IsBomb := false;
+  IsKey := false;
 end;
 
 
@@ -53,6 +62,9 @@ begin
   IsHealing := true;
   //IsDamageUp := false;
   //IsDefenseUp := false;  //wenn wir das ander true lassen könnte ein Item mehrere effekte haben (und btw wenn wir uns dagegen entscheiden, dann können auch die factor var zu einer werden)
+  IsBomb := false;
+  IsKey := false;
+
   HealingFactor := _factor;
 end;
 procedure TItem.SetDamageUp(_factor: integer);
@@ -61,6 +73,9 @@ begin
   //IsHealing := false;
   IsDamageUp := true;
   //IsDefenseUp := false;
+  IsBomb := false;
+  IsKey := false;
+
   DamageUpFactor := _factor;
 end;
 procedure TItem.SetDefenseUp(_factor: integer);
@@ -69,7 +84,27 @@ begin
   //IsHealing := false;
   //IsDamageUp := false;
   IsDefenseUp := true;
+  IsBomb := false;
+  IsKey := false;
+
   DefenseUpFactor := _factor;
+end;
+
+procedure TItem.SetKey(_keyIndex: integer);
+begin
+  IsUseless := false;
+  IsHealing := false;
+  IsDamageUp := false;
+  IsDefenseUp := false;
+  IsBomb := false;
+  IsKey := true;
+
+  KeyIndex := _keyIndex;
+end;
+
+function TKey.GetKeyIndex(): integer;
+begin
+  result := KeyIndex;
 end;
 
 end.

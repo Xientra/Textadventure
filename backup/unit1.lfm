@@ -1,14 +1,14 @@
 object Form1: TForm1
-  Left = 971
+  Left = 1072
   Height = 600
-  Top = 165
+  Top = 146
   Width = 800
   Caption = 'Adventure'
   ClientHeight = 600
   ClientWidth = 800
-  Color = clBlack
+  Color = clWhite
   Font.CharSet = ANSI_CHARSET
-  Font.Color = clWhite
+  Font.Color = clBlack
   Font.Height = -16
   Font.Name = 'Georgia'
   Font.Pitch = fpVariable
@@ -281,7 +281,7 @@ object Form1: TForm1
     Height = 26
     Top = 48
     Width = 32
-    Color = clBlack
+    Color = clWhite
     NumbersOnly = True
     TabOrder = 2
     Text = '2'
@@ -291,7 +291,7 @@ object Form1: TForm1
     Height = 26
     Top = 48
     Width = 32
-    Color = clBlack
+    Color = clWhite
     NumbersOnly = True
     TabOrder = 3
     Text = '2'
@@ -301,7 +301,7 @@ object Form1: TForm1
     Height = 26
     Top = 48
     Width = 32
-    Color = clBlack
+    Color = clWhite
     NumbersOnly = True
     TabOrder = 4
     Text = '2'
