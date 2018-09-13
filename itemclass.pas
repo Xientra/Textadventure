@@ -12,6 +12,8 @@ type
   public
     constructor Create(_name: string; _description: String);
 
+    function GetName(): string;
+
     procedure SetHealing(_factor: integer);
     procedure SetDamageUp(_factor: integer);
     procedure SetDefenseUp(_factor: integer);
@@ -55,6 +57,11 @@ begin
   IsKey := false;
 end;
 
+
+function TItem.GetName(): string;
+begin
+  result := ItemName;
+end;
 
 procedure TItem.SetHealing(_factor: integer);
 begin

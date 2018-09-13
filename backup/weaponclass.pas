@@ -10,10 +10,12 @@ uses
     TWeapon = class
     public
       constructor Create(_name: string; _description: String; _StrikeDmg, _ThrustDmg, _SlashDmg, _MagicDmg: real);
+
+      function TWeapon.GetName(): string;
       function GetStrikeDmg(): real;
-      function GetThrustDamage(): real;
-      function GetSlashDamage(): real;
-      function GetMagicDamage(): real;
+      function GetThrustDmg(): real;
+      function GetSlashDmg(): real;
+      function GetMagicDmg(): real;
     private
       name : string;
       description : string;
@@ -38,6 +40,11 @@ begin
      ThrustDamage := _ThrustDmg;
      SlashDamage := _SlashDmg;
      MagicDamage := _MagicDmg;
+end;
+
+function TWeapon.GetName(): string;
+begin
+  result := name;
 end;
 
 function TWeapon.GetStrikeDmg(): real;

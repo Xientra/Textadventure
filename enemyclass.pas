@@ -5,15 +5,24 @@ unit EnemyClass;
 interface
 
 uses
-  Classes, SysUtils;
+  Classes, SysUtils, Dialogs{für ShowMessage},
+  WeaponClass{TWeapon}, ItemClass{TItem};
+
+
   type
     TEnemy = class
     public
-      constructor Create(_health: real);
+      constructor Create(_health, _damage: real);
       function DoDamage(_strikeDmg, _thrustDmg, _slashDmg: real; _magicDmg: real): real;
       procedure SetResistants(_strikeResist, _thrustResist, _slashResist: real);
 
+      procedure SetWeaponDrop(_weapon: TWeapon);
+      function GetWeaponDrop(): TWeapon;
+      procedure SetItemDrop(_item: TItem);
+      function GetItemDrop(): TItem;
+
       function GetHealth(): real;
+      function GetDamage(): real;
     private
       health: real;
       damage: real;
@@ -23,14 +32,25 @@ uses
       slashResist
       : real;
 
+      weaponDrop: TWeapon; //momentan kpnnen Enemies eine Waffe UND ein Item droppen
+      itemDrop: TItem;
+
     end;
 
 implementation
 
-constructor TEnemy.Create(_health: real);
+constructor TEnemy.Create(_health, _damage: real);
 begin
   inherited Create;
   health := _health;
+  damage := _damage;
+
+  strikeResist := 1;
+  thrustResist := 1;
+  slashResist := 1;
+
+  weaponDrop := nil;
+  itemDrop := nil;
 end;
 
 procedure TEnemy.SetResistants(_strikeResist, _thrustResist, _slashResist: real);
@@ -53,9 +73,42 @@ begin
   //Round(Health);
 end;
 
+procedure TEnemy.SetWeaponDrop(_weapon: TWeapon);
+begin
+  weaponDrop := _weapon;
+  if (itemDrop <> nil) then
+  begin
+    itemDrop := nil;
+    ShowMessage('The Item Drop of this enemy has been deleted.')
+  end;
+end;
+function TEnemy.GetWeaponDrop(): TWeapon;
+begin
+  result := weaponDrop;
+end;
+
+procedure TEnemy.SetItemDrop(_item: TItem);
+begin
+  itemDrop := _item;
+  if (weaponDrop <> nil) then
+  begin
+    weaponDrop := nil;
+    ShowMessage('The Weapon Drop of this enemy has been deleted.')
+  end;
+end;
+function TEnemy.GetItemDrop(): TItem;
+begin
+  result := itemDrop;
+end;
+
 function TEnemy.GetHealth(): real;
 begin
+  result := health;
+end;
 
+function TEnemy.GetDamage(): real;
+begin
+  result := damage;
 end;
 
 end.

@@ -169,10 +169,10 @@ begin
   SetLength(EnemyArr, Length(EnemyArr) + 1);
   EnemyArr[Length(EnemyArr) - 1] := _enemy;
 end;
+{
 function TRoom.GetEnemyArr(): Array of TEnemy;
 begin
-
 end;
-
+}
 end.
 
