@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="10"/>
+    <Version Value="9"/>
     <PathDelim Value="\"/>
     <General>
       <SessionStorage Value="InProjectDir"/>
@@ -30,7 +30,7 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="7">
+    <Units Count="8">
       <Unit0>
         <Filename Value="project1.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -68,6 +68,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="EnemyClass"/>
       </Unit6>
+      <Unit7>
+        <Filename Value="weaponclass.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="WeaponClass"/>
+      </Unit7>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

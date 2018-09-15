@@ -7,7 +7,8 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   ExtCtrls{für die Bilder}, StdCtrls{für die Timer}, LCLType{für die Tasteneingaben (wie VK_SPACE)},
-  RoomClass{für TRoom}, PlayerClass{für TPlayer}, EnemyClass{für TEnemy}, WeaponClass{für TWeapon}, ItemClass{für TItem};
+  RoomClass{für TRoom}, PlayerClass{für TPlayer}, EnemyClass{für TEnemy}, WeaponClass{für TWeapon}, ItemClass{für TItem},
+  MMSystem;
 
 type
 
@@ -24,9 +25,11 @@ type
     Btn3_Image: TImage;
     Btn4_Image: TImage;
     Button1: TButton;
+    Button2: TButton;
     Edit1: TEdit;
     Edit2: TEdit;
     Edit3: TEdit;
+    Edit4: TEdit;
     RoomPicture: TImage;
     Label_Leave: TLabel;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      //Its a secret!
     Memo1: TMemo;
@@ -35,6 +38,7 @@ type
     procedure Btn3Click(Sender: TObject);
     procedure Btn4Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure Label_LeaveClick(Sender: TObject);
@@ -145,6 +149,15 @@ begin
   else
     Memo1.Lines.Add(RoomArr[StrToInt(Edit1.Text), StrToInt(Edit2.Text), StrToInt(Edit3.Text)].GetDescription);
 
+end;
+
+procedure TForm1.Button2Click(Sender: TObject);
+begin   //Music test
+     if Edit4.text = '1' then begin
+        PlaySound('music\Dancing in the Moonlight piano.wav',0,SND_ASYNC);
+     end else if Edit4.text = '2' then begin
+          PlaySound('music\Textadventure Gwyn Theme piano.wav',0,SND_ASYNC);
+     end;
 end;
 
 procedure TForm1.Button_1_Action();
