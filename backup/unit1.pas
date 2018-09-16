@@ -5,9 +5,9 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  ExtCtrls{für die Bilder}, StdCtrls{für die Timer}, LCLType{für die Tasteneingaben (wie VK_SPACE)},
-  RoomClass{für TRoom}, PlayerClass{für TPlayer}, EnemyClass{für TEnemy}, WeaponClass{für TWeapon}, ItemClass{für TItem};
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
+  StdCtrls, LCLType, ActnList, MMSystem{für die Musik},
+  RoomClass{für TRoom}, PlayerClass{für TPlayer}, EnemyClass{für TEnemy}, WeaponClass{für TWeapon}, ItemClass{für TItem}, SkillClass{I think you know by now...};
 
 type
 
@@ -24,9 +24,13 @@ type
     Btn3_Image: TImage;
     Btn4_Image: TImage;
     Button1: TButton;
+    Button2: TButton;
     Edit1: TEdit;
     Edit2: TEdit;
     Edit3: TEdit;
+    Edit4: TEdit;
+    Memo_Description: TMemo;
+    Image1: TImage;
     RoomPicture: TImage;
     Label_Leave: TLabel;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      //Its a secret!
     Memo1: TMemo;
@@ -35,6 +39,7 @@ type
     procedure Btn3Click(Sender: TObject);
     procedure Btn4Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure Label_LeaveClick(Sender: TObject);
@@ -55,9 +60,14 @@ type
 
     procedure UpdateUI();
     procedure PlayerEndTurn();
+    procedure PrintSkillDescription();
 
     procedure ChangeSituation(_situation: integer); //damit man die Button label änder kann wenn sie geändert wird
   end;
+
+//----------------------------------------------------------------------------//
+//                         Schau in die ToDoListe                             //
+//----------------------------------------------------------------------------//
 
 var
   Form1: TForm1;
@@ -67,9 +77,12 @@ var
   Room_x, Room_y, Room_z: integer;
   Player1: TPlayer;
   FightingEnemy: TEnemy;
+
   currendSituation: integer; //0 = map; 1 = combat;  = interact with RoomObjects;
   //0: Btn1: Norden; Btn2: Westen; Btn3: Süden; Btn: Osten;
   //1: Btn1: Angriff; Btn2: Skills; Btn3: Items; Btn4: Flee;
+
+  inventoryIndex: integer;
 
 implementation
 
@@ -81,6 +94,7 @@ procedure TForm1.FormCreate(Sender: TObject);
 var
   i, ii: integer;
 begin
+  inventoryIndex := 0;
   ChangeSituation(0);
 
   //Set RoomArray size
@@ -99,8 +113,12 @@ begin
   CreateRooms(); //Creates all the Rooms
   //SetAllNeighborRooms();
   Player1 := TPlayer.Create(RoomArr[0, 0, 0], TWeapon.Create('Fists', 'Just your good old hands.', 10, 0, 0, 0), 100);
+  Player1.AddItem(TItem.Create('someItem', 'it is useless'));
+  Player1.AddSkill(TSkill.Create('Some Skill', 'You can KILL with it.', 'Images/Skills/someSkill.png', 1, 1.5, 2));
+  Player1.AddSkill(TSkill.Create('Some other Skill', 'This one is just useless...', 'Images/Skills/someOtherSkill.png', 1, 1, 5));
 
   UpdateUI();
+  Memo_Description.Clear();
 end;
 
 procedure TForm1.CreateRooms();
@@ -111,7 +129,7 @@ begin
   CreateARoom('HereShould be a Enemy', 'Images/Rooms/Höle.png', 0, 1, 0);
   RoomArr[0, 1, 0].AddEnemy(TEnemy.Create(20, 5));
   RoomArr[0, 1, 0].EnemyArr[0].SetResistants(1.12344536, 1, 1);
-  RoomArr[0, 1, 0].EnemyArr[0].SetItemDrop(TItem.Create('Literely just Trash.', 'Like acually.'));
+  RoomArr[0, 1, 0].EnemyArr[0].SetItemDrop(TItem.Create('Literely just Trash', 'Like acually.'));
 end;
 
 //ist besser, damit die position an der der Raum erstellt wurde auf jeden fall dem Raum bekannt ist
@@ -147,6 +165,15 @@ begin
 
 end;
 
+procedure TForm1.Button2Click(Sender: TObject);
+begin   //Music test
+     if Edit4.text = '1' then begin
+        PlaySound('music\Dancing in the Moonlight piano.wav',0,SND_ASYNC);
+     end else if Edit4.text = '2' then begin
+          PlaySound('music\Textadventure Gwyn Theme piano.wav',0,SND_ASYNC);
+     end;
+end;
+
 procedure TForm1.Button_1_Action();
 var
   _dmg: real;
@@ -154,18 +181,33 @@ begin
   //ShowMessage('Button 1 pressed');
   if (currendSituation = 0) then
   begin
-    Player1.ChangeRoom('xPos');
-    UpdateUI();
-    OnEnterRoom();
+
   end;
   if (currendSituation = 1) then
   begin
-    _dmg := FightingEnemy.DoDamage(Player1.GetCurrendWeapon().GetStrikeDmg(), Player1.GetCurrendWeapon().GetThrustDmg(), Player1.GetCurrendWeapon().GetSlashDmg(), Player1.GetCurrendWeapon().GetMagicDmg());
-    Memo1.Clear();
-    Memo1.Lines.Add('You delt ' + FloatToStr(Round(_dmg)) + ' The Enemy now has ' + FloatToStr(Round(FightingEnemy.GetHealth())) + ' health left');
 
+  end;
+  case currendSituation of
+  0:
+    begin
+      Player1.ChangeRoom('xPos');
+      UpdateUI();
+      OnEnterRoom();
+    end;
+  1:
+    begin
+      _dmg := FightingEnemy.DoDamage(Player1.GetCurrendWeapon().GetStrikeDmg(), Player1.GetCurrendWeapon().GetThrustDmg(), Player1.GetCurrendWeapon().GetSlashDmg(), Player1.GetCurrendWeapon().GetMagicDmg());
+      Memo1.Clear();
+      Memo1.Lines.Add('You delt ' + FloatToStr(Round(_dmg)) + ' The Enemy now has ' + FloatToStr(Round(FightingEnemy.GetHealth())) + ' health left');
 
-    PlayerEndTurn();
+      PlayerEndTurn();
+    end;
+  5:
+    begin
+
+    end
+  else
+    Memo1.Lines.Add('lol no');
   end;
 end;
 procedure TForm1.Button_2_Action();
@@ -179,6 +221,16 @@ begin
       UpdateUI();
       OnEnterRoom();
     end;
+  1:
+    begin
+      ChangeSituation(5);
+    end;
+  5:
+    begin
+      if (inventoryIndex - 1 >= 0) then inventoryIndex := inventoryIndex - 1
+      else ShowMessage('can now go futher down');
+      PrintSkillDescription();
+    end
   else
     Memo1.Lines.Add('lol no');
   end;
@@ -194,6 +246,12 @@ begin
       UpdateUI();
       OnEnterRoom();
     end;
+  5:
+    begin
+      if (inventoryIndex + 1 <= length(Player1.Skills) - 1) then inventoryIndex := inventoryIndex + 1
+      else ShowMessage('can now go futher up');
+      PrintSkillDescription();
+    end
   else
     Memo1.Lines.Add('lol no');
   end;
@@ -218,10 +276,12 @@ procedure TForm1.UpdateUI(); //situation = 0
 begin
   Memo1.Clear();
   Memo1.Lines.Add(Player1.GetCurrendRoom().GetDescription());
-  RoomPicture.Picture.LoadFromFile(Player1.GetCurrendRoom().GetImagePath());
+  Image1.Picture.LoadFromFile(Player1.GetCurrendRoom().GetImagePath());
 end;
 
 procedure TForm1.PlayerEndTurn(); //situation = 1
+var
+  i: integer;
 begin
   //check if enemy is defeated
   if (FightingEnemy.GetHealth() <= 0) then
@@ -247,7 +307,21 @@ begin
   begin
     Player1.ChangeHealthBy(-(FightingEnemy.GetDamage()));
     Memo1.Lines.Add('The Enemy delt: ' + FloatToStr(FightingEnemy.GetDamage()) + ' You now have ' + FloatToStr(Player1.GetHealth()) + ' health left');
+
+    //verringert den cooldoown von jedem skill
+    for i := 0 to length(Player1.Skills) - 1 do
+      if (Player1.Skills[i] <> nil) then Player1.Skills[i].ReduceCooldown();
+
   end;
+end;
+
+procedure TForm1.PrintSkillDescription(); //situation = 5
+begin
+  Memo_Description.Clear();
+  Memo_Description.Lines.AddText(Player1.Skills[inventoryIndex].GetName());
+  Memo_Description.Lines.Add('');
+  Memo_Description.Lines.AddText(Player1.Skills[inventoryIndex].GetDescription());
+  Image1.Picture.LoadFromFile(Player1.Skills[inventoryIndex].GetImagePath());
 end;
 
 procedure TForm1.OnEnterRoom();
@@ -275,6 +349,7 @@ begin
 end;
 
 procedure TForm1.ChangeSituation(_situation: integer);
+var i: integer;
 begin
   currendSituation := _situation;
   case _situation of
@@ -292,6 +367,21 @@ begin
       Btn3_Label.caption := 'Items';
       Btn4_Label.caption := 'Flee';
     end;
+  2: ; //weapon or item inventory Menu
+  3: ; //weapon inv Menu
+  4: ; //item inv Menu
+  5:
+    begin
+      Btn1_Label.caption := 'Use';
+      Btn2_Label.caption := 'index Down';
+      Btn3_Label.caption := 'index Up';
+      Btn4_Label.caption := 'Back';
+
+      inventoryIndex := 0;
+      for i := 0 to length(Player1.Skills) - 1 do
+        if (Player1.Skills[i] <> nil) then inventoryIndex := i;
+      PrintSkillDescription();
+    end; //skills Menu
   end;
 end;
 

@@ -306,12 +306,53 @@ object Form1: TForm1
     TabOrder = 4
     Text = '2'
   end
-  object RoomPicture: TImage
+  object Image1: TImage
     Left = 216
     Height = 300
     Top = 0
     Width = 300
     Center = True
     Stretch = True
+  end
+  object Button2: TButton
+    Left = 576
+    Height = 25
+    Hint = '(1) Dancing in the Moonlight'#13#10'(2) Textadventure Gwyn Theme'
+    Top = 16
+    Width = 75
+    Caption = 'Music'
+    OnClick = Button2Click
+    TabOrder = 5
+  end
+  object Edit4: TEdit
+    Left = 576
+    Height = 26
+    Hint = '(1) Dancing in the Moonlight'#13#10'(2) Textadventure Gwyn Theme'
+    Top = 48
+    Width = 75
+    NumbersOnly = True
+    TabOrder = 6
+  end
+  object Memo_Description: TMemo
+    Left = 56
+    Height = 192
+    Top = 56
+    Width = 130
+    BorderStyle = bsNone
+    Color = clWhite
+    Font.CharSet = ANSI_CHARSET
+    Font.Color = clBlack
+    Font.Height = -16
+    Font.Name = 'Georgia'
+    Font.Pitch = fpVariable
+    Font.Quality = fqDraft
+    Lines.Strings = (
+      'Item Name'
+      ''
+      'Item Description which is a little bit longer'
+    )
+    ParentFont = False
+    ReadOnly = True
+    TabOrder = 7
   end
 end

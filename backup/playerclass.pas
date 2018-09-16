@@ -6,12 +6,17 @@ interface
 
 uses
   Classes, SysUtils, Dialogs{für ShowMessage},
-  RoomClass{für TRoom}, WeaponClass{Für TWeapon}, ItemClass{für TItem};
+  RoomClass{für TRoom}, WeaponClass{Für TWeapon}, ItemClass{für TItem}, SkillClass{für TSkill};
 
 type
   TPlayer = class
   public
-    constructor Create(startRoom: TRoom; startWeapon: TWeapon);
+    //public da man sie nicht returnen kann...
+    itemInventory: Array of TItem;
+    weaponInventory: Array of TWeapon;
+    Skills: Array of TSkill;
+
+    constructor Create(startRoom: TRoom; startWeapon: TWeapon; _health: real);
     procedure ChangeRoom(_direction: string);
 
     function GetHealth(): real;
@@ -20,14 +25,15 @@ type
     function GetCurrendWeapon(): TWeapon;
     procedure AddItem(_item: TItem);
     procedure AddWeapon(_weapon: TWeapon);
+    procedure AddSkill(_skill: TSkill);
+    function GetAmountOfSkills(): integer;
   private
+    health: real;
+
     currendRoom: TRoom;
     currendWeapon: TWeapon;
 
-    itemInventory: Array of TItem;
-    weaponInventory: Array of TWeapon;
-
-    health: real;
+    AmountOfSkills: integer; //die länge des Skills Array und gleichzeitig der Counter zum hinuzufügen von skills
   end;
 
 implementation
@@ -40,6 +46,9 @@ begin
   currendRoom := startRoom;
   currendWeapon := startWeapon;
   health := _health;
+
+  AmountOfSkills := 4;
+  SetLength(Skills, AmountOfSkills);
 end;
 
 procedure TPlayer.ChangeRoom(_direction: string);
@@ -83,6 +92,19 @@ procedure TPlayer.AddWeapon(_weapon: TWeapon);
 begin
   SetLength(weaponInventory, Length(weaponInventory) + 1);
   weaponInventory[Length(weaponInventory) - 1] := _weapon;
+end;
+procedure TPlayer.AddSkill(_skill: TSkill);
+begin
+  if (AmountOfSkills - 1 >= 0) then
+  begin
+    Skills[AmountOfSkills - 1] := _skill;
+    AmountOfSkills := AmountOfSkills - 1;
+  end;
+end;
+
+function GetAmountOfSkills(): integer;
+begin
+
 end;
 
 end.

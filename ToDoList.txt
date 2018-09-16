@@ -1,6 +1,35 @@
 # ToDoList
 
--das assingen der NachbarRäume muss auf "out of array" geprüft werden
--TForm1.Move() sollte entfernt werden da es unnötig geworden ist
+-> Code
+_______________________________________
+-das geghen in andere Räume muss auf "out of array" und "nil" geprüft werden
 -wenn du herrausfindest wie man etwas in das Nachrichten Fenster unten schreibt sag es mir bitte...
--unit2.TRoom.SetNeighborRooms() hat das Problen, dass die Räume an dem Zeitpünkt wo es aufgerufen wird noch nicht im Array sind...
+-es sollte vieleicht ein Knopf für das bestätigen von text gemacht werden oder diese funktion sollte in den ersten Btn eingefügt werden
+-man kann noch keine 
+	Skills
+	Items
+	Waffen
+einsätzen ändern/einsätzen 
+
+-Es gibt ein Error wenn TPlayer kein skill hat aber auf Skills geklickt wird, da trozdem versucht wird die item description zu schreiben
+-Es gibt auch einen Error wenn der Spieler inerhalb des skills array auf ein nil stößt
+
+-> 2D Assets
+_______________________________________
+-Buttons Sprites
+-Enemy Sprites (oder 3D?)
+
+
+-> "3D" Assets
+_______________________________________
+-> Items	
+	-Stock
+	-Dolch
+	-KurzSchwert
+	-Schlüssel 1
+	-Skill 1
+
+-> Räume
+	-literally alle...
+
+-Enemy Sprites (oder 2D?)
