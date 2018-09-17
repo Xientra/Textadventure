@@ -115,7 +115,7 @@ begin
 
   CreateRooms(); //Creates all the Rooms
   //SetAllNeighborRooms();
-  Player1 := TPlayer.Create(RoomArr[0, 0, 0], TWeapon.Create('Fists', 'Just your good old hands.', 10, 0, 0, 0), 100);
+  Player1 := TPlayer.Create(RoomArr[1, 0, 0], TWeapon.Create('Fists', 'Just your good old hands.', 10, 0, 0, 0), 100);
   Player1.AddItem(TItem.Create('someItem', 'it is useless'));
   Player1.AddSkill(TSkill.Create('Some Skill', 'You can KILL with it.' +sLineBreak+ 'It deals Strike Damage', 'Images/Skills/someSkill.png', 2, 1.5, 0, 0, 0));
   Player1.AddSkill(TSkill.Create('Some other Skill', 'This one is just useless...'+sLineBreak+ 'It deals Slash Damage', 'Images/Skills/someOtherSkill.png', 5, 0, 0, 1.2, 0));
@@ -129,12 +129,27 @@ end;
 procedure TForm1.CreateRooms();
 begin
 
-  CreateARoom('CathedralRoom.', 'Images/Rooms/CathedralRoom.png', 0, 0, 0);
-  CreateARoom('You are in HELL', 'Images/Rooms/Höle.png', 1, 0, 0);
-  CreateARoom('HereShould be a Enemy', 'Images/Rooms/Höle.png', 0, 1, 0);
-  RoomArr[0, 1, 0].AddEnemy(TEnemy.Create(20, 5));
-  RoomArr[0, 1, 0].EnemyArr[0].SetResistants(1.12344536, 1, 1);
-  RoomArr[0, 1, 0].EnemyArr[0].SetItemDrop(TItem.Create('Literely just Trash', 'Like acually.'));
+  CreateARoom('CathedralRoom.', 'Images/Rooms/CathedralRoom.png', 1, 0, 0);
+  CreateARoom('You are in HELL', 'Images/Rooms/Höle.png', 2, 0, 0);
+  CreateARoom('HereShould be a Enemy', 'Images/Rooms/Höle.png', 2, 1, 0);
+  CreateARoom('Hier Liegt eine Eisenstange', 'Images/Rooms/Höle.png', 3, 0, 0);
+  CreateARoom('Vier Wege von hier aus', 'Images/Rooms/Höle.png', 2, 2, 0);
+  CreateARoom('Du siehst eine Waffe im nächsten Raum', 'Images/Rooms/Höle.png', 1, 2, 0);
+  CreateARoom('WOW hier liegt tatsächlich ein Dolch', 'Images/Rooms/Höle.png', 0, 2, 0);
+  CreateARoom('F*cking Goblins', 'Images/Rooms/Höle.png', 2, 3, 0);
+  CreateARoom('I see trouble', 'Images/Rooms/Höle.png', 3, 2, 0);
+  CreateARoom('And we make it tripple', 'Images/Rooms/Höle.png', 4, 2, 0);
+  //CreateARoom('Gäb es doch nur Bonfire', 'Images/Rooms/Höle.png', 5, 2, 0);
+  //CreateARoom('Praise the Bonfire', 'Images/Rooms/Höle.png', 5, 3, 0);
+  {CreateARoom('Leerer Raum oder so', 'Images/Rooms/Höle.png', 4, 3, 0);
+  CreateARoom('Drop den Schlüssel Goblin', 'Images/Rooms/Höle.png', 4, 4, 0);
+  CreateARoom('Useless ahead', 'Images/Rooms/Höle.png', 3, 4, 0);
+  CreateARoom('Zum Glück hatte ich den schlüssel', 'Images/Rooms/Höle.png', 2, 4, 0);
+  CreateARoom('Estus vorraus', 'Images/Rooms/Höle.png', 1, 4, 0);
+  CreateARoom('Alexa, spiel Gwyns theme', 'Images/Rooms/Höle.png', 2, 5, 0);}
+  RoomArr[2, 1, 0].AddEnemy(TEnemy.Create(20, 5));
+  RoomArr[2, 1, 0].EnemyArr[0].SetResistants(1.12344536, 1, 1);
+  RoomArr[2, 1, 0].EnemyArr[0].SetItemDrop(TItem.Create('Literely just Trash', 'Like acually.'));
 end;
 
 //ist besser, damit die position an der der Raum erstellt wurde auf jeden fall dem Raum bekannt ist
@@ -187,9 +202,11 @@ begin
   case UIState of
   0:
     begin
+      if (Player1.GetCurrendRoom.GetPosX+1 <= 5) and (RoomArr[Player1.GetCurrendRoom.getPosX+1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] <> nil) then begin
       Player1.ChangeRoom('xPos');
       PrintRoomData();
       OnEnterRoom();
+      end;
     end;
   1:
     begin
@@ -223,9 +240,11 @@ begin
   case UIState of
   0:
     begin
+      if (Player1.GetCurrendRoom.GetPosX-1 >= 0) and (RoomArr[Player1.GetCurrendRoom.getPosX-1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] <> nil) then begin
       Player1.ChangeRoom('xNeg');
       PrintRoomData();
       OnEnterRoom();
+      end;
     end;
   1:
     begin
@@ -248,9 +267,11 @@ begin
   case UIState of
   0:
     begin
+      if (Player1.GetCurrendRoom.GetPosY+1 <= 5) and (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY+1,Player1.GetCurrendRoom.getPosZ] <> nil) then begin
       Player1.ChangeRoom('yPos');
       PrintRoomData();
       OnEnterRoom();
+      end;
     end;
   5:
     begin
@@ -269,9 +290,11 @@ begin
   case UIState of
   0:
     begin
+      if (Player1.GetCurrendRoom.GetPosY-1 >= 0) and (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY-1,Player1.GetCurrendRoom.getPosZ] <> nil) then begin
       Player1.ChangeRoom('yNeg');
       PrintRoomData();
       OnEnterRoom();
+      end;
     end;
   5:
     begin
