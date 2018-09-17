@@ -23,7 +23,7 @@ _______________________________________
 -> "3D" Assets
 _______________________________________
 -> Items	
-	-Stock
+	-IronBar
 	-Dolch
 	-KurzSchwert
 	-Schlüssel 1

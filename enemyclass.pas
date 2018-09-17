@@ -24,6 +24,9 @@ uses
       function GetHealth(): real;
       function GetDamage(): real;
     private
+      name: string;
+      ImagePath: string;
+
       health: real;
       damage: real;
 

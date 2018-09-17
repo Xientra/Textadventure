@@ -75,7 +75,7 @@ end;
 
 procedure TEnemy.SetWeaponDrop(_weapon: TWeapon);
 begin
-  weaponDrop := weaponDrop;
+  weaponDrop := _weapon;
   if (itemDrop <> nil) then
   begin
     itemDrop := nil;

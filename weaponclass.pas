@@ -16,6 +16,7 @@ uses
       function GetThrustDmg(): real;
       function GetSlashDmg(): real;
       function GetMagicDmg(): real;
+      function GetHighestDmg(): real;
     private
       name : string;
       description : string;
@@ -62,6 +63,13 @@ end;
 function TWeapon.GetMagicDmg(): real;
 begin
   result := MagicDamage;
+end;
+function TWeapon.GetHighestDmg(): real;
+begin
+  result := StrikeDamage;
+  if (ThrustDamage > StrikeDamage) then result := ThrustDamage;
+  if (SlashDamage > ThrustDamage) then result := SlashDamage;
+  if (MagicDamage > SlashDamage) then result := MagicDamage;
 end;
 
 end.

@@ -11,11 +11,12 @@ uses
     public
       constructor Create(_name: string; _description: String; _StrikeDmg, _ThrustDmg, _SlashDmg, _MagicDmg: real);
 
-      function TWeapon.GetName(): string;
+      function GetName(): string;
       function GetStrikeDmg(): real;
       function GetThrustDmg(): real;
       function GetSlashDmg(): real;
       function GetMagicDmg(): real;
+      function GetHighestDmg(): real;
     private
       name : string;
       description : string;
@@ -62,6 +63,13 @@ end;
 function TWeapon.GetMagicDmg(): real;
 begin
   result := MagicDamage;
+end;
+function TWeapon.GetHighestDmg(): real;
+begin
+  result := StrikeDamage;
+  if (ThrustDamage > StrikeDamage) then result := ThrustDamage;
+  if (SlashDamage > ThrustDamage) then result := SlashDamage;
+  if (MagicDamage > SlashDamage) then result := SlashDamage;
 end;
 
 end.

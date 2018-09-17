@@ -10,36 +10,44 @@ uses
 type
   TSkill = class
   public
-    constructor Create(_name, _description, _imagePath: string; _damageType: integer; _damageMultiplier: real; _cooldown: integer);
+    constructor Create(_name, _description, _imagePath: string; _cooldown: integer; _strikeMulti, _thrustMulti, _slashMulti, _magicMulti: real);
     function GetCooldown(): integer;
     procedure ReduceCooldown();
     function GetName(): string;
     function GetDescription(): string;
     function GetImagePath(): string;
+    function GetStrikeMulti(): real;
+    function GetThrustMulti(): real;
+    function GetSlashMulti(): real;
+    function GetMagicMulti(): real;
   private
     name: string;
     description: string;
     ImagePath: string;
 
-    damageType: integer; //1 = strike; 2 = thrust; 3 = slash; 4 = magic;
-    damageMultiplier: real;
+    StrikeMultiplyer,
+    ThrustMultiplyer,
+    SlashMultiplyer,
+    MagicMultiplyer
+    : real;
+
     cooldown: integer;
   end;
 
 implementation
 
-constructor TSkill.Create(_name, _description, _imagePath: string; _damageType: integer; _damageMultiplier: real; _cooldown: integer);
+constructor TSkill.Create(_name, _description, _imagePath: string; _cooldown: integer; _strikeMulti, _thrustMulti, _slashMulti, _magicMulti: real);
 begin
   inherited Create;
   name := _name;
   description := _description;
   ImagePath := _imagePath;
 
-  if (_damageType > 4) then begin
-    damageType := 4;
-    ShowMessage('1 = strike; 2 = thrust; 3 = slash; 4 = magic; damageType was set to 4.');
-  end else damageType := _damageType;
-  damageMultiplier := _damageMultiplier;
+  StrikeMultiplyer := _strikeMulti;
+  ThrustMultiplyer := _thrustMulti;
+  SlashMultiplyer := _slashMulti;
+  MagicMultiplyer := _magicMulti;
+
   cooldown := _cooldown;
 
 end;
@@ -63,6 +71,23 @@ end;
 function TSkill.GetImagePath(): string;
 begin
   result := ImagePath;
+end;
+
+function TSkill.GetStrikeMulti(): real;
+begin
+  result := StrikeMultiplyer;
+end;
+function TSkill.GetThrustMulti(): real;
+begin
+  result := ThrustMultiplyer;
+end;
+function TSkill.GetSlashMulti(): real;
+begin
+  result := SlashMultiplyer;
+end;
+function TSkill.GetMagicMulti(): real;
+begin
+  result := MagicMultiplyer;
 end;
 
 end.
