@@ -101,9 +101,9 @@ begin
 
 
   //Set RoomArray size
-  Room_x := 5-1;
-  Room_y := 5-1;
-  Room_z := 5-1;
+  Room_x := 7-1;
+  Room_y := 7-1;
+  Room_z := 7-1;
 
   //initilise RoomArray
   SetLength(RoomArr, Room_x);
@@ -131,7 +131,12 @@ begin
 
   CreateARoom('CathedralRoom.', 'Images/Rooms/CathedralRoom.png', 1, 0, 0);
   CreateARoom('You are in HELL', 'Images/Rooms/Höle.png', 2, 0, 0);
+
   CreateARoom('HereShould be a Enemy', 'Images/Rooms/Höle.png', 2, 1, 0);
+  RoomArr[2, 1, 0].AddEnemy(TEnemy.Create(20, 5));
+  RoomArr[2, 1, 0].EnemyArr[0].SetResistants(1.12344536, 1, 1);
+  RoomArr[2, 1, 0].EnemyArr[0].SetItemDrop(TItem.Create('Literely just Trash', 'Like acually.'));
+
   CreateARoom('Hier Liegt eine Eisenstange', 'Images/Rooms/Höle.png', 3, 0, 0);
   CreateARoom('Vier Wege von hier aus', 'Images/Rooms/Höle.png', 2, 2, 0);
   CreateARoom('Du siehst eine Waffe im nächsten Raum', 'Images/Rooms/Höle.png', 1, 2, 0);
@@ -139,17 +144,14 @@ begin
   CreateARoom('F*cking Goblins', 'Images/Rooms/Höle.png', 2, 3, 0);
   CreateARoom('I see trouble', 'Images/Rooms/Höle.png', 3, 2, 0);
   CreateARoom('And we make it tripple', 'Images/Rooms/Höle.png', 4, 2, 0);
-  //CreateARoom('Gäb es doch nur Bonfire', 'Images/Rooms/Höle.png', 5, 2, 0);
-  //CreateARoom('Praise the Bonfire', 'Images/Rooms/Höle.png', 5, 3, 0);
-  {CreateARoom('Leerer Raum oder so', 'Images/Rooms/Höle.png', 4, 3, 0);
+  CreateARoom('Gäb es doch nur Bonfire', 'Images/Rooms/Höle.png', 5, 2, 0);
+  CreateARoom('Praise the Bonfire', 'Images/Rooms/Höle.png', 5, 3, 0);
+  CreateARoom('Leerer Raum oder so', 'Images/Rooms/Höle.png', 4, 3, 0);
   CreateARoom('Drop den Schlüssel Goblin', 'Images/Rooms/Höle.png', 4, 4, 0);
   CreateARoom('Useless ahead', 'Images/Rooms/Höle.png', 3, 4, 0);
   CreateARoom('Zum Glück hatte ich den schlüssel', 'Images/Rooms/Höle.png', 2, 4, 0);
   CreateARoom('Estus vorraus', 'Images/Rooms/Höle.png', 1, 4, 0);
-  CreateARoom('Alexa, spiel Gwyns theme', 'Images/Rooms/Höle.png', 2, 5, 0);}
-  RoomArr[2, 1, 0].AddEnemy(TEnemy.Create(20, 5));
-  RoomArr[2, 1, 0].EnemyArr[0].SetResistants(1.12344536, 1, 1);
-  RoomArr[2, 1, 0].EnemyArr[0].SetItemDrop(TItem.Create('Literely just Trash', 'Like acually.'));
+  CreateARoom('Alexa, spiel Gwyns theme', 'Images/Rooms/Höle.png', 2, 5, 0);
 end;
 
 //ist besser, damit die position an der der Raum erstellt wurde auf jeden fall dem Raum bekannt ist

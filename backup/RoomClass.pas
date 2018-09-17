@@ -161,7 +161,7 @@ end;
 
 procedure TRoom.AddItem(_item: TItem);
 begin
-
+  ShowMessage('AddItem has no effect yet');
 end;
 
 procedure TRoom.AddEnemy(_enemy: TEnemy);

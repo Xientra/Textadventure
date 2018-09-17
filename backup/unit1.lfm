@@ -349,7 +349,9 @@ object Form1: TForm1
     Lines.Strings = (
       'Item Name'
       ''
-      'Item Description which is a little bit longer'
+      'Item Description '
+      'which is a little '
+      'bit longer'
     )
     ParentFont = False
     ReadOnly = True

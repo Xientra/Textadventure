@@ -53,6 +53,7 @@ uses Unit1; //entweder machen wir das damit oder wir übergeben das RoomArray ü
 
 constructor TRoom.Create(_description: string; _imagePath: string; _pos_x, _pos_y, _pos_z: integer);
 begin
+  inherited Create;
   description := _description;
   ImagePath := _imagePath;
   visited := false;
