@@ -12,7 +12,8 @@ _______________________________________
 einsätzen ändern/einsätzen 
 
 -Es gibt ein Error wenn TPlayer kein skill hat aber auf Skills geklickt wird, da trozdem versucht wird die item description zu schreiben
--Es gibt auch einen Error wenn der Spieler inerhalb des skills array auf ein nil stößt
+-Im Skills Menu fängt man unten an (just saying)
+-Das Skill menu kann keine Sprünge im array machen, heißt es hält bei einem nil an, auch wenn danach noch ein Skill kommen würde
 
 -> 2D Assets
 _______________________________________

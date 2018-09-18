@@ -224,14 +224,16 @@ begin
         Player1.GetCurrendWeapon().GetHighestDmg() * Player1.Skills[inventoryIndex].GetThrustMulti(),
         Player1.GetCurrendWeapon().GetHighestDmg() * Player1.Skills[inventoryIndex].GetSlashMulti(),
         Player1.GetCurrendWeapon().GetHighestDmg() * Player1.Skills[inventoryIndex].GetMagicMulti());
+
       Memo1.Clear();
       Memo1.Lines.Add('You delt ' + FloatToStr(Round(_dmg)) + ' The Enemy now has ' + FloatToStr(Round(FightingEnemy.GetHealth())) + ' health left');
 
       ChangeUIState(1);
       PlayerEndTurn();
+
     end
-  else
-    Memo1.Lines.Add('lol no');
+
+    else Memo1.Lines.Add('lol no');
   end;
 end;
 procedure TForm1.Button_2_Action();
@@ -249,11 +251,17 @@ begin
     end;
   1:
     begin
-      ChangeUIState(5);
+      if (Player1.HasSkills() = true) then ChangeUIState(5)
+      else
+        begin
+          ShowMessage('The Player has no Skills.');
+        end;
     end;
   5:
     begin
-      if (inventoryIndex - 1 >= 0) then inventoryIndex := inventoryIndex - 1
+      if (inventoryIndex - 1 >= 0) then
+        if (Player1.Skills[inventoryIndex - 1] <> nil) then inventoryIndex := inventoryIndex - 1
+        else ShowMessage('There is no skill down there')
       else ShowMessage('can now go futher down');
       PrintSkillData();
     end
@@ -276,7 +284,9 @@ begin
     end;
   5:
     begin
-      if (inventoryIndex + 1 <= length(Player1.Skills) - 1) then inventoryIndex := inventoryIndex + 1
+      if (inventoryIndex + 1 <= length(Player1.Skills) - 1) then
+        if (Player1.Skills[inventoryIndex + 1] <> nil) then inventoryIndex := inventoryIndex + 1
+        else ShowMessage('There is no skill up there')
       else ShowMessage('can now go futher up');
       PrintSkillData();
     end
@@ -419,13 +429,18 @@ begin
   5: //skills Menu
     begin
       Btn1_Label.caption := 'Use';
-      Btn2_Label.caption := 'index Down';
-      Btn3_Label.caption := 'index Up';
+      Btn2_Label.caption := 'Up (index Down)';
+      Btn3_Label.caption := 'Down (index Up)';
       Btn4_Label.caption := 'Back';
 
+      Memo1.Clear();
       inventoryIndex := 0;
       for i := 0 to length(Player1.Skills) - 1 do
-        if (Player1.Skills[i] <> nil) then inventoryIndex := i;
+        if (Player1.Skills[i] <> nil) then
+        begin
+          Memo1.Lines.Add(Player1.Skills[i].GetName());
+          inventoryIndex := i;
+        end;
       PrintSkillData();
     end;
   end;

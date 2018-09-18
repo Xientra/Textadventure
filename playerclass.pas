@@ -26,6 +26,7 @@ type
     procedure AddItem(_item: TItem);
     procedure AddWeapon(_weapon: TWeapon);
     procedure AddSkill(_skill: TSkill);
+    function HasSkills(): boolean;
     function GetAmountOfSkills(): integer;
   private
     health: real;
@@ -100,6 +101,14 @@ begin
     Skills[AmountOfSkills - 1] := _skill;
     AmountOfSkills := AmountOfSkills - 1;
   end;
+end;
+function TPlayer.HasSkills(): boolean;
+var i: integer;
+begin
+  if (length(Skills) = 0) then result := false
+  else
+    for i := 0 to length(Player1.Skills) - 1 do
+      if (Player1.Skills[i] <> nil) then result := true;
 end;
 
 function TPlayer.GetAmountOfSkills(): integer;

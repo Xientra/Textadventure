@@ -118,8 +118,9 @@ end;
 destructor TEnemy.Destroy();
 begin
   FreeAndNil(self);
-  inherited Destroy;
   ShowMessage('I ll be back!');
+  inherited Destroy;
+
 
 end;
 
