@@ -23,7 +23,11 @@ uses
 
       function GetHealth(): real;
       function GetDamage(): real;
+      destructor Destroy();
     private
+      name: string;
+      ImagePath: string;
+
       health: real;
       damage: real;
 
@@ -32,7 +36,7 @@ uses
       slashResist
       : real;
 
-      weaponDrop: TWeapon; //momentan kpnnen Enemies eine Waffe UND ein Item droppen
+      weaponDrop: TWeapon;
       itemDrop: TItem;
 
     end;
@@ -109,6 +113,14 @@ end;
 function TEnemy.GetDamage(): real;
 begin
   result := damage;
+end;
+
+destructor TEnemy.Destroy();
+begin
+  FreeAndNil(self);
+  inherited Destroy;
+  ShowMessage('I ll be back!');
+
 end;
 
 end.

@@ -130,12 +130,11 @@ procedure TForm1.CreateRooms();
 begin
 
   CreateARoom('CathedralRoom.', 'Images/Rooms/CathedralRoom.png', 1, 0, 0);
-  CreateARoom('You are in HELL', 'Images/Rooms/Höle.png', 2, 0, 0);
 
-  CreateARoom('HereShould be a Enemy', 'Images/Rooms/Höle.png', 2, 1, 0);
-  RoomArr[2, 1, 0].AddEnemy(TEnemy.Create(20, 5));
-  RoomArr[2, 1, 0].EnemyArr[0].SetResistants(1.12344536, 1, 1);
-  RoomArr[2, 1, 0].EnemyArr[0].SetItemDrop(TItem.Create('Literely just Trash', 'Like acually.'));
+  CreateARoom('HereShould be a Enemy', 'Images/Rooms/Höle.png', 2, 0, 0);
+  RoomArr[2, 0, 0].AddEnemy(TEnemy.Create(20, 5));
+  RoomArr[2, 0, 0].EnemyArr[0].SetResistants(1, 1, 1);
+  RoomArr[2, 0, 0].EnemyArr[0].SetItemDrop(TItem.Create('Literely just Trash', 'Like acually.'));
 
   CreateARoom('Hier Liegt eine Eisenstange', 'Images/Rooms/Höle.png', 3, 0, 0);
   CreateARoom('Vier Wege von hier aus', 'Images/Rooms/Höle.png', 2, 2, 0);
@@ -336,9 +335,11 @@ begin
       Memo1.Lines.Add('He dropt ' + FightingEnemy.GetItemDrop().GetName() + '. It was added to your Inventory.');
     end;
 
-    FightingEnemy.Destroy();
+    //Destroy the Enemy
+    FreeAndNil(Player1.GetCurrendRoom().EnemyArr[0]); //FreeAndNil Destroyd ein Object und setz die (pointer var) auf nil
+    FightingEnemy := nil;  //da der gegner zerstört wurde sollte auch FightingEnemy wieder auf nil
 
-    ChangeSituation(0);
+    ChangeSituation(0);  //End fight
   end
   else //Enemy deals damage
   begin
@@ -369,9 +370,11 @@ begin
   if (length(Player1.GetCurrendRoom().EnemyArr) - 1 >= 0) then
     for i := 0 to length(Player1.GetCurrendRoom().EnemyArr) - 1 do
     begin
-      //start Fight
-      FightingEnemy := Player1.GetCurrendRoom().EnemyArr[i];
-      ChangeSituation(1);
+      if (Player1.GetCurrendRoom().EnemyArr[i] <> nil) then
+      begin  //start Fight
+        FightingEnemy := Player1.GetCurrendRoom().EnemyArr[i];
+        ChangeSituation(1);
+      end;
     end;
 
   //2. check nach items
