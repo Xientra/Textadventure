@@ -1,10 +1,10 @@
 object Form1: TForm1
   Left = 1072
-  Height = 600
+  Height = 606
   Top = 146
   Width = 800
   Caption = 'Adventure'
-  ClientHeight = 600
+  ClientHeight = 606
   ClientWidth = 800
   Color = clWhite
   Font.CharSet = ANSI_CHARSET
@@ -60,7 +60,7 @@ object Form1: TForm1
     Cursor = crHandPoint
     Left = 432
     Height = 64
-    Top = 504
+    Top = 510
     Width = 128
     OnClick = Btn1Click
     Picture.Data = {
@@ -96,7 +96,7 @@ object Form1: TForm1
   end
   object Memo1: TMemo
     Left = 0
-    Height = 168
+    Height = 176
     Top = 304
     Width = 800
     BorderStyle = bsNone
@@ -120,7 +120,7 @@ object Form1: TForm1
     Cursor = crHandPoint
     Left = 176
     Height = 64
-    Top = 504
+    Top = 510
     Width = 128
     OnClick = Btn2Click
     Picture.Data = {
@@ -147,7 +147,7 @@ object Form1: TForm1
     Cursor = crHandPoint
     Left = 304
     Height = 64
-    Top = 472
+    Top = 478
     Width = 128
     OnClick = Btn3Click
     Picture.Data = {
@@ -174,7 +174,7 @@ object Form1: TForm1
     Cursor = crHandPoint
     Left = 304
     Height = 64
-    Top = 536
+    Top = 542
     Width = 128
     OnClick = Btn4Click
     Picture.Data = {
@@ -201,7 +201,7 @@ object Form1: TForm1
     Cursor = crHandPoint
     Left = 448
     Height = 18
-    Top = 528
+    Top = 534
     Width = 43
     Caption = 'x Plus'
     Font.CharSet = ANSI_CHARSET
@@ -218,7 +218,7 @@ object Form1: TForm1
     Cursor = crHandPoint
     Left = 192
     Height = 18
-    Top = 528
+    Top = 534
     Width = 57
     Caption = 'x Minus'
     Font.CharSet = ANSI_CHARSET
@@ -235,7 +235,7 @@ object Form1: TForm1
     Cursor = crHandPoint
     Left = 320
     Height = 18
-    Top = 496
+    Top = 502
     Width = 43
     Caption = 'y Plus'
     Font.CharSet = ANSI_CHARSET
@@ -252,7 +252,7 @@ object Form1: TForm1
     Cursor = crHandPoint
     Left = 320
     Height = 18
-    Top = 560
+    Top = 566
     Width = 57
     Caption = 'y Minus'
     Font.CharSet = ANSI_CHARSET
@@ -338,7 +338,6 @@ object Form1: TForm1
     Height = 256
     Top = 32
     Width = 146
-    BorderStyle = bsNone
     Color = clWhite
     Font.CharSet = ANSI_CHARSET
     Font.Color = clBlack

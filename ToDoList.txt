@@ -5,8 +5,9 @@ _______________________________________
 -das geghen in andere Räume muss auf "out of array" und "nil" geprüft werden
 -wenn du herrausfindest wie man etwas in das Nachrichten Fenster unten schreibt sag es mir bitte...
 -es sollte vieleicht ein Knopf für das bestätigen von text gemacht werden oder diese funktion sollte in den ersten Btn eingefügt werden
--man kann noch keine 
-	Skills
+-die start Waffe des Players ist nicht teil seines Waffen Inventares
+-Items und Enemies haben noch keine Bilder/werden nicht beschrieben wenn sie auftauchen
+-man kann noch keine 	
 	Items
 	Waffen
 einsätzen ändern/einsätzen 

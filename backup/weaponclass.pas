@@ -9,9 +9,11 @@ uses
   type
     TWeapon = class
     public
-      constructor Create(_name: string; _description: String; _StrikeDmg, _ThrustDmg, _SlashDmg, _MagicDmg: real);
+      constructor Create(_name, _description, _imagePath: string; _StrikeDmg, _ThrustDmg, _SlashDmg, _MagicDmg: real);
 
       function GetName(): string;
+      function GetDescription(): string;
+      function GetImagePath(): string;
       function GetStrikeDmg(): real;
       function GetThrustDmg(): real;
       function GetSlashDmg(): real;
@@ -20,6 +22,7 @@ uses
     private
       name : string;
       description : string;
+      ImagePath: string;
 
       StrikeDamage,
       ThrustDamage,
@@ -31,19 +34,28 @@ uses
 
 implementation
 
-constructor TWeapon.Create (_name: string; _description: String; _StrikeDmg, _ThrustDmg, _SlashDmg, _MagicDmg: real);
+constructor TWeapon.Create (_name, _description, _imagePath: string; _StrikeDmg, _ThrustDmg, _SlashDmg, _MagicDmg: real);
 begin
-     inherited Create;
-     name := _name;
-     description := _description;
+  inherited Create;
+  name := _name;
+  description := _description;
+  ImagePath := _imagePath;
 
-     StrikeDamage := _StrikeDmg;
-     ThrustDamage := _ThrustDmg;
-     SlashDamage := _SlashDmg;
-     MagicDamage := _MagicDmg;
+  StrikeDamage := _StrikeDmg;
+  ThrustDamage := _ThrustDmg;
+  SlashDamage := _SlashDmg;
+  MagicDamage := _MagicDmg;
 end;
 
 function TWeapon.GetName(): string;
+begin
+  result := name;
+end;
+function TWeapon.GetDescription(): string;
+begin
+  result := description;
+end;
+function TWeapon.GetImagePath(): string;
 begin
   result := name;
 end;
@@ -69,7 +81,7 @@ begin
   result := StrikeDamage;
   if (ThrustDamage > StrikeDamage) then result := ThrustDamage;
   if (SlashDamage > ThrustDamage) then result := SlashDamage;
-  if (MagicDamage > SlashDamage) then result := SlashDamage;
+  if (MagicDamage > SlashDamage) then result := MagicDamage;
 end;
 
 end.

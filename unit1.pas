@@ -58,9 +58,10 @@ type
     procedure Button_3_Action();
     procedure Button_4_Action();
 
-    procedure PrintRoomData();
-    procedure PlayerEndTurn();
-    procedure PrintSkillData();
+    procedure PrintRoomData(); //situation = 0
+    procedure PlayerEndTurn(); //situation = 1
+    procedure PrintWeaponData(); //situation = 2
+    procedure PrintSkillData(); //situation = 5
 
     procedure ChangeSituation(_situation: integer); //damit man die Button label änder kann wenn sie geändert wird
     procedure ChangeUIState(_state: integer);
@@ -117,8 +118,10 @@ begin
 
   CreateRooms(); //Creates all the Rooms
   //SetAllNeighborRooms();
-  Player1 := TPlayer.Create(RoomArr[1, 0, 0], TWeapon.Create('Fists', 'Just your good old hands.', 10, 0, 0, 0), 100);
+  Player1 := TPlayer.Create(RoomArr[1, 0, 0], TWeapon.Create('Fists', 'Just your good old hands.', 'Images/Items/ShortSword.png', 10, 0, 0, 0), 100);
   Player1.AddItem(TItem.Create('someItem', 'it is useless'));
+  Player1.AddWeapon(TWeapon.Create('Some Sword', 'It is acually sharp even thought it looks a bit blocky.', 'Images/Items/ShortSword.png', 0, 0, 15, 0));
+  Player1.AddWeapon(TWeapon.Create('Iron Bar', 'A brocken off piece of a former cell.'+sLineBreak+'It is a bit rosty already...', 'Images/Items/IronBar.png', 0, 0, 15, 0));
   Player1.AddSkill(TSkill.Create('Some Skill', 'You can KILL with it.' +sLineBreak+ 'It deals Strike Damage', 'Images/Skills/someSkill.png', 2, 1.5, 0, 0, 0));
   Player1.AddSkill(TSkill.Create('Some other Skill', 'This one is just useless...'+sLineBreak+ 'It deals Slash Damage', 'Images/Skills/someOtherSkill.png', 5, 0, 0, 1.2, 0));
 
@@ -203,15 +206,29 @@ begin
   case UIState of
   0:
     begin
-      if (Player1.GetCurrendRoom.GetPosX+1 <= 5) and (RoomArr[Player1.GetCurrendRoom.getPosX+1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] <> nil) then begin
-      Player1.ChangeRoom('xPos');
-      PrintRoomData();
-      OnEnterRoom();
+      if (Player1.GetCurrendRoom.GetPosX+1 <= 5) and (RoomArr[Player1.GetCurrendRoom.getPosX+1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] <> nil) then
+      begin
+        Player1.ChangeRoom('xPos');
+        PrintRoomData();
+        OnEnterRoom();
       end;
     end;
   1:
     begin
-
+      if (Player1.HasSkills() = true) then ChangeUIState(5)
+      else begin
+        ShowMessage('The Player has no Skills.');
+      end;
+    end;
+  2:
+    begin
+      ChangeUIState(currendSituation);
+      Memo_Description.Clear();
+    end;
+  3:
+    begin
+      ChangeUIState(currendSituation);
+      Memo_Description.Clear();
     end;
   5:
     begin
@@ -290,17 +307,23 @@ begin
     end;
   1:
     begin
-      if (Player1.HasSkills() = true) then ChangeUIState(5)
-      else
-        begin
-          ShowMessage('The Player has no Skills.');
-        end;
+      ChangeUIState(2); //Weapon Menu
+    end;
+  2:
+    begin
+      if (inventoryIndex - 1 >= 0) then
+        if (Player1.weaponInventory[inventoryIndex - 1] <> nil) then
+          inventoryIndex := inventoryIndex - 1
+        else ShowMessage('There is no weapon down there')
+      else ShowMessage('can now go futher down (index of Weapons)');
+      PrintWeaponData();
     end;
   5:
     begin
       if (inventoryIndex - 1 >= 0) then
-        if (Player1.Skills[inventoryIndex - 1] <> nil) then inventoryIndex := inventoryIndex - 1
-        else ShowMessage('There is no skill down there')
+        if (Player1.Skills[inventoryIndex - 1] <> nil) then
+          inventoryIndex := inventoryIndex - 1
+        else ShowMessage('There is no weapon down there')
       else ShowMessage('can now go futher down');
       PrintSkillData();
     end
@@ -321,10 +344,24 @@ begin
       OnEnterRoom();
       end;
     end;
+  1:
+    begin
+      ChangeUIState(3); //Item Menu
+    end;
+  2:
+    begin
+      if (inventoryIndex + 1 <= length(Player1.weaponInventory) - 1) then
+        if (Player1.weaponInventory[inventoryIndex + 1] <> nil) then
+          inventoryIndex := inventoryIndex + 1
+        else ShowMessage('There is no weapon up there')
+      else ShowMessage('can now go futher up (index of Weapons)');
+      PrintWeaponData();
+    end;
   5:
     begin
       if (inventoryIndex + 1 <= length(Player1.Skills) - 1) then
-        if (Player1.Skills[inventoryIndex + 1] <> nil) then inventoryIndex := inventoryIndex + 1
+        if (Player1.Skills[inventoryIndex + 1] <> nil) then
+          inventoryIndex := inventoryIndex + 1
         else ShowMessage('There is no skill up there')
       else ShowMessage('can now go futher up');
       PrintSkillData();
@@ -379,6 +416,15 @@ begin
       if (Player1.Skills[i] <> nil) then Player1.Skills[i].ReduceCooldown();
 
   end;
+end;
+
+procedure TForm1.PrintWeaponData(); //situation = 2
+begin
+  Memo_Description.Clear();
+  Memo_Description.Lines.AddText(Player1.weaponInventory[inventoryIndex].GetName());
+  Memo_Description.Lines.Add('');
+  Memo_Description.Lines.AddText(Player1.weaponInventory[inventoryIndex].GetDescription());
+  Image1.Picture.LoadFromFile(Player1.weaponInventory[inventoryIndex].GetImagePath());
 end;
 
 procedure TForm1.PrintSkillData(); //situation = 5
@@ -465,18 +511,41 @@ begin
     end;
   1: //fighting UI
     begin
-      Btn1_Label.caption := 'Flee';
+      Btn1_Label.caption := 'Skills';
       Btn2_Label.caption := 'Attack';
-      Btn3_Label.caption := 'Skills';
+      Btn3_Label.caption := 'Weapons';
       Btn4_Label.caption := 'Items';
 
       Memo1.Clear();
       Memo1.Lines.Add('The Enemy stands in front of you.'+sLineBreak+'What will you do?');
       Image1.Picture.LoadFromFile(Player1.GetCurrendRoom().GetImagePath());
     end;
-  2: ; //weapon or item inventory Menu
-  3: ; //weapon inv Menu
-  4: ; //item inv Menu
+  2: //Weapon Menu
+    begin
+      Btn1_Label.caption := 'Back';
+      Btn2_Label.caption := 'Equip';
+      Btn3_Label.caption := 'Up';
+      Btn4_Label.caption := 'Down';
+
+      inventoryIndex := 0;
+      Memo1.Clear();
+      for i := 0 to length(Player1.weaponInventory) - 1 do
+        if (Player1.weaponInventory[i] <> nil) then
+          Memo1.Lines.Add('-'+Player1.weaponInventory[i].GetName());
+      PrintWeaponData();
+    end;
+  3: //Item Menu
+    begin
+      Btn1_Label.caption := 'Back';
+      Btn2_Label.caption := 'Use';
+      Btn3_Label.caption := 'Up';
+      Btn4_Label.caption := 'Down';
+
+      inventoryIndex := 0;
+      Memo1.Clear();
+      Memo1.Lines.Add('there is no mean to show you what is in your Inventory... D:');
+    end;
+  4: ;
   5: //skills Menu
     begin
       Btn1_Label.caption := 'Back';
@@ -489,7 +558,7 @@ begin
       for i := 0 to length(Player1.Skills) - 1 do
         if (Player1.Skills[i] <> nil) then
         begin
-          Memo1.Lines.Add(Player1.Skills[i].GetName());
+          Memo1.Lines.Add('-'+Player1.Skills[i].GetName());
           inventoryIndex := i;
         end;
       PrintSkillData();
