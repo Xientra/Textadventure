@@ -132,6 +132,7 @@ begin
   CreateARoom('CathedralRoom.', 'Images/Rooms/CathedralRoom.png', 1, 0, 0);
 
   CreateARoom('HereShould be a Enemy', 'Images/Rooms/Höle.png', 2, 0, 0);
+  CreateARoom('Irgendein Raum', 'Images/Rooms/Höle.png', 2, 1, 0);
   RoomArr[2, 0, 0].AddEnemy(TEnemy.Create(20, 5));
   RoomArr[2, 0, 0].EnemyArr[0].SetResistants(1, 1, 1);
   RoomArr[2, 0, 0].EnemyArr[0].SetItemDrop(TItem.Create('Literely just Trash', 'Like acually.'));
@@ -386,7 +387,16 @@ begin
         ChangeSituation(1);
       end;
     end;
-
+  if UIState = 0 then begin
+  if (Player1.GetCurrendRoom.GetPosX+1 > 5) or (RoomArr[Player1.GetCurrendRoom.getPosX+1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] = nil) then
+  begin Btn1_Image.Picture.LoadFromFile('Images/ButtonBgPlayeholderDisabled.png');  else Btn1_Image.Picture.LoadFromFile('Images/ButtonBgPlayeholder.png');
+  if (Player1.GetCurrendRoom.GetPosX-1 < 0) or (RoomArr[Player1.GetCurrendRoom.getPosX-1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] = nil) then
+  Btn2_Image.Picture.LoadFromFile('Images/ButtonBgPlayeholderDisabled.png') else Btn2_Image.Picture.LoadFromFile('Images/ButtonBgPlayeholder.png');
+  if (Player1.GetCurrendRoom.GetPosY+1 > 5) or (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY+1,Player1.GetCurrendRoom.getPosZ] = nil) then
+  Btn3_Image.Picture.LoadFromFile('Images/ButtonBgPlayeholderDisabled.png') else Btn3_Image.Picture.LoadFromFile('Images/ButtonBgPlayeholder.png');
+  if (Player1.GetCurrendRoom.GetPosY-1 < 0) or (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY-1,Player1.GetCurrendRoom.getPosZ] = nil) then
+  Btn4_Image.Picture.LoadFromFile('Images/ButtonBgPlayeholderDisabled.png') else Btn4_Image.Picture.LoadFromFile('Images/ButtonBgPlayeholder.png');
+  end;
   //2. check nach items
   //3. check nach RoomObjects
 

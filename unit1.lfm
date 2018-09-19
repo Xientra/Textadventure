@@ -58,7 +58,7 @@ object Form1: TForm1
   LCLVersion = '1.8.4.0'
   object Btn1_Image: TImage
     Cursor = crHandPoint
-    Left = 72
+    Left = 352
     Height = 64
     Top = 504
     Width = 128
@@ -118,7 +118,7 @@ object Form1: TForm1
   end
   object Btn2_Image: TImage
     Cursor = crHandPoint
-    Left = 216
+    Left = 96
     Height = 64
     Top = 504
     Width = 128
@@ -145,9 +145,9 @@ object Form1: TForm1
   end
   object Btn3_Image: TImage
     Cursor = crHandPoint
-    Left = 360
+    Left = 224
     Height = 64
-    Top = 504
+    Top = 472
     Width = 128
     OnClick = Btn3Click
     Picture.Data = {
@@ -172,9 +172,9 @@ object Form1: TForm1
   end
   object Btn4_Image: TImage
     Cursor = crHandPoint
-    Left = 504
+    Left = 224
     Height = 64
-    Top = 504
+    Top = 536
     Width = 128
     OnClick = Btn4Click
     Picture.Data = {
@@ -199,7 +199,7 @@ object Form1: TForm1
   end
   object Btn1_Label: TLabel
     Cursor = crHandPoint
-    Left = 88
+    Left = 368
     Height = 18
     Top = 528
     Width = 43
@@ -216,7 +216,7 @@ object Form1: TForm1
   end
   object Btn2_Label: TLabel
     Cursor = crHandPoint
-    Left = 232
+    Left = 112
     Height = 18
     Top = 528
     Width = 57
@@ -233,9 +233,9 @@ object Form1: TForm1
   end
   object Btn3_Label: TLabel
     Cursor = crHandPoint
-    Left = 376
+    Left = 240
     Height = 18
-    Top = 528
+    Top = 496
     Width = 43
     Caption = 'y Plus'
     Font.CharSet = ANSI_CHARSET
@@ -250,9 +250,9 @@ object Form1: TForm1
   end
   object Btn4_Label: TLabel
     Cursor = crHandPoint
-    Left = 520
+    Left = 240
     Height = 18
-    Top = 528
+    Top = 560
     Width = 57
     Caption = 'y Minus'
     Font.CharSet = ANSI_CHARSET
