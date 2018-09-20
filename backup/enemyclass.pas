@@ -115,12 +115,11 @@ begin
   result := damage;
 end;
 
-destructor TEnemy.Destroy();
+destructor TEnemy.Destroy();  //this is never acually called
 begin
   FreeAndNil(self);
   ShowMessage('I ll be back!');
   inherited Destroy;
-
 
 end;
 

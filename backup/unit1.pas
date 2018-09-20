@@ -57,6 +57,7 @@ type
     procedure Button_2_Action();
     procedure Button_3_Action();
     procedure Button_4_Action();
+    procedure SetButton(_background: TImage; _text: TLabel; toSetTo: boolean);
 
     procedure PrintRoomData(); //situation = 0
     procedure PlayerEndTurn(); //situation = 1
@@ -217,10 +218,8 @@ begin
     end;
   1:
     begin
-      if (Player1.HasSkills() = true) then ChangeUIState(5)
-      else begin
-        ShowMessage('The Player has no Skills.');
-      end;
+      if (Player1.HasSkills() = true) then ChangeUIState(5) //Skill Menu
+      else Memo1.Lines.Add('You have no skills yet.')
     end;
   2:
     begin
@@ -309,7 +308,8 @@ begin
     end;
   1:
     begin
-      ChangeUIState(2); //Weapon Menu
+      if (Player1.HasWeaponsInInventory() = true) then  ChangeUIState(2) //Weapon Menu
+      else Memo1.Lines.Add('You have no weapons in your inventory.')
     end;
   2:
     begin
@@ -357,7 +357,8 @@ begin
     end;
   1:
     begin
-      ChangeUIState(3); //Item Menu
+      if (Player1.HasItemsInInventory() = true) then ChangeUIState(3) //Item Menu
+      else Memo1.Lines.Add('You have no items in your inventory.')
     end;
   2:
     begin
@@ -368,7 +369,7 @@ begin
       else ShowMessage('can now go futher up (index of Weapons)');
       PrintWeaponData();
     end;
-  2:
+  3:
     begin
       if (inventoryIndex + 1 <= length(Player1.itemInventory) - 1) then
         if (Player1.itemInventory[inventoryIndex + 1] <> nil) then
@@ -388,6 +389,20 @@ begin
     end
   else
     Memo1.Lines.Add('lol no');
+  end;
+end;
+procedure TForm1.SetButton(_background: TImage; _text: TLabel; toSetTo: boolean);
+begin
+  if (toSetTo = true) then
+  begin
+    _text.Cursor := crHandPoint;
+    _background.Cursor := crHandPoint;
+    _background.Picture.LoadFromFile('Images/ButtonBgPlayeholder.png');
+  end
+  else begin
+    _text.Cursor := crDefault;
+    _background.Cursor := crDefault;
+    _background.Picture.LoadFromFile('Images/ButtonBgPlayeholderDisabled.png');
   end;
 end;
 
@@ -465,8 +480,6 @@ begin
   Image1.Picture.LoadFromFile(Player1.Skills[inventoryIndex].GetImagePath());
 end;
 
-
-
 procedure TForm1.OnEnterRoom();
 var
   i: integer;
@@ -484,8 +497,8 @@ begin
     end;
 
 
-  //2. check nach items
-  //3. check nach waffen
+  //3. check nach items
+  //2. check nach waffen
   //4. check nach RoomObjects
 
 
@@ -493,28 +506,20 @@ begin
   if (UIState = 0) then
   begin
     if (Player1.GetCurrendRoom.GetPosX+1 > 5) or (RoomArr[Player1.GetCurrendRoom.getPosX+1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] = nil) then
-    begin
-      Btn1_Image.Picture.LoadFromFile('Images/ButtonBgPlayeholderDisabled.png');
-    end
-    else Btn1_Image.Picture.LoadFromFile('Images/ButtonBgPlayeholder.png');
+      SetButton(Btn1_Image, Btn1_Label, false)
+    else SetButton(Btn1_Image, Btn1_Label, true);
+
     if (Player1.GetCurrendRoom.GetPosX-1 < 0) or (RoomArr[Player1.GetCurrendRoom.getPosX-1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] = nil) then
-    begin
-      Btn2_Image.Picture.LoadFromFile('Images/ButtonBgPlayeholderDisabled.png');
-    end else Btn2_Image.Picture.LoadFromFile('Images/ButtonBgPlayeholder.png');
+      SetButton(Btn2_Image, Btn2_Label, false)
+    else SetButton(Btn2_Image, Btn2_Label, true);
+
     if (Player1.GetCurrendRoom.GetPosY+1 > 5) or (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY+1,Player1.GetCurrendRoom.getPosZ] = nil) then
-    begin
-      Btn3_Image.Picture.LoadFromFile('Images/ButtonBgPlayeholderDisabled.png');
-    end  else Btn3_Image.Picture.LoadFromFile('Images/ButtonBgPlayeholder.png');
+      SetButton(Btn3_Image, Btn3_Label, false)
+    else SetButton(Btn3_Image, Btn3_Label, true);
+
     if (Player1.GetCurrendRoom.GetPosY-1 < 0) or (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY-1,Player1.GetCurrendRoom.getPosZ] = nil) then
-    begin
-      Btn4_Image.Picture.LoadFromFile('Images/ButtonBgPlayeholderDisabled.png');
-    end else Btn4_Image.Picture.LoadFromFile('Images/ButtonBgPlayeholder.png');
-  end
-  else begin
-    Btn1_Image.Picture.LoadFromFile('Images/ButtonBgPlayeholder.png');
-    Btn2_Image.Picture.LoadFromFile('Images/ButtonBgPlayeholder.png');
-    Btn3_Image.Picture.LoadFromFile('Images/ButtonBgPlayeholder.png');
-    Btn4_Image.Picture.LoadFromFile('Images/ButtonBgPlayeholder.png');
+      SetButton(Btn4_Image, Btn4_Label, false)
+    else SetButton(Btn4_Image, Btn4_Label, true);
   end;
 
   if (currendSituation = 0) then PrintRoomData();
@@ -530,6 +535,12 @@ procedure TForm1.ChangeUIState(_state: integer);
 var i: integer;
 begin
   UIState := _state;
+  //Activate all Buttons at first
+  Btn1_Image.Picture.LoadFromFile('Images/ButtonBgPlayeholder.png');
+  Btn2_Image.Picture.LoadFromFile('Images/ButtonBgPlayeholder.png');
+  Btn3_Image.Picture.LoadFromFile('Images/ButtonBgPlayeholder.png');
+  Btn4_Image.Picture.LoadFromFile('Images/ButtonBgPlayeholder.png');
+
   case UIState of
     0: //walking UI
     begin
@@ -602,9 +613,14 @@ begin
   99: //Single Message
     begin
       Btn1_Label.caption := '';
+      SetButton(Btn1_Image, Btn1_Label, false);
       Btn2_Label.caption := 'Ok';
+      SetButton(Btn2_Image, Btn2_Label, true);
       Btn3_Label.caption := '';
+      SetButton(Btn3_Image, Btn3_Label, false);
       Btn4_Label.caption := '';
+      SetButton(Btn4_Image, Btn4_Label, false);
+
     end;
   end;
 end;

@@ -11,7 +11,7 @@ uses
 type
   TPlayer = class
   public
-    //public da man Array of nicht returnen kann...
+    //public da man Array of X nicht returnen kann...
     itemInventory: Array of TItem;
     weaponInventory: Array of TWeapon;
     Skills: Array of TSkill;
@@ -27,6 +27,8 @@ type
     procedure AddWeapon(_weapon: TWeapon);
     procedure AddSkill(_skill: TSkill);
     function HasSkills(): boolean;
+    function HasWeaponsInInventory(): boolean;
+    function HasItemsInInventory(): boolean;
     function GetAmountOfSkills(): integer;
   private
     health: real;
@@ -104,13 +106,30 @@ begin
     AmountOfSkills := AmountOfSkills - 1;
   end;
 end;
+
 function TPlayer.HasSkills(): boolean;
 var i: integer;
 begin
   if (length(Skills) = 0) then result := false
   else
-    for i := 0 to length(Player1.Skills) - 1 do
+    for i := 0 to length(self.Skills) - 1 do
       if (Player1.Skills[i] <> nil) then result := true;
+end;
+function TPlayer.HasWeaponsInInventory(): boolean;
+var i: integer;
+begin
+  if (length(weaponInventory) = 0) then result := false
+  else
+    for i := 0 to length(self.weaponInventory) - 1 do
+      if (Player1.weaponInventory[i] <> nil) then result := true;
+end;
+function TPlayer.HasItemsInInventory(): boolean;
+var i: integer;
+begin
+  if (length(itemInventory) = 0) then result := false
+  else
+    for i := 0 to length(self.itemInventory) - 1 do
+      if (Player1.itemInventory[i] <> nil) then result := true;
 end;
 
 function TPlayer.GetAmountOfSkills(): integer;

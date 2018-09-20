@@ -6,12 +6,13 @@ _______________________________________
 -wenn du herrausfindest wie man etwas in das Nachrichten Fenster unten schreibt sag es mir bitte...
 -es sollte vieleicht ein Knopf für das bestätigen von text gemacht werden oder diese funktion sollte in den ersten Btn eingefügt werden
 -die start Waffe des Players ist nicht teil seines Waffen Inventares
--Items und Enemies haben noch keine Bilder/werden nicht beschrieben wenn sie auftauchen
+-Enemies haben noch keine Bilder und werden nicht beschrieben wenn sie auftauchen
 -man kann noch keine 	
 	Items
 	Waffen
 einsätzen ändern/einsätzen 
 
+-Der Zug des Gegners sollte seine eigene situation haben
 -Im Skills Menu fängt man unten an (just saying)
 -Das Skill menu kann keine Sprünge im array machen, heißt es hält bei einem nil an, auch wenn danach noch ein Skill kommen würde
 

@@ -83,7 +83,7 @@ begin
   if (itemDrop <> nil) then
   begin
     itemDrop := nil;
-    ShowMessage('The Item Drop of this enemy has been deleted.')
+    ShowMessage('The Item Drop of this enemy has been set to nil.')
   end;
 end;
 function TEnemy.GetWeaponDrop(): TWeapon;
@@ -97,7 +97,7 @@ begin
   if (weaponDrop <> nil) then
   begin
     weaponDrop := nil;
-    ShowMessage('The Weapon Drop of this enemy has been deleted.')
+    ShowMessage('The Weapon Drop of this enemy has been set to nil.')
   end;
 end;
 function TEnemy.GetItemDrop(): TItem;
@@ -115,12 +115,11 @@ begin
   result := damage;
 end;
 
-destructor TEnemy.Destroy();
+destructor TEnemy.Destroy();  //this is never acually called
 begin
   FreeAndNil(self);
   ShowMessage('I ll be back!');
   inherited Destroy;
-
 
 end;
 

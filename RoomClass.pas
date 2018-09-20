@@ -43,8 +43,6 @@ type
     RoomID: integer;
     //xPos, xNeg, yPos, yNeg, zPos, zNeg: TRoom; //zPos = Up; zNeg = Unten; xPos = rechts(?) usw...
 
-
-
   end;
 
 implementation
