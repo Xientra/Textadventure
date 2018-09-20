@@ -11,7 +11,7 @@ uses
 type
   TPlayer = class
   public
-    //public da man sie nicht returnen kann...
+    //public da man Array of X nicht returnen kann...
     itemInventory: Array of TItem;
     weaponInventory: Array of TWeapon;
     Skills: Array of TSkill;
@@ -33,6 +33,7 @@ type
 
     currendRoom: TRoom;
     currendWeapon: TWeapon;
+    standartWeapon: TWeapon;
 
     AmountOfSkills: integer; //die länge des Skills Array und gleichzeitig der Counter zum hinuzufügen von skills
   end;
@@ -45,7 +46,8 @@ constructor TPlayer.Create(startRoom: TRoom; startWeapon: TWeapon; _health: real
 begin
   inherited Create;
   currendRoom := startRoom;
-  currendWeapon := startWeapon;
+  standartWeapon := startWeapon;
+  currendWeapon := standartWeapon;
   health := _health;
 
   AmountOfSkills := 4;

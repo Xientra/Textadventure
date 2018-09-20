@@ -61,6 +61,7 @@ type
     procedure PrintRoomData(); //situation = 0
     procedure PlayerEndTurn(); //situation = 1
     procedure PrintWeaponData(); //situation = 2
+    procedure PrintItemData(); //situation = 3
     procedure PrintSkillData(); //situation = 5
 
     procedure ChangeSituation(_situation: integer); //damit man die Button label änder kann wenn sie geändert wird
@@ -119,7 +120,8 @@ begin
   CreateRooms(); //Creates all the Rooms
   //SetAllNeighborRooms();
   Player1 := TPlayer.Create(RoomArr[1, 0, 0], TWeapon.Create('Fists', 'Just your good old hands.', 'Images/Items/ShortSword.png', 10, 0, 0, 0), 100);
-  Player1.AddItem(TItem.Create('someItem', 'it is useless'));
+  Player1.AddItem(TItem.Create('some Key', 'it not usefull for any door...','Images/Items/Key1.png'));
+  Player1.AddItem(TItem.Create('ITEM', 'ITEM!!!!!!!!!!','Images/Items/ITEM.png'));
   Player1.AddWeapon(TWeapon.Create('Some Sword', 'It is acually sharp even thought it looks a bit blocky.', 'Images/Items/ShortSword.png', 0, 0, 15, 0));
   Player1.AddWeapon(TWeapon.Create('Iron Bar', 'A brocken off piece of a former cell.'+sLineBreak+'It is a bit rosty already...', 'Images/Items/IronBar.png', 0, 0, 15, 0));
   Player1.AddSkill(TSkill.Create('Some Skill', 'You can KILL with it.' +sLineBreak+ 'It deals Strike Damage', 'Images/Skills/someSkill.png', 2, 1.5, 0, 0, 0));
@@ -139,7 +141,7 @@ begin
   CreateARoom('Irgendein Raum', 'Images/Rooms/Höle.png', 2, 1, 0);
   RoomArr[2, 0, 0].AddEnemy(TEnemy.Create(20, 5));
   RoomArr[2, 0, 0].EnemyArr[0].SetResistants(1, 1, 1);
-  RoomArr[2, 0, 0].EnemyArr[0].SetItemDrop(TItem.Create('Literely just Trash', 'Like acually.'));
+  RoomArr[2, 0, 0].EnemyArr[0].SetItemDrop(TItem.Create('Literely just Trash', 'Like acually.', 'Images/Items/ITEM.png'));
 
   CreateARoom('Hier Liegt eine Eisenstange', 'Images/Rooms/Höle.png', 3, 0, 0);
   CreateARoom('Vier Wege von hier aus', 'Images/Rooms/Höle.png', 2, 2, 0);
@@ -318,6 +320,15 @@ begin
       else ShowMessage('can now go futher down (index of Weapons)');
       PrintWeaponData();
     end;
+  3:
+    begin
+      if (inventoryIndex - 1 >= 0) then
+        if (Player1.itemInventory[inventoryIndex - 1] <> nil) then
+          inventoryIndex := inventoryIndex - 1
+        else ShowMessage('There is no item down there')
+      else ShowMessage('can now go futher down (index of Weapons)');
+      PrintItemData();
+    end;
   5:
     begin
       if (inventoryIndex - 1 >= 0) then
@@ -356,6 +367,15 @@ begin
         else ShowMessage('There is no weapon up there')
       else ShowMessage('can now go futher up (index of Weapons)');
       PrintWeaponData();
+    end;
+  2:
+    begin
+      if (inventoryIndex + 1 <= length(Player1.itemInventory) - 1) then
+        if (Player1.itemInventory[inventoryIndex + 1] <> nil) then
+          inventoryIndex := inventoryIndex + 1
+        else ShowMessage('There is no weapon up there')
+      else ShowMessage('can now go futher up (index of Weapons)');
+      PrintItemData();
     end;
   5:
     begin
@@ -427,6 +447,15 @@ begin
   Image1.Picture.LoadFromFile(Player1.weaponInventory[inventoryIndex].GetImagePath());
 end;
 
+procedure TForm1.PrintItemData(); //situation = 3
+begin
+  Memo_Description.Clear();
+  Memo_Description.Lines.AddText(Player1.itemInventory[inventoryIndex].GetName());
+  Memo_Description.Lines.Add('');
+  Memo_Description.Lines.AddText(Player1.itemInventory[inventoryIndex].GetDescription());
+  Image1.Picture.LoadFromFile(Player1.itemInventory[inventoryIndex].GetImagePath());
+end;
+
 procedure TForm1.PrintSkillData(); //situation = 5
 begin
   Memo_Description.Clear();
@@ -435,6 +464,8 @@ begin
   Memo_Description.Lines.AddText(Player1.Skills[inventoryIndex].GetDescription());
   Image1.Picture.LoadFromFile(Player1.Skills[inventoryIndex].GetImagePath());
 end;
+
+
 
 procedure TForm1.OnEnterRoom();
 var
@@ -454,7 +485,8 @@ begin
 
 
   //2. check nach items
-  //3. check nach RoomObjects
+  //3. check nach waffen
+  //4. check nach RoomObjects
 
 
   //Check nach verfügbaren Räumen und aktiviere die Knöpfe dem entsprechend
@@ -542,8 +574,11 @@ begin
       Btn4_Label.caption := 'Down';
 
       inventoryIndex := 0;
-      Memo1.Crear();
-      Memo1.Lines.Add('there is no mean to show you what is in your Inventory... D:');
+      Memo1.Clear();
+      for i := 0 to length(Player1.itemInventory) - 1 do
+        if (Player1.itemInventory[i] <> nil) then
+          Memo1.Lines.Add('-'+Player1.itemInventory[i].GetName());
+      PrintItemData();
     end;
   4: ;
   5: //skills Menu

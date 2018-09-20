@@ -10,9 +10,11 @@ uses
 type
   TItem = class
   public
-    constructor Create(_name: string; _description: String);
+    constructor Create(_name, _description, _imagePath: string);
 
     function GetName(): string;
+    function GetDescription(): string;
+    function GetImagePath(): string;
 
     procedure SetHealing(_factor: integer);
     procedure SetDamageUp(_factor: integer);
@@ -23,6 +25,7 @@ type
   private
     ItemName: string;
     ItemDescription: string;
+    ImagePath: string;
 
     IsUseless: boolean;
 
@@ -43,11 +46,12 @@ type
 
 implementation
 
-constructor TItem.Create(_name: string; _description: String);
+constructor TItem.Create(_name, _description, _imagePath: string);
 begin
   inherited Create;
   itemName := _name;
   ItemDescription := _description;
+  ImagePath := _imagePath;
 
   IsUseless := true;
   IsHealing := false;
@@ -61,6 +65,14 @@ end;
 function TItem.GetName(): string;
 begin
   result := ItemName;
+end;
+function TItem.GetDescription(): string;
+begin
+  result := ItemDescription;
+end;
+function TItem.GetImagePath(): string;
+begin
+  result := ImagePath;
 end;
 
 procedure TItem.SetHealing(_factor: integer);
