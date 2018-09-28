@@ -12,17 +12,21 @@ uses
   type
     TEnemy = class
     public
-      constructor Create(_health, _damage: real);
+      constructor Create(_name: string; _health, _damage: real; _imagePath: string);
       function DoDamage(_strikeDmg, _thrustDmg, _slashDmg: real; _magicDmg: real): real;
       procedure SetResistants(_strikeResist, _thrustResist, _slashResist: real);
+
+      function GetName(): string;
+      function GetImagePath(): string;
+      function GetHealth(): real;
+      function GetDamage(): real;
 
       procedure SetWeaponDrop(_weapon: TWeapon);
       function GetWeaponDrop(): TWeapon;
       procedure SetItemDrop(_item: TItem);
       function GetItemDrop(): TItem;
 
-      function GetHealth(): real;
-      function GetDamage(): real;
+
       destructor Destroy();
     private
       name: string;
@@ -43,11 +47,13 @@ uses
 
 implementation
 
-constructor TEnemy.Create(_health, _damage: real);
+constructor TEnemy.Create(_name: string; _health, _damage: real; _imagePath: string);
 begin
   inherited Create;
+  name := _name;
   health := _health;
   damage := _damage;
+  ImagePath := _imagePath;
 
   strikeResist := 1;
   thrustResist := 1;
@@ -75,6 +81,15 @@ begin
   health := health - (_magicDmg);
   result := tempHealth - Health;
   //Round(Health);
+end;
+
+function TEnemy.GetName(): string;
+begin
+  result := name;
+end;
+function TEnemy.GetImagePath(): string;
+begin
+  result := ImagePath;
 end;
 
 procedure TEnemy.SetWeaponDrop(_weapon: TWeapon);

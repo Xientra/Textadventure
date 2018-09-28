@@ -23,6 +23,7 @@ type
     procedure ChangeHealthBy(_amount: real);
     function GetCurrendRoom(): TRoom;
     function GetCurrendWeapon(): TWeapon;
+    procedure SetCurrendWeapon(_weapon: TWeapon);
     procedure AddItem(_item: TItem);
     procedure AddWeapon(_weapon: TWeapon);
     procedure AddSkill(_skill: TSkill);
@@ -86,6 +87,10 @@ end;
 function TPlayer.GetCurrendWeapon(): TWeapon;
 begin
   result := currendWeapon;
+end;
+procedure TPlayer.SetCurrendWeapon(_weapon: TWeapon);
+begin
+  currendWeapon := _weapon;
 end;
 
 procedure TPlayer.AddItem(_item: TItem);

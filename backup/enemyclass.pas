@@ -12,17 +12,21 @@ uses
   type
     TEnemy = class
     public
-      constructor Create(_health, _damage: real);
+      constructor Create(_name: string; _health, _damage: real; _imagePath: string);
       function DoDamage(_strikeDmg, _thrustDmg, _slashDmg: real; _magicDmg: real): real;
       procedure SetResistants(_strikeResist, _thrustResist, _slashResist: real);
+
+      function GetName(): string;
+      function GetImagePath(): string;
+      function GetHealth(): real;
+      function GetDamage(): real;
 
       procedure SetWeaponDrop(_weapon: TWeapon);
       function GetWeaponDrop(): TWeapon;
       procedure SetItemDrop(_item: TItem);
       function GetItemDrop(): TItem;
 
-      function GetHealth(): real;
-      function GetDamage(): real;
+
       destructor Destroy();
     private
       name: string;
@@ -43,9 +47,10 @@ uses
 
 implementation
 
-constructor TEnemy.Create(_health, _damage: real);
+constructor TEnemy.Create(_name: string; _health, _damage: real; _imagePath: string);
 begin
   inherited Create;
+  name := _name;
   health := _health;
   damage := _damage;
 
@@ -77,13 +82,22 @@ begin
   //Round(Health);
 end;
 
+function TEnemy.GetName(): string;
+begin
+  result := name;
+end;
+function TEnemy.GetImagePath(): string;
+begin
+  result := ImagePath;
+end;
+
 procedure TEnemy.SetWeaponDrop(_weapon: TWeapon);
 begin
   weaponDrop := _weapon;
   if (itemDrop <> nil) then
   begin
     itemDrop := nil;
-    ShowMessage('The Item Drop of this enemy has been deleted.')
+    ShowMessage('The Item Drop of this enemy has been set to nil.')
   end;
 end;
 function TEnemy.GetWeaponDrop(): TWeapon;
@@ -97,7 +111,7 @@ begin
   if (weaponDrop <> nil) then
   begin
     weaponDrop := nil;
-    ShowMessage('The Weapon Drop of this enemy has been deleted.')
+    ShowMessage('The Weapon Drop of this enemy has been set to nil.')
   end;
 end;
 function TEnemy.GetItemDrop(): TItem;

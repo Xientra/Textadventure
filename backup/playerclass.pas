@@ -23,6 +23,7 @@ type
     procedure ChangeHealthBy(_amount: real);
     function GetCurrendRoom(): TRoom;
     function GetCurrendWeapon(): TWeapon;
+    procedure SetCurrendWeapon(_weapon: TWeapon);
     procedure AddItem(_item: TItem);
     procedure AddWeapon(_weapon: TWeapon);
     procedure AddSkill(_skill: TSkill);
@@ -87,6 +88,10 @@ function TPlayer.GetCurrendWeapon(): TWeapon;
 begin
   result := currendWeapon;
 end;
+procedure TPlayer.SetCurrendWeapon(_weapon: TWeapon);
+begin
+
+end;
 
 procedure TPlayer.AddItem(_item: TItem);
 begin
@@ -113,7 +118,7 @@ begin
   if (length(Skills) = 0) then result := false
   else
     for i := 0 to length(self.Skills) - 1 do
-      if (Player1.Skills[i] <> nil) then result := true;
+      if (self.Skills[i] <> nil) then result := true;
 end;
 function TPlayer.HasWeaponsInInventory(): boolean;
 var i: integer;
@@ -121,7 +126,7 @@ begin
   if (length(weaponInventory) = 0) then result := false
   else
     for i := 0 to length(self.weaponInventory) - 1 do
-      if (Player1.weaponInventory[i] <> nil) then result := true;
+      if (self.weaponInventory[i] <> nil) then result := true;
 end;
 function TPlayer.HasItemsInInventory(): boolean;
 var i: integer;
@@ -129,7 +134,7 @@ begin
   if (length(itemInventory) = 0) then result := false
   else
     for i := 0 to length(self.itemInventory) - 1 do
-      if (Player1.itemInventory[i] <> nil) then result := true;
+      if (self.itemInventory[i] <> nil) then result := true;
 end;
 
 function TPlayer.GetAmountOfSkills(): integer;

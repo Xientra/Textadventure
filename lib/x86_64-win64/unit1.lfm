@@ -1,8 +1,10 @@
 object Form1: TForm1
-  Left = 1098
+  Left = 1092
   Height = 606
-  Top = 190
+  Top = 193
   Width = 800
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
   Caption = 'Adventure'
   ClientHeight = 606
   ClientWidth = 800

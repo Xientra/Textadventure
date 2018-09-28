@@ -61,6 +61,7 @@ type
 
     procedure PrintRoomData(); //situation = 0
     procedure PlayerEndTurn(); //situation = 1
+    procedure PrintEnemyData(); //situation = 1
     procedure PrintWeaponData(); //situation = 2
     procedure PrintItemData(); //situation = 3
     procedure PrintSkillData(); //situation = 5
@@ -121,14 +122,14 @@ begin
   CreateRooms(); //Creates all the Rooms
   //SetAllNeighborRooms();
   Player1 := TPlayer.Create(RoomArr[1, 0, 0], TWeapon.Create('Fists', 'Just your good old hands.', 'Images/Items/ShortSword.png', 10, 0, 0, 0), 100);
-  {
+  //Stuff just for testing the inventory
   Player1.AddItem(TItem.Create('some Key', 'it not usefull for any door...','Images/Items/Key1.png'));
   Player1.AddItem(TItem.Create('ITEM', 'ITEM!!!!!!!!!!','Images/Items/ITEM.png'));
   Player1.AddWeapon(TWeapon.Create('Some Sword', 'It is acually sharp even thought it looks a bit blocky.', 'Images/Items/ShortSword.png', 0, 0, 15, 0));
   Player1.AddWeapon(TWeapon.Create('Iron Bar', 'A brocken off piece of a former cell.'+sLineBreak+'It is a bit rosty already...', 'Images/Items/IronBar.png', 0, 0, 15, 0));
   Player1.AddSkill(TSkill.Create('Some Skill', 'You can KILL with it.' +sLineBreak+ 'It deals Strike Damage', 'Images/Skills/someSkill.png', 2, 1.5, 0, 0, 0));
   Player1.AddSkill(TSkill.Create('Some other Skill', 'This one is just useless...'+sLineBreak+ 'It deals Slash Damage', 'Images/Skills/someOtherSkill.png', 5, 0, 0, 1.2, 0));
-  }
+
 
   ChangeSituation(0); //updates UI
   Memo_Description.Clear();
@@ -141,7 +142,7 @@ begin
 
   CreateARoom('Here Should be an Enemy', 'Images/Rooms/Höle.png', 2, 0, 0);
   CreateARoom('Irgendein Raum', 'Images/Rooms/Höle.png', 2, 1, 0);
-  RoomArr[2, 0, 0].AddEnemy(TEnemy.Create(20, 5));
+  RoomArr[2, 0, 0].AddEnemy(TEnemy.Create('AAAAA', 20, 5, 'Images/Enemies/AAAAA.png'));
   RoomArr[2, 0, 0].EnemyArr[0].SetResistants(1, 1, 1);
   RoomArr[2, 0, 0].EnemyArr[0].SetItemDrop(TItem.Create('Literely just Trash', 'Like acually.', 'Images/Items/ITEM.png'));
 
@@ -225,19 +226,15 @@ begin
   2:
     begin
       ChangeUIState(currendSituation);
-      Memo_Description.Clear();
     end;
   3:
     begin
       ChangeUIState(currendSituation);
-      Memo_Description.Clear();
     end;
   5:
     begin
       PrintRoomData();
       ChangeUIState(currendSituation);
-      Memo_Description.Clear();
-
     end
 
     else Memo1.Lines.Add('lol no');
@@ -267,7 +264,11 @@ begin
       PrintAndUIChange(currendSituation, 'You delt ' + FloatToStr(Round(_dmg)) + ' damage.'+sLineBreak+'The Enemy now has ' + FloatToStr(Round(FightingEnemy.GetHealth())) + ' health left');
 
       PlayerEndTurn();
-
+    end;
+  2:
+    begin
+      Player1.SetCurrendWeapon(Player1.weaponInventory[inventoryIndex]);
+      PrintAndUIChange(1, 'You equiped '+Player1.weaponInventory[inventoryIndex].GetName()+'.');
     end;
   5:
     begin
@@ -454,6 +455,15 @@ begin
   end;
 end;
 
+procedure TForm1.PrintEnemyData();
+begin
+  Memo_Description.Clear();
+  Memo_Description.Lines.AddText(FightingEnemy.GetName());
+  Memo_Description.Lines.Add('');
+  Memo_Description.Lines.AddText('The '+FightingEnemy.GetName()+' has '+FloatToStr(Round(FightingEnemy.GetHealth()))+' health left.');
+  Image1.Picture.LoadFromFile(FightingEnemy.GetImagePath());
+end;
+
 procedure TForm1.PrintWeaponData(); //situation = 2
 begin
   Memo_Description.Clear();
@@ -493,7 +503,7 @@ begin
       if (Player1.GetCurrendRoom().EnemyArr[i] <> nil) then
       begin  //start Fight
         FightingEnemy := Player1.GetCurrendRoom().EnemyArr[i];
-        PrintAndUIChange(1, 'You are now fighting! The Enemy has ' + FloatToStr(FightingEnemy.GetHealth()) + ' health.');
+        PrintAndUIChange(1, 'You are now fighting!');
       end;
     end;
 
@@ -537,10 +547,10 @@ var i: integer;
 begin
   UIState := _state;
   //Activate all Buttons at first
-  Btn1_Image.Picture.LoadFromFile('Images/ButtonBgPlayeholder.png');
-  Btn2_Image.Picture.LoadFromFile('Images/ButtonBgPlayeholder.png');
-  Btn3_Image.Picture.LoadFromFile('Images/ButtonBgPlayeholder.png');
-  Btn4_Image.Picture.LoadFromFile('Images/ButtonBgPlayeholder.png');
+  SetButton(Btn1_Image, Btn1_Label, true);
+  SetButton(Btn2_Image, Btn2_Label, true);
+  SetButton(Btn3_Image, Btn3_Label, true);
+  SetButton(Btn4_Image, Btn4_Label, true);
 
   case UIState of
     0: //walking UI
@@ -560,9 +570,9 @@ begin
       Btn3_Label.caption := 'Weapons';
       Btn4_Label.caption := 'Items';
 
+      PrintEnemyData();
       Memo1.Clear();
       Memo1.Lines.Add('The Enemy stands in front of you.'+sLineBreak+'What will you do?');
-      Image1.Picture.LoadFromFile(Player1.GetCurrendRoom().GetImagePath());
     end;
   2: //Weapon Menu
     begin
