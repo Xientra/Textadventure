@@ -138,7 +138,7 @@ end;
 procedure TForm1.CreateRooms();
 begin
 
-  CreateARoom('CathedralRoom.', 'Images/Rooms/CathedralRoom.png', 1, 0, 0);
+  CreateARoom('Your in your cell ...'+sLineBreak+'But you have a Bonfire!'+sLineBreak+'Praise The Sun!', 'Images/Rooms/BonFireCellRoom.png', 1, 0, 0);
 
   CreateARoom('Here Should be an Enemy', 'Images/Rooms/Höle.png', 2, 0, 0);
   CreateARoom('Irgendein Raum', 'Images/Rooms/Höle.png', 2, 1, 0);
@@ -226,19 +226,15 @@ begin
   2:
     begin
       ChangeUIState(currendSituation);
-      Memo_Description.Clear();
     end;
   3:
     begin
       ChangeUIState(currendSituation);
-      Memo_Description.Clear();
     end;
   5:
     begin
       PrintRoomData();
       ChangeUIState(currendSituation);
-      Memo_Description.Clear();
-
     end
 
     else Memo1.Lines.Add('lol no');
