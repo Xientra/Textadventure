@@ -1,10 +1,12 @@
 object Form1: TForm1
-  Left = 1072
-  Height = 600
-  Top = 146
+  Left = 1030
+  Height = 606
+  Top = 203
   Width = 800
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
   Caption = 'Adventure'
-  ClientHeight = 600
+  ClientHeight = 606
   ClientWidth = 800
   Color = clWhite
   Font.CharSet = ANSI_CHARSET
@@ -55,12 +57,12 @@ object Form1: TForm1
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   Position = poScreenCenter
-  LCLVersion = '1.6.2.0'
+  LCLVersion = '1.8.4.0'
   object Btn1_Image: TImage
     Cursor = crHandPoint
-    Left = 72
+    Left = 432
     Height = 64
-    Top = 504
+    Top = 510
     Width = 128
     OnClick = Btn1Click
     Picture.Data = {
@@ -96,14 +98,14 @@ object Form1: TForm1
   end
   object Memo1: TMemo
     Left = 0
-    Height = 168
+    Height = 176
     Top = 304
     Width = 800
     BorderStyle = bsNone
     Color = clBlack
     Font.CharSet = ANSI_CHARSET
     Font.Color = clWhite
-    Font.Height = -16
+    Font.Height = -21
     Font.Name = 'Georgia'
     Font.Pitch = fpVariable
     Font.Quality = fqDraft
@@ -118,9 +120,9 @@ object Form1: TForm1
   end
   object Btn2_Image: TImage
     Cursor = crHandPoint
-    Left = 216
+    Left = 176
     Height = 64
-    Top = 504
+    Top = 510
     Width = 128
     OnClick = Btn2Click
     Picture.Data = {
@@ -145,9 +147,9 @@ object Form1: TForm1
   end
   object Btn3_Image: TImage
     Cursor = crHandPoint
-    Left = 360
+    Left = 304
     Height = 64
-    Top = 504
+    Top = 478
     Width = 128
     OnClick = Btn3Click
     Picture.Data = {
@@ -172,9 +174,9 @@ object Form1: TForm1
   end
   object Btn4_Image: TImage
     Cursor = crHandPoint
-    Left = 504
+    Left = 304
     Height = 64
-    Top = 504
+    Top = 542
     Width = 128
     OnClick = Btn4Click
     Picture.Data = {
@@ -199,9 +201,9 @@ object Form1: TForm1
   end
   object Btn1_Label: TLabel
     Cursor = crHandPoint
-    Left = 88
+    Left = 448
     Height = 18
-    Top = 528
+    Top = 534
     Width = 43
     Caption = 'x Plus'
     Font.CharSet = ANSI_CHARSET
@@ -216,9 +218,9 @@ object Form1: TForm1
   end
   object Btn2_Label: TLabel
     Cursor = crHandPoint
-    Left = 232
+    Left = 192
     Height = 18
-    Top = 528
+    Top = 534
     Width = 57
     Caption = 'x Minus'
     Font.CharSet = ANSI_CHARSET
@@ -233,9 +235,9 @@ object Form1: TForm1
   end
   object Btn3_Label: TLabel
     Cursor = crHandPoint
-    Left = 376
+    Left = 320
     Height = 18
-    Top = 528
+    Top = 502
     Width = 43
     Caption = 'y Plus'
     Font.CharSet = ANSI_CHARSET
@@ -250,9 +252,9 @@ object Form1: TForm1
   end
   object Btn4_Label: TLabel
     Cursor = crHandPoint
-    Left = 520
+    Left = 320
     Height = 18
-    Top = 528
+    Top = 566
     Width = 57
     Caption = 'y Minus'
     Font.CharSet = ANSI_CHARSET
@@ -335,14 +337,13 @@ object Form1: TForm1
   end
   object Memo_Description: TMemo
     Left = 56
-    Height = 192
-    Top = 56
-    Width = 130
-    BorderStyle = bsNone
+    Height = 256
+    Top = 32
+    Width = 146
     Color = clWhite
     Font.CharSet = ANSI_CHARSET
     Font.Color = clBlack
-    Font.Height = -16
+    Font.Height = -19
     Font.Name = 'Georgia'
     Font.Pitch = fpVariable
     Font.Quality = fqDraft

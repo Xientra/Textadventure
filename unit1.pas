@@ -460,7 +460,9 @@ begin
   Memo_Description.Clear();
   Memo_Description.Lines.AddText(FightingEnemy.GetName());
   Memo_Description.Lines.Add('');
-  Memo_Description.Lines.AddText('The '+FightingEnemy.GetName()+' has '+FloatToStr(Round(FightingEnemy.GetHealth()))+' health left.');
+  if Round(FightingEnemy.GetHealth()) > 0 then
+  Memo_Description.Lines.AddText('The '+FightingEnemy.GetName()+' has '+FloatToStr(Round(FightingEnemy.GetHealth()))+' health left.')
+  else Memo_Description.Lines.AddText('The '+FightingEnemy.GetName()+' has '+' 0 health left.');
   Image1.Picture.LoadFromFile(FightingEnemy.GetImagePath());
 end;
 
