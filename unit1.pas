@@ -29,6 +29,7 @@ type
     Edit2: TEdit;
     Edit3: TEdit;
     Edit4: TEdit;
+    Memo_Stats: TMemo;
     Memo_Description: TMemo;
     Image1: TImage;
     RoomPicture: TImage;
@@ -125,6 +126,10 @@ begin
   //Stuff just for testing the inventory
   Player1.AddItem(TItem.Create('some Key', 'it not usefull for any door...','Images/Items/Key1.png'));
   Player1.AddItem(TItem.Create('ITEM', 'ITEM!!!!!!!!!!','Images/Items/ITEM.png'));
+  Player1.AddItem(TItem.Create('DamageUpItemThingy', 'It boosts your Damage by 20%','Images/Items/ITEM.png'));
+  Player1.itemInventory[2].SetDamageUp(0.2);
+  Player1.AddItem(TItem.Create('SomeBomb', 'Its a Bomb','Images/Items/ITEM.png'));
+  Player1.itemInventory[3].SetBomb(50);
   Player1.AddWeapon(TWeapon.Create('Some Sword', 'It is acually sharp even thought it looks a bit blocky.', 'Images/Items/ShortSword.png', 0, 0, 15, 0));
   Player1.AddWeapon(TWeapon.Create('Iron Bar', 'A brocken off piece of a former cell.'+sLineBreak+'It is a bit rosty already...', 'Images/Items/IronBar.png', 0, 0, 15, 0));
   Player1.AddSkill(TSkill.Create('Some Skill', 'You can KILL with it.' +sLineBreak+ 'It deals Strike Damage', 'Images/Skills/someSkill.png', 2, 1.5, 0, 0, 0));
@@ -269,6 +274,15 @@ begin
     begin
       Player1.SetCurrendWeapon(Player1.weaponInventory[inventoryIndex]);
       PrintAndUIChange(1, 'You equiped '+Player1.weaponInventory[inventoryIndex].GetName()+'.');
+      PlayerEndTurn();
+    end;
+  3:
+    begin
+      If (Player1.itemInventory[inventoryIndex].UseItem() = false) then ShowMessage('You are not able to use this Item in combat.')
+      else begin
+        PrintAndUIChange(1, 'You used '+Player1.itemInventory[inventoryIndex].GetName()+'.');
+        PlayerEndTurn();
+      end;
     end;
   5:
     begin
@@ -636,6 +650,18 @@ begin
 
     end;
   end;
+
+  //Update the Player Stats
+  Memo_Stats.Clear();
+  Memo_Stats.Lines.AddText('Health: '+sLineBreak+
+                           FloatToStr(Player1.GetHealth())+sLineBreak+
+                           sLineBreak+
+                           'Currend Weapon: '+sLineBreak+
+                           Player1.GetCurrendWeapon().GetName()+sLineBreak+
+                           sLineBreak+
+                           'Amount of Skills: '+sLineBreak+
+                           IntToStr(Player1.GetMaxAmountOfSkills()-Player1.GetAmountOfSkills())
+                           );
 end;
 
 procedure TForm1.PrintAndUIChange(_changeUITo: integer; _toPrint: string);

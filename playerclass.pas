@@ -30,7 +30,12 @@ type
     function HasSkills(): boolean;
     function HasWeaponsInInventory(): boolean;
     function HasItemsInInventory(): boolean;
-    function GetAmountOfSkills(): integer;
+    function GetAmountOfSkills(): integer; //results AountOfSkills
+    function GetMaxAmountOfSkills(): integer;
+
+    procedure SetDamageMultiplyer(_multi: real);
+    procedure SetDefenseMultiplyer(_multi: real);
+
   private
     health: real;
 
@@ -39,6 +44,10 @@ type
     standartWeapon: TWeapon;
 
     AmountOfSkills: integer; //die länge des Skills Array und gleichzeitig der Counter zum hinuzufügen von skills
+    MaxAmountOfSkills: integer;
+
+    DamageMultiplyer,
+    DefenseMultiplyer: real;
   end;
 
 implementation
@@ -53,7 +62,8 @@ begin
   currendWeapon := standartWeapon;
   health := _health;
 
-  AmountOfSkills := 4;
+  MaxAmountOfSkills := 4;
+  AmountOfSkills := MaxAmountOfSkills;
   SetLength(Skills, AmountOfSkills);
 end;
 
@@ -140,6 +150,19 @@ end;
 function TPlayer.GetAmountOfSkills(): integer;
 begin
   result := AmountOfSkills;
+end;
+function TPlayer.GetMaxAmountOfSkills(): integer;
+begin
+  result := MaxAmountOfSkills;
+end;
+
+procedure TPlayer.SetDamageMultiplyer(_multi: real);
+begin
+  DamageMultiplyer := _multi;
+end;
+procedure TPlayer.SetDefenseMultiplyer(_multi: real);
+begin
+  DefenseMultiplyer := _multi;
 end;
 
 end.

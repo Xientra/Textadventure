@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 1030
+  Left = 1034
   Height = 606
-  Top = 203
+  Top = 205
   Width = 800
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
@@ -57,7 +57,7 @@ object Form1: TForm1
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   Position = poScreenCenter
-  LCLVersion = '1.6.2.0'
+  LCLVersion = '1.8.4.0'
   object Btn1_Image: TImage
     Cursor = crHandPoint
     Left = 432
@@ -113,6 +113,7 @@ object Form1: TForm1
       'Unfortunatly you won''t be able to write here...'
     )
     OnKeyDown = FormKeyDown
+    ParentBidiMode = False
     ParentFont = False
     ReadOnly = True
     TabOrder = 0
@@ -268,9 +269,9 @@ object Form1: TForm1
     OnClick = Btn4Click
   end
   object Button1: TButton
-    Left = 680
+    Left = 688
     Height = 25
-    Top = 16
+    Top = 504
     Width = 96
     Caption = 'Test Room'
     Default = True
@@ -279,9 +280,9 @@ object Form1: TForm1
     TabOrder = 1
   end
   object Edit1: TEdit
-    Left = 680
+    Left = 688
     Height = 26
-    Top = 48
+    Top = 536
     Width = 32
     Color = clWhite
     NumbersOnly = True
@@ -289,9 +290,9 @@ object Form1: TForm1
     Text = '2'
   end
   object Edit2: TEdit
-    Left = 712
+    Left = 720
     Height = 26
-    Top = 48
+    Top = 536
     Width = 32
     Color = clWhite
     NumbersOnly = True
@@ -299,9 +300,9 @@ object Form1: TForm1
     Text = '2'
   end
   object Edit3: TEdit
-    Left = 744
+    Left = 752
     Height = 26
-    Top = 48
+    Top = 536
     Width = 32
     Color = clWhite
     NumbersOnly = True
@@ -317,29 +318,29 @@ object Form1: TForm1
     Stretch = True
   end
   object Button2: TButton
-    Left = 576
+    Left = 24
     Height = 25
     Hint = '(1) Dancing in the Moonlight'#13#10'(2) Textadventure Gwyn Theme'
-    Top = 16
+    Top = 502
     Width = 75
     Caption = 'Music'
     OnClick = Button2Click
     TabOrder = 5
   end
   object Edit4: TEdit
-    Left = 576
+    Left = 24
     Height = 26
     Hint = '(1) Dancing in the Moonlight'#13#10'(2) Textadventure Gwyn Theme'
-    Top = 48
+    Top = 534
     Width = 75
     NumbersOnly = True
     TabOrder = 6
   end
   object Memo_Description: TMemo
-    Left = 56
+    Left = 16
     Height = 256
     Top = 32
-    Width = 146
+    Width = 186
     Color = clWhite
     Font.CharSet = ANSI_CHARSET
     Font.Color = clBlack
@@ -358,5 +359,26 @@ object Form1: TForm1
     ParentFont = False
     ReadOnly = True
     TabOrder = 7
+  end
+  object Memo_Stats: TMemo
+    Left = 552
+    Height = 144
+    Top = 32
+    Width = 192
+    Alignment = taCenter
+    BorderStyle = bsNone
+    Lines.Strings = (
+      'Health: '
+      'XXX'
+      ''
+      'Currend Weapon:'
+      'weapon1'
+      ''
+      'Amount of Skills:'
+      'X'
+    )
+    ReadOnly = True
+    TabOrder = 8
+    WantReturns = False
   end
 end

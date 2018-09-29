@@ -12,15 +12,18 @@ type
   public
     constructor Create(_name, _description, _imagePath: string);
 
+    function UseItem(): boolean;
+
     function GetName(): string;
     function GetDescription(): string;
     function GetImagePath(): string;
 
-    procedure SetHealing(_factor: integer);
-    procedure SetDamageUp(_factor: integer);
-    procedure SetDefenseUp(_factor: integer);
-    procedure SetKey(_keyIndex: integer);
-    function GetKeyIndex: integer;
+    procedure SetHealing(_factor: real);
+    procedure SetDamageUp(_factor: real);
+    procedure SetDefenseUp(_factor: real);
+    procedure SetKey(_keyIndex: real);
+    procedure SetBomb(_damage: real);
+    function GetKeyIndex: real;
 
   private
     ItemName: string;
@@ -39,12 +42,15 @@ type
     HealingFactor,
     DamageUpFactor,
     DefenseUpFactor,
+    BombDamage,
     KeyIndex
-    : integer;
+    : real;
 
   end;
 
 implementation
+
+uses Unit1;
 
 constructor TItem.Create(_name, _description, _imagePath: string);
 begin
@@ -61,6 +67,35 @@ begin
   IsKey := false;
 end;
 
+function TItem.UseItem(): boolean;
+begin
+  result := false;
+  if (IsUseless = true) or (IsKey = true) then
+    result := false
+  else
+  begin
+    if (IsHealing) then
+    begin
+      Unit1.Player1.ChangeHealthBy(HealingFactor);
+      result := true;
+    end;
+    if (IsDamageUp) then
+    begin
+      Unit1.Player1.SetDamageMultiplyer(DamageUpFactor);
+      result := true;
+    end;
+    if (IsDefenseUp) then
+    begin
+      Unit1.Player1.SetDefenseMultiplyer(DefenseUpFactor);
+      result := true;
+    end;
+    if (IsBomb) then
+    begin
+      Unit1.FightingEnemy.DoDamage(0, 0, 0, BombDamage);
+      result := true;
+    end;
+  end;
+end;
 
 function TItem.GetName(): string;
 begin
@@ -70,12 +105,12 @@ function TItem.GetDescription(): string;
 begin
   result := ItemDescription;
 end;
-function TItem.ImagePath(): string;
+function TItem.GetImagePath(): string;
 begin
   result := ImagePath;
 end;
 
-procedure TItem.SetHealing(_factor: integer);
+procedure TItem.SetHealing(_factor: real);
 begin
   IsUseless := false;
   IsHealing := true;
@@ -86,7 +121,7 @@ begin
 
   HealingFactor := _factor;
 end;
-procedure TItem.SetDamageUp(_factor: integer);
+procedure TItem.SetDamageUp(_factor: real);
 begin
   IsUseless := false;
   //IsHealing := false;
@@ -97,7 +132,7 @@ begin
 
   DamageUpFactor := _factor;
 end;
-procedure TItem.SetDefenseUp(_factor: integer);
+procedure TItem.SetDefenseUp(_factor: real);
 begin
   IsUseless := false;
   //IsHealing := false;
@@ -109,7 +144,19 @@ begin
   DefenseUpFactor := _factor;
 end;
 
-procedure TItem.SetKey(_keyIndex: integer);
+procedure TItem.SetBomb(_damage: real);
+begin
+  IsUseless := false;
+  IsHealing := false;
+  IsDamageUp := false;
+  IsDefenseUp := false;
+  IsBomb := true;
+  IsKey := false;
+
+  BombDamage:=;
+end;
+
+procedure TItem.SetKey(_keyIndex: real);
 begin
   IsUseless := false;
   IsHealing := false;
@@ -121,7 +168,7 @@ begin
   KeyIndex := _keyIndex;
 end;
 
-function TItem.GetKeyIndex(): integer;
+function TItem.GetKeyIndex(): real;
 begin
   result := KeyIndex;
 end;
