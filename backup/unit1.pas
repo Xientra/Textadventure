@@ -45,12 +45,11 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure Label_LeaveClick(Sender: TObject);
 
-
   public
     procedure OnEnterRoom();
 
   private
-    procedure CreateRooms();
+    procedure CreateRooms(); //Erschafft das Spiel
     procedure CreateARoom(_description: string; _imagePath: string; _pos_x, _pos_y, _pos_z: integer);
     //procedure SetAllNeighborRooms();
 
@@ -58,24 +57,27 @@ type
     procedure Button_2_Action();
     procedure Button_3_Action();
     procedure Button_4_Action();
-    procedure SetButton(_background: TImage; _text: TLabel; toSetTo: boolean);
 
+    procedure SetButton(_background: TImage; _text: TLabel; toSetTo: boolean); //aktiviert oder deaktiviert den Butten mit dem TImage _bg und dem TLbl _text
+
+    //Schreibt die jeweiligen Infos auf alle memos und so
     procedure PrintRoomData(); //situation = 0
-    procedure PlayerEndTurn(); //situation = 1
-    procedure PrintEnemyData(); //situation = 1
-    procedure PrintWeaponData(); //situation = 2
-    procedure PrintItemData(); //situation = 3
-    procedure PrintSkillData(); //situation = 5
+    procedure PlayerEndTurn(); //situation = 1          //schaut ob der Enemy besiegt ist und verigert die cooldowns
+    procedure EnemyTurn(); //situation = 2              //macht dem Spieler schaden
+    procedure PrintEnemyData(); //situation = 1 and 2
+    procedure PrintWeaponData(); //situation = 53
+    procedure PrintItemData(); //situation = 54
+    procedure PrintSkillData(); //situation = 55
 
-    procedure ChangeSituation(_situation: integer); //damit man die Button label änder kann wenn sie geändert wird
+    //damit man die Button label änder kann wenn sie geändert wird
+    procedure ChangeSituation(_situation: integer);
     procedure ChangeUIState(_state: integer);
-
-    procedure PrintAndUIChange(_changeUITo: integer; _toPrint: string);
+    procedure PrintAndUIChange(_changeUITo: integer; _toPrint: string); //zeigt zusätzlich zum ändern der UI noch eine einmalige Nachicht
 
   end;
 
 //----------------------------------------------------------------------------//
-//                         Schau in die ToDoListe                             //
+//-------------------------Schau in die ToDoListe-----------------------------//
 //----------------------------------------------------------------------------//
 
 var
@@ -129,7 +131,7 @@ begin
   Player1.AddItem(TItem.Create('DamageUpItemThingy', 'It boosts your Damage by 20%','Images/Items/ITEM.png'));
   Player1.itemInventory[2].SetDamageUp(0.2);
   Player1.AddItem(TItem.Create('SomeBomb', 'Its a Bomb','Images/Items/ITEM.png'));
-  Player1.itemInventory[2].SetBomb(50);
+  Player1.itemInventory[3].SetBomb(50);
   Player1.AddWeapon(TWeapon.Create('Some Sword', 'It is acually sharp even thought it looks a bit blocky.', 'Images/Items/ShortSword.png', 0, 0, 15, 0));
   Player1.AddWeapon(TWeapon.Create('Iron Bar', 'A brocken off piece of a former cell.'+sLineBreak+'It is a bit rosty already...', 'Images/Items/IronBar.png', 0, 0, 15, 0));
   Player1.AddSkill(TSkill.Create('Some Skill', 'You can KILL with it.' +sLineBreak+ 'It deals Strike Damage', 'Images/Skills/someSkill.png', 2, 1.5, 0, 0, 0));
@@ -225,18 +227,19 @@ begin
     end;
   1:
     begin
-      if (Player1.HasSkills() = true) then ChangeUIState(5) //Skill Menu
+      if (Player1.HasSkills() = true) then ChangeUIState(55) //Skill Menu
       else Memo1.Lines.Add('You have no skills yet.')
     end;
-  2:
+  2: ;
+  53:
     begin
       ChangeUIState(currendSituation);
     end;
-  3:
+  54:
     begin
       ChangeUIState(currendSituation);
     end;
-  5:
+  55:
     begin
       PrintRoomData();
       ChangeUIState(currendSituation);
@@ -264,42 +267,48 @@ begin
     begin
       _dmg := FightingEnemy.DoDamage(Player1.GetCurrendWeapon().GetStrikeDmg(), Player1.GetCurrendWeapon().GetThrustDmg(), Player1.GetCurrendWeapon().GetSlashDmg(), Player1.GetCurrendWeapon().GetMagicDmg());
 
-      //Memo1.Clear();
-      //Memo1.Lines.Add('You delt ' + FloatToStr(Round(_dmg)) + ' The Enemy now has ' + FloatToStr(Round(FightingEnemy.GetHealth())) + ' health left');
-      PrintAndUIChange(currendSituation, 'You delt ' + FloatToStr(Round(_dmg)) + ' damage.'+sLineBreak+'The Enemy now has ' + FloatToStr(Round(FightingEnemy.GetHealth())) + ' health left');
+      PrintAndUIChange(2, 'You delt ' + FloatToStr(Round(_dmg)) + ' damage.'+sLineBreak+'The Enemy now has ' + FloatToStr(Round(FightingEnemy.GetHealth())) + ' health left');
 
       PlayerEndTurn();
     end;
   2:
     begin
+      //PrintAndUIChange(1, 'The Enemy delt ' + FloatToStr(FightingEnemy.GetDamage())+' damage.'+sLineBreak+'You now have ' + FloatToStr(Player1.GetHealth()) + ' health left');
+      ChangeUIState(1);
+    end;
+  53:
+    begin
       Player1.SetCurrendWeapon(Player1.weaponInventory[inventoryIndex]);
-      PrintAndUIChange(1, 'You equiped '+Player1.weaponInventory[inventoryIndex].GetName()+'.');
+      PrintAndUIChange(2, 'You equiped '+Player1.weaponInventory[inventoryIndex].GetName()+'.');
       PlayerEndTurn();
     end;
-  3:
+  54:
     begin
       If (Player1.itemInventory[inventoryIndex].UseItem() = false) then ShowMessage('You are not able to use this Item in combat.')
       else begin
-        PrintAndUIChange(1, 'You used '+Player1.itemInventory[inventoryIndex].GetName()+'.');
+        PrintAndUIChange(2, 'You used '+Player1.itemInventory[inventoryIndex].GetName()+'.');
         PlayerEndTurn();
       end;
     end;
-  5:
+  55:
     begin
-      _dmg := FightingEnemy.DoDamage(
-        Player1.GetCurrendWeapon().GetHighestDmg() * Player1.Skills[inventoryIndex].GetStrikeMulti(),
-        Player1.GetCurrendWeapon().GetHighestDmg() * Player1.Skills[inventoryIndex].GetThrustMulti(),
-        Player1.GetCurrendWeapon().GetHighestDmg() * Player1.Skills[inventoryIndex].GetSlashMulti(),
-        Player1.GetCurrendWeapon().GetHighestDmg() * Player1.Skills[inventoryIndex].GetMagicMulti());
+      if (Player1.Skills[inventoryIndex].GetTurnsToWait() = 0) then
+      begin
+        _dmg := FightingEnemy.DoDamage(
+          Player1.GetCurrendWeapon().GetHighestDmg() * Player1.Skills[inventoryIndex].GetStrikeMulti(),
+          Player1.GetCurrendWeapon().GetHighestDmg() * Player1.Skills[inventoryIndex].GetThrustMulti(),
+          Player1.GetCurrendWeapon().GetHighestDmg() * Player1.Skills[inventoryIndex].GetSlashMulti(),
+          Player1.GetCurrendWeapon().GetHighestDmg() * Player1.Skills[inventoryIndex].GetMagicMulti());
 
-      //Memo1.Clear();
-      //ChangeUIState(1);
-      //Memo1.Lines.Add('You delt ' + FloatToStr(Round(_dmg)) + ' The Enemy now has ' + FloatToStr(Round(FightingEnemy.GetHealth())) + ' health left');
+        Player1.Skills[inventoryIndex].SetTurnToWaitToCooldown();
+        PrintAndUIChange(2, 'You delt ' + FloatToStr(Round(_dmg)) + ' damage.'+sLineBreak+'The Enemy now has ' + FloatToStr(Round(FightingEnemy.GetHealth())) + ' health left');
+        Memo_Description.Clear();
 
-      PrintAndUIChange(1, 'You delt ' + FloatToStr(Round(_dmg)) + ' damage.'+sLineBreak+'The Enemy now has ' + FloatToStr(Round(FightingEnemy.GetHealth())) + ' health left');
-      Memo_Description.Clear();
-
-      PlayerEndTurn();
+        PlayerEndTurn();
+      end else
+      begin
+        ShowMessage('You have to wait '+IntToStr(Player1.Skills[inventoryIndex].GetTurnsToWait())+' more turns to use this skill.');
+      end;
     end;
   99:
     begin
@@ -324,10 +333,11 @@ begin
     end;
   1:
     begin
-      if (Player1.HasWeaponsInInventory() = true) then  ChangeUIState(2) //Weapon Menu
-      else Memo1.Lines.Add('You have no weapons in your inventory.')
+      if (Player1.HasWeaponsInInventory() = true) then  ChangeUIState(53) //Weapon Menu
+      else Memo1.Lines.Add('You have no weapons in your arsenal.')
     end;
-  2:
+  2: ;
+  53:
     begin
       if (inventoryIndex - 1 >= 0) then
         if (Player1.weaponInventory[inventoryIndex - 1] <> nil) then
@@ -336,7 +346,7 @@ begin
       else ShowMessage('can now go futher down (index of Weapons)');
       PrintWeaponData();
     end;
-  3:
+  54:
     begin
       if (inventoryIndex - 1 >= 0) then
         if (Player1.itemInventory[inventoryIndex - 1] <> nil) then
@@ -345,12 +355,12 @@ begin
       else ShowMessage('can now go futher down (index of Weapons)');
       PrintItemData();
     end;
-  5:
+  55:
     begin
       if (inventoryIndex - 1 >= 0) then
         if (Player1.Skills[inventoryIndex - 1] <> nil) then
           inventoryIndex := inventoryIndex - 1
-        else ShowMessage('There is no weapon down there')
+        else ShowMessage('There is no skill down there')
       else ShowMessage('can now go futher down');
       PrintSkillData();
     end
@@ -373,34 +383,34 @@ begin
     end;
   1:
     begin
-      if (Player1.HasItemsInInventory() = true) then ChangeUIState(3) //Item Menu
+      if (Player1.HasItemsInInventory() = true) then ChangeUIState(54) //Item Menu
       else Memo1.Lines.Add('You have no items in your inventory.')
     end;
-  2:
+  53:
     begin
       if (inventoryIndex + 1 <= length(Player1.weaponInventory) - 1) then
         if (Player1.weaponInventory[inventoryIndex + 1] <> nil) then
           inventoryIndex := inventoryIndex + 1
         else ShowMessage('There is no weapon up there')
-      else ShowMessage('can now go futher up (index of Weapons)');
+      else ShowMessage('can now go futher up (index of Items)');
       PrintWeaponData();
     end;
-  3:
+  54:
     begin
       if (inventoryIndex + 1 <= length(Player1.itemInventory) - 1) then
         if (Player1.itemInventory[inventoryIndex + 1] <> nil) then
           inventoryIndex := inventoryIndex + 1
-        else ShowMessage('There is no weapon up there')
-      else ShowMessage('can now go futher up (index of Weapons)');
+        else ShowMessage('There is no item up there')
+      else ShowMessage('can now go futher up (index of Items)');
       PrintItemData();
     end;
-  5:
+  55:
     begin
       if (inventoryIndex + 1 <= length(Player1.Skills) - 1) then
         if (Player1.Skills[inventoryIndex + 1] <> nil) then
           inventoryIndex := inventoryIndex + 1
         else ShowMessage('There is no skill up there')
-      else ShowMessage('can now go futher up');
+      else ShowMessage('can now go futher up (index of Skills)');
       PrintSkillData();
     end
   else
@@ -441,7 +451,7 @@ begin
     if (FightingEnemy.GetWeaponDrop() <> nil) then
     begin
       PLayer1.AddWeapon((FightingEnemy.GetWeaponDrop()));
-      PrintAndUIChange(0, 'You Won!'+sLineBreak+'He dropt ' + FightingEnemy.GetWeaponDrop().GetName() + '. It was added to your Inventory.');
+      PrintAndUIChange(0, 'You Won!'+sLineBreak+'He dropt ' + FightingEnemy.GetWeaponDrop().GetName() + '. It was added to your Weapon arsenal.');
     end
     else if (FightingEnemy.GetItemDrop() <> nil) then
     begin
@@ -451,25 +461,20 @@ begin
     else PrintAndUIChange(0, 'You Won!');
     //fight was ended
 
-    //Destroy the Enemy
-    FreeAndNil(Player1.GetCurrendRoom().EnemyArr[0]); //FreeAndNil Destroyd ein Object und setz die (pointer var) auf nil
+    //Destroy den Enemy Object und setzt alle Variablen die auf ihn zeigen zu nil
+    FreeAndNil(Player1.GetCurrendRoom().EnemyArr[0]); //FreeAndNil Destroyd ein Object und setz die pointer var (die in den Klammern) auf nil
     FightingEnemy := nil;  //da der gegner zerstört wurde sollte auch FightingEnemy wieder auf nil
 
   end
   else //Enemy deals damage
   begin
-    Player1.ChangeHealthBy(-(FightingEnemy.GetDamage()));
-    Memo1.Lines.Add('The Enemy delt ' + FloatToStr(FightingEnemy.GetDamage())+' damage.'+sLineBreak+'You now have ' + FloatToStr(Player1.GetHealth()) + ' health left');
-    //PrintAndUIChange(UIState, 'The Enemy delt: ' + FloatToStr(FightingEnemy.GetDamage()) + ' You now have ' + FloatToStr(Player1.GetHealth()) + ' health left');
-
     //verringert den cooldoown von jedem skill
     for i := 0 to length(Player1.Skills) - 1 do
-      if (Player1.Skills[i] <> nil) then Player1.Skills[i].ReduceCooldown();
-
+      if (Player1.Skills[i] <> nil) then Player1.Skills[i].ReduceTurnsToWait();
   end;
 end;
 
-procedure TForm1.PrintEnemyData();
+procedure TForm1.PrintEnemyData(); //situation 1 and 2
 begin
   Memo_Description.Clear();
   Memo_Description.Lines.AddText(FightingEnemy.GetName());
@@ -480,7 +485,15 @@ begin
   Image1.Picture.LoadFromFile(FightingEnemy.GetImagePath());
 end;
 
-procedure TForm1.PrintWeaponData(); //situation = 2
+procedure TForm1.EnemyTurn(); //situation = 3
+begin
+  Player1.ChangeHealthBy(-(FightingEnemy.GetDamage()));
+  Memo1.Clear();
+  Memo1.Lines.Add('The Enemy delt ' + FloatToStr(FightingEnemy.GetDamage())+' damage.'+sLineBreak+'You now have ' + FloatToStr(Player1.GetHealth()) + ' health left');
+  PrintEnemyData();
+end;
+
+procedure TForm1.PrintWeaponData(); //situation = 53
 begin
   Memo_Description.Clear();
   Memo_Description.Lines.AddText(Player1.weaponInventory[inventoryIndex].GetName());
@@ -489,7 +502,7 @@ begin
   Image1.Picture.LoadFromFile(Player1.weaponInventory[inventoryIndex].GetImagePath());
 end;
 
-procedure TForm1.PrintItemData(); //situation = 3
+procedure TForm1.PrintItemData(); //situation = 54
 begin
   Memo_Description.Clear();
   Memo_Description.Lines.AddText(Player1.itemInventory[inventoryIndex].GetName());
@@ -498,7 +511,7 @@ begin
   Image1.Picture.LoadFromFile(Player1.itemInventory[inventoryIndex].GetImagePath());
 end;
 
-procedure TForm1.PrintSkillData(); //situation = 5
+procedure TForm1.PrintSkillData(); //situation = 55
 begin
   Memo_Description.Clear();
   Memo_Description.Lines.AddText(Player1.Skills[inventoryIndex].GetName());
@@ -562,6 +575,7 @@ procedure TForm1.ChangeUIState(_state: integer);
 var i: integer;
 begin
   UIState := _state;
+  Edit1.Text := IntToStr(UIState);
   //Activate all Buttons at first
   SetButton(Btn1_Image, Btn1_Label, true);
   SetButton(Btn2_Image, Btn2_Label, true);
@@ -590,7 +604,20 @@ begin
       Memo1.Clear();
       Memo1.Lines.Add('The Enemy stands in front of you.'+sLineBreak+'What will you do?');
     end;
-  2: //Weapon Menu
+  2:
+    begin
+      Btn1_Label.caption := '';
+      SetButton(Btn1_Image, Btn1_Label, false);
+      Btn2_Label.caption := 'Ok';
+      SetButton(Btn2_Image, Btn2_Label, true);
+      Btn3_Label.caption := '';
+      SetButton(Btn3_Image, Btn3_Label, false);
+      Btn4_Label.caption := '';
+      SetButton(Btn4_Image, Btn4_Label, false);
+
+      EnemyTurn(); //The Enemy deals Damage
+    end;
+  53: //Weapon Menu
     begin
       Btn1_Label.caption := 'Back';
       Btn2_Label.caption := 'Equip';
@@ -604,7 +631,7 @@ begin
           Memo1.Lines.Add('-'+Player1.weaponInventory[i].GetName());
       PrintWeaponData();
     end;
-  3: //Item Menu
+  54: //Item Menu
     begin
       Btn1_Label.caption := 'Back';
       Btn2_Label.caption := 'Use';
@@ -618,8 +645,7 @@ begin
           Memo1.Lines.Add('-'+Player1.itemInventory[i].GetName());
       PrintItemData();
     end;
-  4: ;
-  5: //skills Menu
+  55: //skills Menu
     begin
       Btn1_Label.caption := 'Back';
       Btn2_Label.caption := 'Use';

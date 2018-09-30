@@ -11,8 +11,9 @@ type
   TSkill = class
   public
     constructor Create(_name, _description, _imagePath: string; _cooldown: integer; _strikeMulti, _thrustMulti, _slashMulti, _magicMulti: real);
-    function GetCooldown(): integer;
-    procedure ReduceCooldown();
+    procedure SetTurnToWaitToCooldown();
+    function GetTurnsToWait(): integer;
+    procedure ReduceTurnsToWait();
     function GetName(): string;
     function GetDescription(): string;
     function GetImagePath(): string;
@@ -32,6 +33,7 @@ type
     : real;
 
     cooldown: integer;
+    turnsToWait: integer;
   end;
 
 implementation
@@ -49,16 +51,21 @@ begin
   MagicMultiplyer := _magicMulti;
 
   cooldown := _cooldown;
+  turnsToWait := 0;
 
 end;
 
-function TSkill.GetCooldown(): integer;
+procedure TSkill.SetTurnToWaitToCooldown();
 begin
-  result := cooldown;
+  turnsToWait := cooldown;
 end;
-procedure TSkill.ReduceCooldown();
+function TSkill.GetTurnsToWait(): integer;
 begin
-  if (cooldown > 0) then cooldown := cooldown - 1;
+  result := turnsToWait;
+end;
+procedure TSkill.ReduceTurnsToWait();
+begin
+  if (turnsToWait > 0) then turnsToWait := turnsToWait - 1;
 end;
 function TSkill.GetName(): string;
 begin

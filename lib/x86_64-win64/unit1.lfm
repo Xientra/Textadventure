@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 1034
+  Left = 743
   Height = 606
-  Top = 205
+  Top = 216
   Width = 800
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
@@ -362,11 +362,17 @@ object Form1: TForm1
   end
   object Memo_Stats: TMemo
     Left = 552
-    Height = 144
+    Height = 184
     Top = 32
     Width = 192
     Alignment = taCenter
     BorderStyle = bsNone
+    Font.CharSet = ANSI_CHARSET
+    Font.Color = clBlack
+    Font.Height = -19
+    Font.Name = 'Georgia'
+    Font.Pitch = fpVariable
+    Font.Quality = fqDraft
     Lines.Strings = (
       'Health: '
       'XXX'
@@ -377,6 +383,7 @@ object Form1: TForm1
       'Amount of Skills:'
       'X'
     )
+    ParentFont = False
     ReadOnly = True
     TabOrder = 8
     WantReturns = False
