@@ -35,6 +35,7 @@ type
     RoomPicture: TImage;
     Label_Leave: TLabel;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      //Its a secret!
     Memo1: TMemo;
+    MusicTimer: TTimer;
     procedure Btn1Click(Sender: TObject);
     procedure Btn2Click(Sender: TObject);
     procedure Btn3Click(Sender: TObject);
@@ -44,6 +45,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure Label_LeaveClick(Sender: TObject);
+    procedure MusicTimerTimer(Sender: TObject);
 
   public
     procedure OnEnterRoom();
@@ -82,7 +84,9 @@ type
 
 var
   Form1: TForm1;
-  Timer1: TTimer;
+  MusicTimer: TTimer;
+  MusicCounter: integer;
+  songlength: integer; //in seconds?
 
   RoomArr: Array of Array of Array of TRoom;
   Room_x, Room_y, Room_z: integer;
@@ -209,11 +213,11 @@ end;
 
 procedure TForm1.Button2Click(Sender: TObject);
 begin   //Music test
-     if Edit4.text = '1' then begin
-        PlaySound('music\Dancing in the Moonlight piano.wav',0,SND_ASYNC);
-     end else if Edit4.text = '2' then begin
-          PlaySound('music\Textadventure Gwyn Theme piano.wav',0,SND_ASYNC);
-     end;
+  if Edit4.text = '1' then begin
+    PlaySound('music\Dancing in the Moonlight piano.wav',0,SND_ASYNC);
+  end else if Edit4.text = '2' then begin
+    PlaySound('music\Textadventure Gwyn Theme piano.wav',0,SND_ASYNC);
+  end;
 end;
 
 procedure TForm1.Button_1_Action();
@@ -655,6 +659,11 @@ begin
       Btn4_Label.caption := 'y Minus';
       PrintRoomData();
 
+      PlaySound('music\overworldTheme_loop.wav',0,SND_ASYNC);
+      songlength := 27;  //27s ist die exakte länge von overworldTheme_loop
+      MusicCounter := 0;
+      MusicTimer.Enabled := true;
+
       OnEnterRoom(); //whenever you can walk again it checks if there is (still) stuff in the Room
     end;
   1: //fighting UI
@@ -663,6 +672,8 @@ begin
       Btn2_Label.caption := 'Attack';
       Btn3_Label.caption := 'Weapons';
       Btn4_Label.caption := 'Items';
+
+      PlaySound('music\FightingTrack1.wav',0,SND_ASYNC);
 
       PrintEnemyData();
       Memo1.Clear();
@@ -713,7 +724,7 @@ begin
       SetButton(Btn4_Image, Btn4_Label, false);
 
       Memo1.Clear();
-      Memo1.AddText('You see a Item and inspect it closer.');
+      Memo1.Lines.AddText('You see a Item and inspect it closer.');
       //Print item description
       Memo_Description.Clear();
       Memo_Description.Lines.AddText(Player1.GetCurrendRoom().ItemArr[roomStuffIndex].GetName());
@@ -824,6 +835,18 @@ end;
 procedure TForm1.Label_LeaveClick(Sender: TObject);
 begin
   Application.Terminate();
+end;
+
+procedure TForm1.MusicTimerTimer(Sender: TObject);
+begin
+  MusicCounter := MusicCounter + 1;
+  Edit2.Text := IntToStr(MusicCounter);
+  if (MusicCounter = songlength) then
+  begin
+    PlaySound('music\overworldTheme_loop.wav',0,SND_ASYNC);
+    MusicCounter := 0;
+  end;
+
 end;
 
 end.
