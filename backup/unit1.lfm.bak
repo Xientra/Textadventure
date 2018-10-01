@@ -1,12 +1,12 @@
 object Form1: TForm1
-  Left = 1030
-  Height = 606
-  Top = 203
+  Left = 1057
+  Height = 642
+  Top = 183
   Width = 800
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'Adventure'
-  ClientHeight = 606
+  ClientHeight = 642
   ClientWidth = 800
   Color = clWhite
   Font.CharSet = ANSI_CHARSET
@@ -60,9 +60,9 @@ object Form1: TForm1
   LCLVersion = '1.8.4.0'
   object Btn1_Image: TImage
     Cursor = crHandPoint
-    Left = 432
+    Left = 448
     Height = 64
-    Top = 510
+    Top = 536
     Width = 128
     OnClick = Btn1Click
     Picture.Data = {
@@ -99,7 +99,7 @@ object Form1: TForm1
   object Memo1: TMemo
     Left = 0
     Height = 176
-    Top = 304
+    Top = 328
     Width = 800
     BorderStyle = bsNone
     Color = clBlack
@@ -113,6 +113,7 @@ object Form1: TForm1
       'Unfortunatly you won''t be able to write here...'
     )
     OnKeyDown = FormKeyDown
+    ParentBidiMode = False
     ParentFont = False
     ReadOnly = True
     TabOrder = 0
@@ -120,9 +121,9 @@ object Form1: TForm1
   end
   object Btn2_Image: TImage
     Cursor = crHandPoint
-    Left = 176
+    Left = 192
     Height = 64
-    Top = 510
+    Top = 536
     Width = 128
     OnClick = Btn2Click
     Picture.Data = {
@@ -147,9 +148,9 @@ object Form1: TForm1
   end
   object Btn3_Image: TImage
     Cursor = crHandPoint
-    Left = 304
+    Left = 320
     Height = 64
-    Top = 478
+    Top = 504
     Width = 128
     OnClick = Btn3Click
     Picture.Data = {
@@ -174,9 +175,9 @@ object Form1: TForm1
   end
   object Btn4_Image: TImage
     Cursor = crHandPoint
-    Left = 304
+    Left = 320
     Height = 64
-    Top = 542
+    Top = 568
     Width = 128
     OnClick = Btn4Click
     Picture.Data = {
@@ -201,9 +202,9 @@ object Form1: TForm1
   end
   object Btn1_Label: TLabel
     Cursor = crHandPoint
-    Left = 448
+    Left = 464
     Height = 18
-    Top = 534
+    Top = 560
     Width = 43
     Caption = 'x Plus'
     Font.CharSet = ANSI_CHARSET
@@ -218,9 +219,9 @@ object Form1: TForm1
   end
   object Btn2_Label: TLabel
     Cursor = crHandPoint
-    Left = 192
+    Left = 208
     Height = 18
-    Top = 534
+    Top = 560
     Width = 57
     Caption = 'x Minus'
     Font.CharSet = ANSI_CHARSET
@@ -235,9 +236,9 @@ object Form1: TForm1
   end
   object Btn3_Label: TLabel
     Cursor = crHandPoint
-    Left = 320
+    Left = 336
     Height = 18
-    Top = 502
+    Top = 528
     Width = 43
     Caption = 'y Plus'
     Font.CharSet = ANSI_CHARSET
@@ -252,9 +253,9 @@ object Form1: TForm1
   end
   object Btn4_Label: TLabel
     Cursor = crHandPoint
-    Left = 320
+    Left = 336
     Height = 18
-    Top = 566
+    Top = 592
     Width = 57
     Caption = 'y Minus'
     Font.CharSet = ANSI_CHARSET
@@ -268,9 +269,9 @@ object Form1: TForm1
     OnClick = Btn4Click
   end
   object Button1: TButton
-    Left = 680
+    Left = 688
     Height = 25
-    Top = 16
+    Top = 528
     Width = 96
     Caption = 'Test Room'
     Default = True
@@ -279,9 +280,9 @@ object Form1: TForm1
     TabOrder = 1
   end
   object Edit1: TEdit
-    Left = 680
+    Left = 688
     Height = 26
-    Top = 48
+    Top = 560
     Width = 32
     Color = clWhite
     NumbersOnly = True
@@ -289,9 +290,9 @@ object Form1: TForm1
     Text = '2'
   end
   object Edit2: TEdit
-    Left = 712
+    Left = 720
     Height = 26
-    Top = 48
+    Top = 560
     Width = 32
     Color = clWhite
     NumbersOnly = True
@@ -299,9 +300,9 @@ object Form1: TForm1
     Text = '2'
   end
   object Edit3: TEdit
-    Left = 744
+    Left = 752
     Height = 26
-    Top = 48
+    Top = 560
     Width = 32
     Color = clWhite
     NumbersOnly = True
@@ -309,37 +310,38 @@ object Form1: TForm1
     Text = '2'
   end
   object Image1: TImage
-    Left = 216
-    Height = 300
+    Left = 208
+    Height = 328
     Top = 0
-    Width = 300
+    Width = 336
     Center = True
+    Proportional = True
     Stretch = True
   end
   object Button2: TButton
-    Left = 576
+    Left = 24
     Height = 25
     Hint = '(1) Dancing in the Moonlight'#13#10'(2) Textadventure Gwyn Theme'
-    Top = 16
+    Top = 526
     Width = 75
     Caption = 'Music'
     OnClick = Button2Click
     TabOrder = 5
   end
   object Edit4: TEdit
-    Left = 576
+    Left = 24
     Height = 26
     Hint = '(1) Dancing in the Moonlight'#13#10'(2) Textadventure Gwyn Theme'
-    Top = 48
+    Top = 558
     Width = 75
     NumbersOnly = True
     TabOrder = 6
   end
   object Memo_Description: TMemo
-    Left = 56
+    Left = 16
     Height = 256
     Top = 32
-    Width = 146
+    Width = 186
     Color = clWhite
     Font.CharSet = ANSI_CHARSET
     Font.Color = clBlack
@@ -350,12 +352,47 @@ object Form1: TForm1
     Lines.Strings = (
       'Item Name'
       ''
-      'Item Description '
+      'Item '
+      'Description '
       'which is a little '
       'bit longer'
     )
     ParentFont = False
     ReadOnly = True
     TabOrder = 7
+  end
+  object Memo_Stats: TMemo
+    Left = 552
+    Height = 328
+    Top = 0
+    Width = 192
+    Alignment = taCenter
+    BorderStyle = bsNone
+    Font.CharSet = ANSI_CHARSET
+    Font.Color = clBlack
+    Font.Height = -19
+    Font.Name = 'Georgia'
+    Font.Pitch = fpVariable
+    Font.Quality = fqDraft
+    Lines.Strings = (
+      'Health: '
+      'XXX'
+      ''
+      'Currend Weapon:'
+      'weapon1'
+      ''
+      'Damage: '
+      'XX strike dmg'
+      'XX thrust dmg'
+      'XX slash dmg'
+      'XX magic dmg'
+      ''
+      'Amount of Skills:'
+      'X'
+    )
+    ParentFont = False
+    ReadOnly = True
+    TabOrder = 8
+    WantReturns = False
   end
 end

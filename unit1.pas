@@ -655,6 +655,8 @@ begin
       Btn4_Label.caption := 'y Minus';
       PrintRoomData();
 
+      PlaySound('music\Dancing in the Moonlight piano.wav',0,SND_ASYNC);
+
       OnEnterRoom(); //whenever you can walk again it checks if there is (still) stuff in the Room
     end;
   1: //fighting UI
@@ -663,6 +665,8 @@ begin
       Btn2_Label.caption := 'Attack';
       Btn3_Label.caption := 'Weapons';
       Btn4_Label.caption := 'Items';
+
+      PlaySound('music\FightingTrack1.wav',0,SND_ASYNC);
 
       PrintEnemyData();
       Memo1.Clear();

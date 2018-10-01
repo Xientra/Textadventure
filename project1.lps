@@ -2,7 +2,7 @@
 <CONFIG>
   <ProjectSession>
     <PathDelim Value="\"/>
-    <Version Value="10"/>
+    <Version Value="9"/>
     <BuildModes Active="Default"/>
     <Units Count="13">
       <Unit0>
@@ -21,8 +21,8 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Unit1"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="382"/>
-        <CursorPos X="8" Y="413"/>
+        <TopLine Value="654"/>
+        <CursorPos X="38" Y="669"/>
         <FoldState Value=" TLlA0BX"/>
         <UsageCount Value="75"/>
         <Loaded Value="True"/>
@@ -94,31 +94,6 @@
         <Loaded Value="True"/>
       </Unit8>
       <Unit9>
-        <Filename Value="D:\lazarus\lcl\stdctrls.pp"/>
-        <UnitName Value="StdCtrls"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="944"/>
-        <CursorPos X="16" Y="952"/>
-        <UsageCount Value="10"/>
-      </Unit9>
-      <Unit10>
-        <Filename Value="RoomClass.pas"/>
-        <EditorIndex Value="2"/>
-        <TopLine Value="137"/>
-        <CursorPos X="24" Y="181"/>
-        <FoldState Value=" TLif0f10"/>
-        <UsageCount Value="32"/>
-        <Loaded Value="True"/>
-      </Unit10>
-      <Unit11>
-        <Filename Value="D:\lazarus\lcl\forms.pp"/>
-        <UnitName Value="Forms"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="772"/>
-        <CursorPos X="20" Y="803"/>
-        <UsageCount Value="10"/>
-      </Unit11>
-      <Unit12>
         <Filename Value="roomobjectclass.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="RoomObjectClass"/>
@@ -126,6 +101,30 @@
         <CursorPos X="69" Y="30"/>
         <UsageCount Value="24"/>
         <Loaded Value="True"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="D:\lazarus\lcl\stdctrls.pp"/>
+        <UnitName Value="StdCtrls"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="944"/>
+        <CursorPos X="16" Y="952"/>
+        <UsageCount Value="10"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="RoomClass.pas"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="137"/>
+        <CursorPos X="24" Y="181"/>
+        <UsageCount Value="32"/>
+        <Loaded Value="True"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="D:\lazarus\lcl\forms.pp"/>
+        <UnitName Value="Forms"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="772"/>
+        <CursorPos X="20" Y="803"/>
+        <UsageCount Value="10"/>
       </Unit12>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
