@@ -76,9 +76,9 @@ type
 
   end;
 
-//----------------------------------------------------------------------------//
-//-------------------------Schau in die ToDoListe-----------------------------//
-//----------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------------------------------//
+//-----------------------------------------------Schau in die ToDoListe---------------------------------------------------//
+//------------------------------------------------------------------------------------------------------------------------//
 
 var
   Form1: TForm1;
@@ -128,9 +128,9 @@ begin
   //Stuff just for testing the inventory
   Player1.AddItem(TItem.Create('some Key', 'it not usefull for any door...','Images/Items/Key1.png'));
   Player1.AddItem(TItem.Create('ITEM', 'ITEM!!!!!!!!!!','Images/Items/ITEM.png'));
-  Player1.AddItem(TItem.Create('DamageUpItemThingy', 'It boosts your Damage by 20%','Images/Items/ITEM.png'));
+  Player1.AddItem(TItem.Create('DamageUpItemThingy', 'It boosts your Damage by 20%','Images/Items/DamageUp.png'));
   Player1.itemInventory[2].SetDamageUp(0.2);
-  Player1.AddItem(TItem.Create('SomeBomb', 'Its a Bomb','Images/Items/ITEM.png'));
+  Player1.AddItem(TItem.Create('SomeBomb', 'Its a Bomb','Images/Items/Bomb.png'));
   Player1.itemInventory[3].SetBomb(50);
   Player1.AddWeapon(TWeapon.Create('Some Sword', 'It is acually sharp even thought it looks a bit blocky.', 'Images/Items/ShortSword.png', 0, 0, 15, 0));
   Player1.AddWeapon(TWeapon.Create('Iron Bar', 'A brocken off piece of a former cell.'+sLineBreak+'It is a bit rosty already...', 'Images/Items/IronBar.png', 0, 0, 15, 0));
@@ -152,6 +152,7 @@ begin
   RoomArr[2, 0, 0].AddEnemy(TEnemy.Create('AAAAA', 20, 5, 'Images/Enemies/AAAAA.png'));
   RoomArr[2, 0, 0].EnemyArr[0].SetResistants(1, 1, 1);
   RoomArr[2, 0, 0].EnemyArr[0].SetItemDrop(TItem.Create('Literely just Trash', 'Like acually.', 'Images/Items/ITEM.png'));
+  //RoomArr[2, 0, 0].EnemyArr[0].SetWeaponDrop(TWeapon.Create('Test Wep', 'Hi, i am a test wep.', 'Images/Items/ITEM.png', 1, 2, 3, 4));
 
   CreateARoom('Hier Liegt eine Eisenstange', 'Images/Rooms/Höle.png', 3, 0, 0);
   CreateARoom('Vier Wege von hier aus', 'Images/Rooms/Höle.png', 2, 2, 0);
@@ -438,6 +439,7 @@ begin
   Memo1.Clear();
   Memo1.Lines.Add(Player1.GetCurrendRoom().GetDescription());
   Image1.Picture.LoadFromFile(Player1.GetCurrendRoom().GetImagePath());
+  Memo_Description.Clear();
 end;
 
 procedure TForm1.PlayerEndTurn(); //situation = 1
@@ -452,12 +454,18 @@ begin
     if (FightingEnemy.GetWeaponDrop() <> nil) then
     begin
       PLayer1.AddWeapon((FightingEnemy.GetWeaponDrop()));
-      PrintAndUIChange(0, 'You Won!'+sLineBreak+'He dropt ' + FightingEnemy.GetWeaponDrop().GetName() + '. It was added to your Weapon arsenal.');
-    end
-    else if (FightingEnemy.GetItemDrop() <> nil) then
+      PrintAndUIChange(0, 'You Won!'+sLineBreak+
+                          'He dropt '+FightingEnemy.GetWeaponDrop().GetName()+'. '+sLineBreak+
+                          FightingEnemy.GetWeaponDrop().GetDescription()+sLineBreak+
+                          'It deals '+FloatToStr(FightingEnemy.GetWeaponDrop().GetStrikeDmg())+' strike, '+FloatToStr(FightingEnemy.GetWeaponDrop().GetThrustDmg())+' thrust, '+FloatToStr(FightingEnemy.GetWeaponDrop().GetSlashDmg())+' slash, '+FloatToStr(FightingEnemy.GetWeaponDrop().GetMagicDmg())+' magic damage.'+sLineBreak+
+                          'It was added to your Weapon arsenal.');
+    end else if (FightingEnemy.GetItemDrop() <> nil) then
     begin
       Player1.AddItem(FightingEnemy.GetItemDrop());
-      PrintAndUIChange(0, 'You Won!'+sLineBreak+'He dropt ' + FightingEnemy.GetItemDrop().GetName() + '. It was added to your Inventory.');
+      PrintAndUIChange(0, 'You Won!'+sLineBreak+
+                          'He dropt ' + FightingEnemy.GetItemDrop().GetName()+'. '+sLineBreak+
+                          FightingEnemy.GetItemDrop().GetDescription()+sLineBreak+
+                          'It was added to your Inventory.');
     end
     else PrintAndUIChange(0, 'You Won!');
     //fight was ended
@@ -685,6 +693,12 @@ begin
                            sLineBreak+
                            'Currend Weapon: '+sLineBreak+
                            Player1.GetCurrendWeapon().GetName()+sLineBreak+
+                           sLineBreak+
+                           'Damage: '+sLineBreak+
+                           FloatToStr(Player1.GetCurrendWeapon().GetStrikeDmg())+' strike dmg'+sLineBreak+
+                           FloatToStr(Player1.GetCurrendWeapon().GetThrustDmg())+' thrust dmg'+sLineBreak+
+                           FloatToStr(Player1.GetCurrendWeapon().GetSlashDmg())+' slash dmg'+sLineBreak+
+                           FloatToStr(Player1.GetCurrendWeapon().GetMagicDmg())+' magic dmg'+sLineBreak+
                            sLineBreak+
                            'Amount of Skills: '+sLineBreak+
                            IntToStr(Player1.GetMaxAmountOfSkills()-Player1.GetAmountOfSkills())

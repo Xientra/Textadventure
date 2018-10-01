@@ -2,37 +2,38 @@
 
 -> Code
 _______________________________________
--das geghen in andere Räume muss auf "out of array" und "nil" geprüft werden
 -wenn du herrausfindest wie man etwas in das Nachrichten Fenster unten schreibt sag es mir bitte...
 -es sollte vieleicht ein Knopf für das bestätigen von text gemacht werden oder diese funktion sollte in den ersten Btn eingefügt werden
 -die start Waffe des Players ist nicht teil seines Waffen Inventares
--Enemies haben noch keine Bilder und werden nicht beschrieben wenn sie auftauchen
--man kann noch keine 	
-	Items
-	Waffen
-einsätzen ändern/einsätzen 
 
--Der Zug des Gegners sollte seine eigene situation haben
 -Im Skills Menu fängt man unten an (just saying)
 -Das Skill menu kann keine Sprünge im array machen, heißt es hält bei einem nil an, auch wenn danach noch ein Skill kommen würde
+-Bei den Items und dem Waffen ist das selbe problem und hier hat es auch starke auswirkungen, da die items ja irgentwann zerstört werden sollen...
+-(aber) Items/Waffen werden noch nicht zerstört
 
-
+_______________________________________
 -> 2D Assets
 _______________________________________
--Buttons Sprites
--Enemy Sprites (oder 3D?)
+	-Buttons Sprites
+	-Enemy Sprites (oder 3D?)
 
-
+_______________________________________
 -> "3D" Assets
 _______________________________________
 -> Items	
-	-IronBar
-	-Dolch
-	-KurzSchwert
-	-Schlüssel 1
 	-Skill 1
+	-Skill 2
+	-Skill 3
+	-Skill 4	
 
 -> Räume
 	-literally alle...
-
--Enemy Sprites (oder 2D?)
+_______________________________________
+-> Musik
+_______________________________________
+	-Ebene 1
+	-Ebene 2
+	-Ebene 3
+	-Kampf normal
+	-Kampf Boss
+	-Kampf final boss?
