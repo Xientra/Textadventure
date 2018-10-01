@@ -655,7 +655,7 @@ begin
       Btn4_Label.caption := 'y Minus';
       PrintRoomData();
 
-      PlaySound('music\Dancing in the Moonlight piano.wav',0,SND_ASYNC);
+      PlaySound('music\overworld_theme.wav',0,SND_ASYNC);
 
       OnEnterRoom(); //whenever you can walk again it checks if there is (still) stuff in the Room
     end;
