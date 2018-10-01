@@ -6,13 +6,15 @@ interface
 
 uses
   Classes, SysUtils, Dialogs{für ShowMessage},
-  ItemClass{für TItem}, EnemyClass{für TEnemy};
+  ItemClass{für TItem}, WeaponClass{für TWeapon}, EnemyClass{für TEnemy}, RoomObjectClass{für TRoomObject};
 
 type
   TRoom = class
   public
     EnemyArr: Array of TEnemy; //da man anscheinend keine Array of ... mit functions returnen kann müssen diese Array public sein
+    WeaponArr: Array of TWeapon;
     ItemArr: Array of TItem;
+    RoomObjectArr: Array of TRoomObject;
 
     constructor Create(_description: string; _imagePath: string; _pos_x, _pos_y, _pos_z: integer);
 
@@ -31,7 +33,9 @@ type
     function GetPosZ: Integer;
 
     procedure AddItem(_item: TItem);
+    procedure AddWeapon(_weapon: TWeapon);
     procedure AddEnemy(_enemy: TEnemy);
+    procedure AddRommObject(_roomObject: TRoomObject);
     //function GetEnemyArr(): Array of TEnemy;
   private
 
@@ -43,13 +47,11 @@ type
     RoomID: integer;
     //xPos, xNeg, yPos, yNeg, zPos, zNeg: TRoom; //zPos = Up; zNeg = Unten; xPos = rechts(?) usw...
 
-
-
   end;
 
 implementation
 
-uses Unit1; //entweder machen wir das damit oder wir übergeben das RoomArray über Create (damit der Raum seine pos benutzen kann)
+uses Unit1;
 
 constructor TRoom.Create(_description: string; _imagePath: string; _pos_x, _pos_y, _pos_z: integer);
 begin
@@ -160,20 +162,27 @@ begin
   result := ImagePath;
 end;
 
-procedure TRoom.AddItem(_item: TItem);
+procedure TRoom.AddWeapon(_weapon: TWeapon);
 begin
-  ShowMessage('AddItem has no effect yet');
+  SetLength(WeaponArr, Length(WeaponArr) + 1);
+  WeaponArr[Length(WeaponArr) - 1] := _weapon;
 end;
 
+procedure TRoom.AddItem(_item: TItem);
+begin
+  SetLength(ItemArr, Length(ItemArr) + 1);
+  ItemArr[Length(ItemArr) - 1] := _item;
+end;
 procedure TRoom.AddEnemy(_enemy: TEnemy);
 begin
   SetLength(EnemyArr, Length(EnemyArr) + 1);
   EnemyArr[Length(EnemyArr) - 1] := _enemy;
 end;
-{
-function TRoom.GetEnemyArr(): Array of TEnemy;
+procedure TRoom.AddRommObject(_roomObject: TRoomObject);
 begin
+  SetLength(RoomObjectArr, Length(RoomObjectArr) + 1);
+  RoomObjectArr[Length(RoomObjectArr) - 1] := _roomObject;
 end;
-}
+
 end.
 

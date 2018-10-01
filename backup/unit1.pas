@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
   StdCtrls, LCLType, ActnList, MMSystem{für die Musik},
-  RoomClass{für TRoom}, PlayerClass{für TPlayer}, EnemyClass{für TEnemy}, WeaponClass{für TWeapon}, ItemClass{für TItem}, SkillClass{I think you know by now...};
+  RoomClass{für TRoom}, PlayerClass{für TPlayer}, EnemyClass{für TEnemy}, WeaponClass{für TWeapon}, ItemClass{für TItem}, SkillClass{I think you know by now...}, RoomObjectClass{could it be? is this really for TRoomClass?!};
 
 type
 
@@ -94,7 +94,9 @@ var
   //1: Btn1: Angriff; Btn2: Skills; Btn3: Items; Btn4: Flee;
   UIState, UIStateCopy: integer;
 
+  //diese Beiden vars sind dafür da, das die information an welcher stelle das item/etc jewailigen array des Inventar/Raum ist. bsp: man hat zwei items in inventar was auch immer danach geschaut hat weiß das und will, das infos zum ersten gedruckt werden also setzt es die var auf die stelle des items
   inventoryIndex: integer;
+  roomStuffIndex: integer;
 
 implementation
 
@@ -133,7 +135,6 @@ begin
   Player1.AddItem(TItem.Create('SomeBomb', 'Its a Bomb','Images/Items/Bomb.png'));
   Player1.itemInventory[3].SetBomb(50);
   Player1.AddWeapon(TWeapon.Create('Some Sword', 'It is acually sharp even thought it looks a bit blocky.', 'Images/Items/ShortSword.png', 0, 0, 15, 0));
-  Player1.AddWeapon(TWeapon.Create('Iron Bar', 'A brocken off piece of a former cell.'+sLineBreak+'It is a bit rosty already...', 'Images/Items/IronBar.png', 0, 0, 15, 0));
   Player1.AddSkill(TSkill.Create('Some Skill', 'You can KILL with it.' +sLineBreak+ 'It deals Strike Damage', 'Images/Skills/someSkill.png', 2, 1.5, 0, 0, 0));
   Player1.AddSkill(TSkill.Create('Some other Skill', 'This one is just useless...'+sLineBreak+ 'It deals Slash Damage', 'Images/Skills/someOtherSkill.png', 5, 0, 0, 1.2, 0));
 
@@ -147,14 +148,16 @@ begin
 
   CreateARoom('Your in your cell ...'+sLineBreak+'But you have a Bonfire!'+sLineBreak+sLineBreak+'Praise The Sun!', 'Images/Rooms/BonFireCellRoom.png', 1, 0, 0);
 
-  CreateARoom('Here Should be an Enemy', 'Images/Rooms/Höle.png', 2, 0, 0);
-  CreateARoom('Irgendein Raum', 'Images/Rooms/Höle.png', 2, 1, 0);
-  RoomArr[2, 0, 0].AddEnemy(TEnemy.Create('AAAAA', 20, 5, 'Images/Enemies/AAAAA.png'));
-  RoomArr[2, 0, 0].EnemyArr[0].SetResistants(1, 1, 1);
-  RoomArr[2, 0, 0].EnemyArr[0].SetItemDrop(TItem.Create('Literely just Trash', 'Like acually.', 'Images/Items/ITEM.png'));
+  CreateARoom('Erste Kreuzung.', 'Images/Rooms/Höle.png', 2, 0, 0);
+  CreateARoom('Der Raum mit der Ratte.', 'Images/Rooms/Höle.png', 2, 1, 0);
+  RoomArr[2, 1, 0].AddEnemy(TEnemy.Create('AAAAA', 20, 5, 'Images/Enemies/AAAAA.png'));
+  RoomArr[2, 1, 0].EnemyArr[0].SetResistants(1, 1, 1);
+  RoomArr[2, 1, 0].EnemyArr[0].SetItemDrop(TItem.Create('Literely just Trash', 'Like acually.', 'Images/Items/ITEM.png'));
   //RoomArr[2, 0, 0].EnemyArr[0].SetWeaponDrop(TWeapon.Create('Test Wep', 'Hi, i am a test wep.', 'Images/Items/ITEM.png', 1, 2, 3, 4));
+  RoomArr[2, 1, 0].AddEnemy(TEnemy.Create('AAAAA2', 20, 5, 'Images/Enemies/AAAAA.png'));
 
   CreateARoom('Hier Liegt eine Eisenstange', 'Images/Rooms/Höle.png', 3, 0, 0);
+  RoomArr[3, 0, 0].AddWeapon(TWeapon.Create('Iron Bar', 'A brocken piece of a former cell.'+sLineBreak+'It is a bit rosty but can still function as a simple weapon.', 'Images/Items/IronBar.png', 0, 0, 15, 0));
   CreateARoom('Vier Wege von hier aus', 'Images/Rooms/Höle.png', 2, 2, 0);
   CreateARoom('Du siehst eine Waffe im nächsten Raum', 'Images/Rooms/Höle.png', 1, 2, 0);
   CreateARoom('WOW hier liegt tatsächlich ein Dolch', 'Images/Rooms/Höle.png', 0, 2, 0);
@@ -232,6 +235,8 @@ begin
       else Memo1.Lines.Add('You have no skills yet.')
     end;
   2: ;
+  10: ;
+  11: ;
   53:
     begin
       ChangeUIState(currendSituation);
@@ -244,9 +249,10 @@ begin
     begin
       PrintRoomData();
       ChangeUIState(currendSituation);
-    end
-
-    else Memo1.Lines.Add('lol no');
+    end;
+  99: ;
+  else
+    Memo1.Lines.Add('lol no');
   end;
 end;
 procedure TForm1.Button_2_Action();
@@ -276,6 +282,18 @@ begin
     begin
       //PrintAndUIChange(1, 'The Enemy delt ' + FloatToStr(FightingEnemy.GetDamage())+' damage.'+sLineBreak+'You now have ' + FloatToStr(Player1.GetHealth()) + ' health left');
       ChangeUIState(1);
+    end;
+  10:
+    begin
+      Player1.AddWeapon(Player1.GetCurrendRoom().WeaponArr[roomStuffIndex]);
+      Player1.GetCurrendRoom().WeaponArr[roomStuffIndex] := nil;
+      ChangeUIState(currendSituation);
+    end;
+  11:
+    begin
+      Player1.AddItem(Player1.GetCurrendRoom().ItemArr[roomStuffIndex]);
+      Player1.GetCurrendRoom().ItemArr[roomStuffIndex] := nil;
+      ChangeUIState(currendSituation);
     end;
   53:
     begin
@@ -338,6 +356,8 @@ begin
       else Memo1.Lines.Add('You have no weapons in your arsenal.')
     end;
   2: ;
+  10: ;
+  11: ;
   53:
     begin
       if (inventoryIndex - 1 >= 0) then
@@ -364,7 +384,8 @@ begin
         else ShowMessage('There is no skill down there')
       else ShowMessage('can now go futher down');
       PrintSkillData();
-    end
+    end;
+  99: ;
   else
     Memo1.Lines.Add('lol no');
   end;
@@ -388,6 +409,8 @@ begin
       else Memo1.Lines.Add('You have no items in your inventory.')
     end;
   2: ;
+  10: ;
+  11: ;
   53:
     begin
       if (inventoryIndex + 1 <= length(Player1.weaponInventory) - 1) then
@@ -414,7 +437,8 @@ begin
         else ShowMessage('There is no skill up there')
       else ShowMessage('can now go futher up (index of Skills)');
       PrintSkillData();
-    end
+    end;
+  99: ;
   else
     Memo1.Lines.Add('lol no');
   end;
@@ -471,7 +495,11 @@ begin
     //fight was ended
 
     //Destroy den Enemy Object und setzt alle Variablen die auf ihn zeigen zu nil
-    FreeAndNil(Player1.GetCurrendRoom().EnemyArr[0]); //FreeAndNil Destroyd ein Object und setz die pointer var (die in den Klammern) auf nil
+    for i := 0 to length(Player1.GetCurrendRoom.EnemyArr) do
+    begin
+      if (Player1.GetCurrendRoom.EnemyArr[i] = FightingEnemy) then
+        FreeAndNil(Player1.GetCurrendRoom().EnemyArr[i]); //FreeAndNil Destroyd ein Object und setz die pointer var (die in den Klammern) auf nil
+    end;
     FightingEnemy := nil;  //da der gegner zerstört wurde sollte auch FightingEnemy wieder auf nil
 
   end
@@ -494,7 +522,7 @@ begin
   Image1.Picture.LoadFromFile(FightingEnemy.GetImagePath());
 end;
 
-procedure TForm1.EnemyTurn(); //situation = 3
+procedure TForm1.EnemyTurn(); //situation = 2
 begin
   Player1.ChangeHealthBy(-(FightingEnemy.GetDamage()));
   Memo1.Clear();
@@ -535,7 +563,7 @@ var
 begin
 
   //1. check nach Gegnern
-  if (length(Player1.GetCurrendRoom().EnemyArr) - 1 >= 0) then
+  if (length(Player1.GetCurrendRoom().EnemyArr) > 0) then
     for i := 0 to length(Player1.GetCurrendRoom().EnemyArr) - 1 do
     begin
       if (Player1.GetCurrendRoom().EnemyArr[i] <> nil) then
@@ -545,11 +573,38 @@ begin
       end;
     end;
 
-
-  //3. check nach items
   //2. check nach waffen
+  if (length(Player1.GetCurrendRoom().WeaponArr) > 0) then
+    for i := 0 to length(Player1.GetCurrendRoom().WeaponArr) - 1 do
+    begin
+      if (Player1.GetCurrendRoom().WeaponArr[i] <> nil) then
+      begin
+        roomStuffIndex := i;
+        ChangeUIState(10);
+      end;
+    end
+  else
+  //3. check nach items
+  if (length(Player1.GetCurrendRoom().ItemArr) > 0) then
+    for i := 0 to length(Player1.GetCurrendRoom().ItemArr) - 1 do
+    begin
+      if (Player1.GetCurrendRoom().ItemArr[i] <> nil) then
+      begin
+        roomStuffIndex := i;
+        ChangeUIState(11);
+      end;
+    end
+  else
   //4. check nach RoomObjects
-
+  if (length(Player1.GetCurrendRoom().RoomObjectArr) > 0) then
+    for i := 0 to length(Player1.GetCurrendRoom().RoomObjectArr) - 1 do
+    begin
+      if (Player1.GetCurrendRoom().RoomObjectArr[i] <> nil) then
+      begin
+        ShowMessage('There is a RoomObject but what to do with it...');
+        //change situation to inspectRoom
+      end;
+    end;
 
   //Check nach verfügbaren Räumen und aktiviere die Knöpfe dem entsprechend
   if (UIState = 0) then
@@ -571,7 +626,7 @@ begin
     else SetButton(Btn4_Image, Btn4_Label, true);
   end;
 
-  if (currendSituation = 0) then PrintRoomData();
+  if (currendSituation = 0) and (UIState = 0) then PrintRoomData();
 end;
 
 procedure TForm1.ChangeSituation(_situation: integer);
@@ -625,6 +680,46 @@ begin
       SetButton(Btn4_Image, Btn4_Label, false);
 
       EnemyTurn(); //The Enemy deals Damage
+    end;
+  10: //Room Weapons
+    begin
+      Btn1_Label.caption := '';
+      SetButton(Btn1_Image, Btn1_Label, false);
+      Btn2_Label.caption := 'Take it';
+      SetButton(Btn2_Image, Btn2_Label, true);
+      Btn3_Label.caption := '';
+      SetButton(Btn3_Image, Btn3_Label, false);
+      Btn4_Label.caption := '';
+      SetButton(Btn4_Image, Btn4_Label, false);
+
+      Memo1.Clear();
+      Memo1.Lines.AddText('You see a Weapon and inspect it closer.');
+      //Print item description
+      Memo_Description.Clear();
+      Memo_Description.Lines.AddText(Player1.GetCurrendRoom().WeaponArr[roomStuffIndex].GetName());
+      Memo_Description.Lines.Add('');
+      Memo_Description.Lines.AddText(Player1.GetCurrendRoom().WeaponArr[roomStuffIndex].GetDescription());
+      Image1.Picture.LoadFromFile(Player1.GetCurrendRoom().WeaponArr[roomStuffIndex].GetImagePath());
+    end;
+  11: //Room Items
+    begin
+      Btn1_Label.caption := '';
+      SetButton(Btn1_Image, Btn1_Label, false);
+      Btn2_Label.caption := 'Take it';
+      SetButton(Btn2_Image, Btn2_Label, true);
+      Btn3_Label.caption := '';
+      SetButton(Btn3_Image, Btn3_Label, false);
+      Btn4_Label.caption := '';
+      SetButton(Btn4_Image, Btn4_Label, false);
+
+      Memo1.Clear();
+      Memo1.AddText('You see a Item and inspect it closer.');
+      //Print item description
+      Memo_Description.Clear();
+      Memo_Description.Lines.AddText(Player1.GetCurrendRoom().ItemArr[roomStuffIndex].GetName());
+      Memo_Description.Lines.Add('');
+      Memo_Description.Lines.AddText(Player1.GetCurrendRoom().ItemArr[roomStuffIndex].GetDescription());
+      Image1.Picture.LoadFromFile(Player1.GetCurrendRoom().ItemArr[roomStuffIndex].GetImagePath());
     end;
   53: //Weapon Menu
     begin
@@ -701,8 +796,7 @@ begin
                            FloatToStr(Player1.GetCurrendWeapon().GetMagicDmg())+' magic dmg'+sLineBreak+
                            sLineBreak+
                            'Amount of Skills: '+sLineBreak+
-                           IntToStr(Player1.GetMaxAmountOfSkills()-Player1.GetAmountOfSkills())
-                           );
+                           IntToStr(Player1.GetMaxAmountOfSkills()-Player1.GetAmountOfSkills()));
 end;
 
 procedure TForm1.PrintAndUIChange(_changeUITo: integer; _toPrint: string);
