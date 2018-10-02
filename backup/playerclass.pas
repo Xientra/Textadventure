@@ -144,7 +144,7 @@ begin
   if (length(itemInventory) = 0) then result := false
   else
     for i := 0 to length(self.itemInventory) - 1 do
-      if (self.itemInventory[i] <> nil) then result := i;
+      if (self.itemInventory[i] <> nil) then result := true;
 end;
 
 function TPlayer.GetAmountOfSkills(): integer;
@@ -162,7 +162,7 @@ begin
 end;
 procedure TPlayer.SetDefenseMultiplyer(_multi: real);
 begin
-  DefenseMultiplyer := _multi;
+  DefenseMultiplyer:=;
 end;
 
 end.

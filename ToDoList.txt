@@ -6,12 +6,10 @@ _______________________________________
 -es sollte vieleicht ein Knopf für das bestätigen von text gemacht werden oder diese funktion sollte in den ersten Btn eingefügt werden
 -die start Waffe des Players ist nicht teil seines Waffen Inventares
 
--Im Menu fängt man unten an
--Das Skill und Waffen Menu kann keine Sprünge im array machen, heißt es hält bei einem nil an, auch wenn danach noch ein Skill kommen würde (müssen sie ja aber auch nicht)
--jedes mal wenn einem gesagt wird, dass man nicht höher oder tiefer im inventar kann springt man in der Position wieder nach unten
--wenn das erste item im inventar nil ist hängt sich das spiel auf wenn es das inventar öffnen möchte
-
--Items/Waffen aus dem Inventar werden noch nicht zerstört
+-Im Skills Menu fängt man unten an (just saying)
+-Das Skill menu kann keine Sprünge im array machen, heißt es hält bei einem nil an, auch wenn danach noch ein Skill kommen würde
+-Bei den Items und dem Waffen ist das selbe problem und hier hat es auch starke auswirkungen, da die items ja irgentwann zerstört werden sollen...
+-(aber) Items/Waffen werden noch nicht zerstört
 
 _______________________________________
 -> 2D Assets
@@ -33,6 +31,7 @@ _______________________________________
 _______________________________________
 -> Musik
 _______________________________________
+	-Ebene 1
 	-Ebene 2
 	-Ebene 3
 	-Kampf normal

@@ -97,7 +97,9 @@ var
   Player1: TPlayer;
   FightingEnemy: TEnemy;
 
-  currendSituation: integer; //0 = map; 1 = combat;  2 = enemy turn;
+  currendSituation: integer; //0 = map; 1 = combat;  = interact with RoomObjects;
+  //0: Btn1: Norden; Btn2: Westen; Btn3: Süden; Btn: Osten;
+  //1: Btn1: Angriff; Btn2: Skills; Btn3: Items; Btn4: Flee;
   UIState, UIStateCopy: integer;
 
   //diese Beiden vars sind dafür da, das die information an welcher stelle das item/etc jewailigen array des Inventar/Raum ist. bsp: man hat zwei items in inventar was auch immer danach geschaut hat weiß das und will, das infos zum ersten gedruckt werden also setzt es die var auf die stelle des items
@@ -146,11 +148,10 @@ begin
   Player1.itemInventory[2].SetDamageUp(0.2);
   Player1.AddItem(TItem.Create('SomeBomb', 'Its a Bomb','Images/Items/Bomb.png'));
   Player1.itemInventory[3].SetBomb(50);
-  FreeAndNil(Player1.itemInventory[1]);
-  FreeAndNil(Player1.itemInventory[0]);
   Player1.AddWeapon(TWeapon.Create('Some Sword', 'It is acually sharp even thought it looks a bit blocky.', 'Images/Items/ShortSword.png', 0, 0, 15, 0));
   Player1.AddSkill(TSkill.Create('Some Skill', 'You can KILL with it.' +sLineBreak+ 'It deals Strike Damage', 'Images/Skills/someSkill.png', 2, 1.5, 0, 0, 0));
   Player1.AddSkill(TSkill.Create('Some other Skill', 'This one is just useless...'+sLineBreak+ 'It deals Slash Damage', 'Images/Skills/someOtherSkill.png', 5, 0, 0, 1.2, 0));
+
 
   ChangeSituation(0); //updates UI
   Memo_Description.Clear();
@@ -247,7 +248,7 @@ begin
   1:
     begin
       if (Player1.HasSkills() = true) then ChangeUIState(55) //Skill Menu
-      else PrintAndUIChange(UIState, 'You have no skills yet.');
+      else Memo1.Lines.Add('You have no skills yet.')
     end;
   2: {do nothing};
   10: {do nothing};
@@ -315,7 +316,7 @@ begin
     end;
   54:
     begin
-      If (Player1.itemInventory[inventoryIndex].UseItem() = false) then PrintAndUIChange(UIState, 'You are not able to use this Item in combat.')
+      If (Player1.itemInventory[inventoryIndex].UseItem() = false) then ShowMessage('You are not able to use this Item in combat.')
       else begin
         PrintAndUIChange(2, 'You used '+Player1.itemInventory[inventoryIndex].GetName()+'.');
         PlayerEndTurn();
@@ -338,7 +339,7 @@ begin
         PlayerEndTurn();
       end else
       begin
-        PrintAndUIChange(UIState, 'You have to wait '+IntToStr(Player1.Skills[inventoryIndex].GetTurnsToWait())+' more turns to use this skill.');
+        ShowMessage('You have to wait '+IntToStr(Player1.Skills[inventoryIndex].GetTurnsToWait())+' more turns to use this skill.');
       end;
     end;
   99:
@@ -350,22 +351,20 @@ begin
   end;
 end;
 procedure TForm1.Button_3_Action(); //                                     --> 3
-var i: integer; break: boolean;
 begin
   case UIState of
   0:
     begin
-      if (Player1.GetCurrendRoom.GetPosY+1 <= 5) and (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY+1,Player1.GetCurrendRoom.getPosZ] <> nil) then
-      begin
-        Player1.ChangeRoom('yPos');
-        PrintRoomData(Player1.GetCurrendRoom());
-        OnEnterRoom();
+      if (Player1.GetCurrendRoom.GetPosY+1 <= 5) and (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY+1,Player1.GetCurrendRoom.getPosZ] <> nil) then begin
+      Player1.ChangeRoom('yPos');
+      PrintRoomData(Player1.GetCurrendRoom());
+      OnEnterRoom();
       end;
     end;
   1:
     begin
       if (Player1.HasWeaponsInInventory() = true) then  ChangeUIState(53) //Weapon Menu
-      else PrintAndUIChange(UIState, 'You have no weapons in your arsenal yet.');
+      else Memo1.Lines.Add('You have no weapons in your arsenal.')
     end;
   2: {do nothing};
   10: {do nothing};
@@ -375,25 +374,17 @@ begin
       if (inventoryIndex - 1 >= 0) then
         if (Player1.weaponInventory[inventoryIndex - 1] <> nil) then
           inventoryIndex := inventoryIndex - 1
-        else PrintAndUIChange(UIState, 'Can not go futher up.') //next is nil
-      else PrintAndUIChange(UIState, 'Can not go futher up.'); //out of array (negative)
+        else ShowMessage('There is no weapon down there')
+      else ShowMessage('can now go futher down (index of Weapons)');
       PrintWeaponData(Player1.weaponInventory[inventoryIndex]);
     end;
   54:
     begin
       if (inventoryIndex - 1 >= 0) then
-      begin
-        break := false;
-        i := inventoryIndex;
-        while (break = false) and (i > 0) do
-        begin
-          i := i - 1;
-          if (Player1.itemInventory[i] <> nil) then
-            break := true;
-        end;
-        if (inventoryIndex = i) then PrintAndUIChange(UIState, 'Can not go futher up. all nil') //there are no more items this way in the array
-        else inventoryIndex := i;
-      end else PrintAndUIChange(UIState, 'Can not go futher up.'); //out of array (negative)
+        if (Player1.itemInventory[inventoryIndex - 1] <> nil) then
+          inventoryIndex := inventoryIndex - 1
+        else ShowMessage('There is no item down there')
+      else ShowMessage('can now go futher down (index of Weapons)');
       PrintItemData(Player1.itemInventory[inventoryIndex]);
     end;
   55:
@@ -401,8 +392,8 @@ begin
       if (inventoryIndex - 1 >= 0) then
         if (Player1.Skills[inventoryIndex - 1] <> nil) then
           inventoryIndex := inventoryIndex - 1
-        else PrintAndUIChange(UIState, 'Can not go futher up.') //next is nil
-      else PrintAndUIChange(UIState, 'Can not go futher up.'); //out of array (negative)
+        else ShowMessage('There is no skill down there')
+      else ShowMessage('can now go futher down');
       PrintSkillData(Player1.Skills[inventoryIndex]);
     end;
   99: ;
@@ -411,7 +402,6 @@ begin
   end;
 end;
 procedure TForm1.Button_4_Action(); //                                     --> 4
-var i: integer; break: boolean;
 begin
   case UIState of
   0:
@@ -425,7 +415,7 @@ begin
   1:
     begin
       if (Player1.HasItemsInInventory() = true) then ChangeUIState(54) //Item Menu
-      else PrintAndUIChange(UIState, 'You have no items in your inventory yet.');//Memo1.Lines.Add('You have no items in your inventory yet.');
+      else Memo1.Lines.Add('You have no items in your inventory.')
     end;
   2: {do nothing};
   10: {do nothing};
@@ -435,27 +425,17 @@ begin
       if (inventoryIndex + 1 <= length(Player1.weaponInventory) - 1) then
         if (Player1.weaponInventory[inventoryIndex + 1] <> nil) then
           inventoryIndex := inventoryIndex + 1
-        else PrintAndUIChange(UIState, 'Can not go futher down.') //next is nil
-      else PrintAndUIChange(UIState, 'Can not go futher down.'); //out of array (positive)
+        else ShowMessage('There is no weapon up there')
+      else ShowMessage('can now go futher up (index of Items)');
       PrintWeaponData(Player1.weaponInventory[inventoryIndex]);
     end;
   54:
     begin
       if (inventoryIndex + 1 <= length(Player1.itemInventory) - 1) then
-      begin
-        break := false;
-        i := inventoryIndex;
-        while (break = false) and (i < length(Player1.itemInventory) - 1) do
-        begin
-          i := i + 1;
-          if (Player1.itemInventory[i] <> nil) then
-            break := true;
-        end;
-        if (inventoryIndex = i) then PrintAndUIChange(UIState, 'Can not go futher down.') //there are no more items this way in the array
-        else inventoryIndex := i;
-      end
-      else PrintAndUIChange(UIState, 'Can not go futher down.'); //out of array (positive)
-
+        if (Player1.itemInventory[inventoryIndex + 1] <> nil) then
+          inventoryIndex := inventoryIndex + 1
+        else ShowMessage('There is no item up there')
+      else ShowMessage('can now go futher up (index of Items)');
       PrintItemData(Player1.itemInventory[inventoryIndex]);
     end;
   55:
@@ -463,8 +443,8 @@ begin
       if (inventoryIndex + 1 <= length(Player1.Skills) - 1) then
         if (Player1.Skills[inventoryIndex + 1] <> nil) then
           inventoryIndex := inventoryIndex + 1
-        else PrintAndUIChange(UIState, 'Can not go futher down.') //next is nil
-      else PrintAndUIChange(UIState, 'Can not go futher down.'); //out of array (positive)
+        else ShowMessage('There is no skill up there')
+      else ShowMessage('can now go futher up (index of Skills)');
       PrintSkillData(Player1.Skills[inventoryIndex]);
     end;
   99: ;
@@ -487,6 +467,9 @@ end;
 
 procedure TForm1.PrintAndUIChange(_changeUITo: integer; _toPrint: string);
 begin
+  if (_changeUITo = 0) then ChangeSituation(0);
+  if (_changeUITo = 1) then ChangeSituation(1);
+
   Memo1.Clear();
   Memo1.Lines.Add(_toPrint);
   UIStateCopy := _changeUITo;
@@ -498,6 +481,8 @@ procedure TForm1.ChangeUIState(_state: integer);
 var i: integer;
 begin
   UIState := _state;
+  Edit1.Text := IntToStr(UIState);
+  Edit3.Text := IntToStr(currendSituation);
 
   //Activate all Buttons at first
   SetButton(Btn1_Image, Btn1_Label, true);
@@ -508,7 +493,6 @@ begin
   case UIState of
     0: //walking UI
     begin
-      currendSituation := 0;
       Btn1_Label.caption := 'x Plus';
       Btn2_Label.caption := 'x Minus';
       Btn3_Label.caption := 'y Plus';
@@ -519,7 +503,6 @@ begin
     end;
   1: //fighting UI
     begin
-      currendSituation := 1;
       Btn1_Label.caption := 'Skills';
       Btn2_Label.caption := 'Attack';
       Btn3_Label.caption := 'Weapons';
@@ -531,7 +514,6 @@ begin
     end;
   2:
     begin
-      currendSituation := 2;
       Btn1_Label.caption := '';
       SetButton(Btn1_Image, Btn1_Label, false);
       Btn2_Label.caption := 'Ok';
@@ -645,10 +627,6 @@ begin
   end;
 
   PrintPlayerData(Player1); //Schreibt die stats des Spielers
-
-  //Debug stuff
-  Edit1.Text := IntToStr(UIState);
-  Edit3.Text := IntToStr(currendSituation);
 end;
 {------------------------------------------------------------------------------}
 
@@ -677,8 +655,7 @@ begin
       if (Player1.GetCurrendRoom().WeaponArr[i] <> nil) then
       begin
         roomStuffIndex := i;
-        //ChangeUIState(10);
-        PrintAndUIChange(10, 'your going to inspect the wep');
+        ChangeUIState(10);
       end;
     end
   else
@@ -823,7 +800,7 @@ begin
   Image1.Picture.LoadFromFile(_enemy.GetImagePath());
 end;
 
-procedure TForm1.PrintWeaponData(_weapon: TWeapon); //print situation = 53 and 10
+procedure TForm1.PrintWeaponData(_weapon: TWeapon); //print situation = 53
 begin
   Memo_Description.Clear();
   Memo_Description.Lines.AddText(_weapon.GetName());
@@ -832,7 +809,7 @@ begin
   Image1.Picture.LoadFromFile(_weapon.GetImagePath());
 end;
 
-procedure TForm1.PrintItemData(_item: TItem); //print situation = 54 and 11
+procedure TForm1.PrintItemData(_item: TItem); //print situation = 54
 begin
   Memo_Description.Clear();
   Memo_Description.Lines.AddText(_item.GetName());

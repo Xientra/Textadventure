@@ -1,13 +1,7 @@
 object Form1: TForm1
-<<<<<<< HEAD
   Left = 924
   Height = 642
   Top = 246
-=======
-  Left = 1087
-  Height = 642
-  Top = 207
->>>>>>> bb477fcd5521aa73a4eac4f357c023333701af8b
   Width = 800
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
@@ -285,9 +279,9 @@ object Form1: TForm1
     Text = '2'
   end
   object Edit2: TEdit
-    Left = 40
+    Left = 688
     Height = 26
-    Top = 544
+    Top = 584
     Width = 96
     Color = clWhite
     NumbersOnly = True
@@ -393,7 +387,7 @@ object Form1: TForm1
   object MusicTimer: TTimer
     Enabled = False
     OnTimer = MusicTimerTimer
-    left = 40
-    top = 576
+    left = 624
+    top = 568
   end
 end
