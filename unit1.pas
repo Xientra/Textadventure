@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
   StdCtrls, LCLType, ActnList, MMSystem{für die Musik},
-  RoomClass{für TRoom}, PlayerClass{für TPlayer}, EnemyClass{für TEnemy}, WeaponClass{für TWeapon}, ItemClass{für TItem}, SkillClass{I think you know by now...}, RoomObjectClass{could it be? is this really for TRoomClass?!};
+  RoomClass{für TRoom}, PlayerClass{für TPlayer}, EnemyClass{für TEnemy}, WeaponClass{für TWeapon}, ItemClass{für TItem}, SkillClass{I think you know by now...}, RoomObjectClass{could it be? is this really for TRoomClass?!}, menue;
 
 type
 
@@ -37,6 +37,7 @@ type
     procedure Btn2Click(Sender: TObject);
     procedure Btn3Click(Sender: TObject);
     procedure Btn4Click(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure Label_LeaveClick(Sender: TObject);
@@ -166,6 +167,11 @@ procedure TForm1.Btn1Click(Sender: TObject); begin Button_1_Action(); end;
 procedure TForm1.Btn2Click(Sender: TObject); begin Button_2_Action(); end;
 procedure TForm1.Btn3Click(Sender: TObject); begin Button_3_Action(); end;
 procedure TForm1.Btn4Click(Sender: TObject); begin Button_4_Action(); end;
+
+procedure TForm1.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  Form2.close();
+end;
 
 //Schaut ob Tasten gedrückt wurden
 procedure TForm1.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);

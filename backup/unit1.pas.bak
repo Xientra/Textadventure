@@ -37,6 +37,7 @@ type
     procedure Btn2Click(Sender: TObject);
     procedure Btn3Click(Sender: TObject);
     procedure Btn4Click(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure Label_LeaveClick(Sender: TObject);
@@ -166,6 +167,11 @@ procedure TForm1.Btn1Click(Sender: TObject); begin Button_1_Action(); end;
 procedure TForm1.Btn2Click(Sender: TObject); begin Button_2_Action(); end;
 procedure TForm1.Btn3Click(Sender: TObject); begin Button_3_Action(); end;
 procedure TForm1.Btn4Click(Sender: TObject); begin Button_4_Action(); end;
+
+procedure TForm1.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  Form2.close();
+end;
 
 //Schaut ob Tasten gedrückt wurden
 procedure TForm1.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -861,7 +867,7 @@ begin
   CreateARoom('Praise the Bonfire', 'Images/Rooms/Höle.png', 5, 3, 0);
   RoomArr[5,3,0].SetBlockedLeft(true);
   CreateARoom('Leerer Raum oder so', 'Images/Rooms/Höle.png', 4, 3, 0);
-  RoomArr[4,3,0].SetBlockedLeft(true);
+  RoomArr[4,3,0].SetBlockedRight(true);
   CreateARoom('Drop den Schlüssel Goblin', 'Images/Rooms/Höle.png', 4, 4, 0);
   CreateARoom('Useless ahead', 'Images/Rooms/Höle.png', 3, 4, 0);
   CreateARoom('Zum Glück hatte ich den schlüssel', 'Images/Rooms/Höle.png', 2, 4, 0);
