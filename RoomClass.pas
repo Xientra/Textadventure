@@ -32,26 +32,6 @@ type
     function GetPosY: Integer;
     function GetPosZ: Integer;
 
-    procedure SetBlockedRight(b: boolean);
-    procedure SetBlockedLeft(b: boolean);
-    procedure SetBlockedTop(b: boolean);
-    procedure SetBlockedBottom(b: boolean);
-
-    function GetBlockedRight: boolean;
-    function GetBlockedLeft: boolean;
-    function GetBlockedTop: boolean;
-    function GetBlockedBottom: boolean;
-
-    procedure SetDoorRight(b: boolean);
-    procedure SetDoorLeft(b: boolean);
-    procedure SetDoorTop(b: boolean);
-    procedure SetDoorBottom(b: boolean);
-
-    function GetDoorRight: boolean;
-    function GetDoorLeft: boolean;
-    function GetDoorTop: boolean;
-    function GetDoorBottom: boolean;
-
     procedure AddItem(_item: TItem);
     procedure AddWeapon(_weapon: TWeapon);
     procedure AddEnemy(_enemy: TEnemy);
@@ -62,8 +42,6 @@ type
     description: string;
     ImagePath: string;
     visited: boolean;
-    blocked_right, blocked_left, blocked_top, blocked_bottom: boolean;
-    door_right, door_left, door_top, door_bottom: boolean;
 
     pos_x, pos_y, pos_z: integer;
     RoomID: integer;
@@ -86,14 +64,6 @@ begin
   pos_z := _pos_z;
   RoomID := _pos_x*100 + _pos_y*10 +_pos_z;
 
-  blocked_right:= false;
-  blocked_left := false;
-  blocked_top := false;
-  blocked_bottom := false;
-  door_right := false;
-  door_left := false;
-  door_top := false;
-  door_bottom := false;
   //ShowMessage(IntToStr(pos_x) + IntToStr(pos_y) + IntToStr(pos_z));
 end;
 
@@ -213,87 +183,6 @@ begin
   SetLength(RoomObjectArr, Length(RoomObjectArr) + 1);
   RoomObjectArr[Length(RoomObjectArr) - 1] := _roomObject;
 end;
-
-procedure TRoom.SetBlockedRight(b: boolean);
-begin
-  blocked_right := b;
-end;
-
-procedure TRoom.SetBlockedLeft(b: boolean);
-begin
-  blocked_left := b;
-end;
-
-procedure TRoom.SetBlockedTop(b: boolean);
-begin
-  blocked_top := b;
-end;
-
-procedure TRoom.SetBlockedBottom(b: boolean);
-begin
-  blocked_bottom := b;
-end;
-
-procedure TRoom.SetDoorRight(b: boolean);
-begin
-  door_right := b;
-end;
-
-procedure TRoom.SetDoorLeft(b: boolean);
-begin
-  door_left := b;
-end;
-
-procedure TRoom.SetDoorTop(b: boolean);
-begin
-  door_top := b;
-end;
-
-procedure TRoom.SetDoorBottom(b: boolean);
-begin
-  door_bottom := b;
-end;
-
-function TRoom.GetBlockedRight: boolean;
-begin
-  result := blocked_right;
-end;
-
-function TRoom.GetBlockedLeft: boolean;
-begin
-  result := blocked_left;
-end;
-
-function TRoom.GetBlockedTop: boolean;
-begin
-  result := blocked_top;
-end;
-
-function TRoom.GetBlockedBottom: boolean;
-begin
-  result := blocked_bottom;
-end;
-
-function TRoom.GetDoorRight: boolean;
-begin
-  result := door_right;
-end;
-
-function TRoom.GetDoorLeft: boolean;
-begin
-  result := door_left;
-end;
-
-function TRoom.GetDoorTop: boolean;
-begin
-  result := door_top;
-end;
-
-function TRoom.GetDoorBottom: boolean;
-begin
-  result := door_bottom;
-end;
-
 
 end.
 

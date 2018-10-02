@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 924
+  Left = 1057
   Height = 642
-  Top = 246
+  Top = 183
   Width = 800
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
@@ -268,6 +268,17 @@ object Form1: TForm1
     ParentFont = False
     OnClick = Btn4Click
   end
+  object Button1: TButton
+    Left = 688
+    Height = 25
+    Top = 528
+    Width = 96
+    Caption = 'Test Room'
+    Default = True
+    OnClick = Button1Click
+    OnKeyDown = FormKeyDown
+    TabOrder = 1
+  end
   object Edit1: TEdit
     Left = 688
     Height = 26
@@ -275,17 +286,27 @@ object Form1: TForm1
     Width = 32
     Color = clWhite
     NumbersOnly = True
-    TabOrder = 1
+    TabOrder = 2
     Text = '2'
   end
   object Edit2: TEdit
-    Left = 688
+    Left = 720
     Height = 26
-    Top = 584
-    Width = 96
+    Top = 560
+    Width = 32
     Color = clWhite
     NumbersOnly = True
-    TabOrder = 2
+    TabOrder = 3
+    Text = '2'
+  end
+  object Edit3: TEdit
+    Left = 752
+    Height = 26
+    Top = 560
+    Width = 32
+    Color = clWhite
+    NumbersOnly = True
+    TabOrder = 4
     Text = '2'
   end
   object Image1: TImage
@@ -296,6 +317,25 @@ object Form1: TForm1
     Center = True
     Proportional = True
     Stretch = True
+  end
+  object Button2: TButton
+    Left = 24
+    Height = 25
+    Hint = '(1) Dancing in the Moonlight'#13#10'(2) Textadventure Gwyn Theme'
+    Top = 526
+    Width = 75
+    Caption = 'Music'
+    OnClick = Button2Click
+    TabOrder = 5
+  end
+  object Edit4: TEdit
+    Left = 24
+    Height = 26
+    Hint = '(1) Dancing in the Moonlight'#13#10'(2) Textadventure Gwyn Theme'
+    Top = 558
+    Width = 75
+    NumbersOnly = True
+    TabOrder = 6
   end
   object Memo_Description: TMemo
     Left = 16
@@ -319,7 +359,7 @@ object Form1: TForm1
     )
     ParentFont = False
     ReadOnly = True
-    TabOrder = 3
+    TabOrder = 7
   end
   object Memo_Stats: TMemo
     Left = 552
@@ -352,42 +392,7 @@ object Form1: TForm1
     )
     ParentFont = False
     ReadOnly = True
-    TabOrder = 4
+    TabOrder = 8
     WantReturns = False
-  end
-  object MuteBtn_Image: TImage
-    Left = 752
-    Height = 32
-    Top = 8
-    Width = 32
-    OnClick = MuteBtn_ImageClick
-    Picture.Data = {
-      1754506F727461626C654E6574776F726B477261706869635501000089504E47
-      0D0A1A0A0000000D4948445200000020000000200806000000737A7AF4000001
-      1C494441545847CD97DB0EC4200844F5FF3FDAC6263684E5324368BA3E76BBCE
-      6104A4738CB1C6876BBE09B0D61A736E097F9500908D8F64F62E0DB037DC4B47
-      160945BFB5016CA80A040570A2B71CC82CF79C7B05C003B41C820190E8A50B5E
-      9EE8E72D0056645E3EE8E710808C1EB537AA16B9470AA0C55180A82AA40B2100
-      2AEE5500720C2680257C44A2D6AA059163F80188C433884A323E0088B0BC522C
-      27CA00AC786722DE0E7C0E704A86994B5A8F400A236E789550CE011DF9A76598
-      B9C1F681ECA8FEBB15EBEB356A44952E7897333A1547F34025F99E603A00BC24
-      B606D7F240A27B45548A4CA7848F8001F032DF02A3002444565ED6B158FF6903
-      A87C135055A01B54F6CDE74D49DA19DA01E6C28A5CA1CB901166DEBD0078144C
-      10EDCDC1150000000049454E44AE426082
-    }
-  end
-  object Edit3: TEdit
-    Left = 688
-    Height = 26
-    Top = 531
-    Width = 80
-    TabOrder = 5
-    Text = 'Edit3'
-  end
-  object MusicTimer: TTimer
-    Enabled = False
-    OnTimer = MusicTimerTimer
-    left = 624
-    top = 568
   end
 end
