@@ -65,7 +65,7 @@ begin
 end;
 procedure TSkill.ReduceTurnsToWait();
 begin
-  if (turnsToWait > 0) then cooldown := cooldown - 1;
+  if (turnsToWait > 0) then turnsToWait := turnsToWait - 1;
 end;
 function TSkill.GetName(): string;
 begin

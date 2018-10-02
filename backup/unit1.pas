@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
   StdCtrls, LCLType, ActnList, MMSystem{für die Musik},
-  RoomClass{für TRoom}, PlayerClass{für TPlayer}, EnemyClass{für TEnemy}, WeaponClass{für TWeapon}, ItemClass{für TItem}, SkillClass{I think you know by now...}, RoomObjectClass{could it be? is this really for TRoomClass?!};
+  RoomClass{für TRoom}, PlayerClass{für TPlayer}, EnemyClass{für TEnemy}, WeaponClass{für TWeapon}, ItemClass{für TItem}, SkillClass{I think you know by now...}, RoomObjectClass{could it be? is this really for TRoomClass?!}, menue;
 
 type
 
@@ -37,6 +37,7 @@ type
     procedure Btn2Click(Sender: TObject);
     procedure Btn3Click(Sender: TObject);
     procedure Btn4Click(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure Label_LeaveClick(Sender: TObject);
@@ -69,9 +70,10 @@ type
     procedure PrintPlayerData(_player: TPlayer); //print situation all
     procedure PrintRoomData(_room: TRoom); //print situation = 0
     procedure PrintEnemyData(_enemy: TEnemy); //print situation = 1 and 2
-    procedure PrintWeaponData(_weapon: TWeapon); //print situation = 53 and 12
+    procedure PrintWeaponData(_weapon: TWeapon); //print situation = 53 and 10
     procedure PrintItemData(_item: TItem); //print situation = 54 and 11
     procedure PrintSkillData(_skill: TSkill); //print situation = 55
+    procedure PrintRoomObjectData(_roomObject: TRoomObject); //situation 12, 13, 14, 15
 
     //Erstellen der Räume
     procedure CreateARoom(_description: string; _imagePath: string; _pos_x, _pos_y, _pos_z: integer); //ist besser, damit die position an der der Raum erstellt wurde auf jeden fall dem Raum bekannt ist
@@ -126,8 +128,8 @@ begin
     MuteBtn_Image.Picture.LoadFromFile('Images/Buttons/MuteBtnOn.png');
 
   //Set RoomArray size
-  Room_x := 7-1;
-  Room_y := 7-1;
+  Room_x := 8-1;
+  Room_y := 8-1;
   Room_z := 7-1;
 
   //initilise RoomArray
@@ -143,19 +145,16 @@ begin
   Player1 := TPlayer.Create(RoomArr[1, 0, 0], TWeapon.Create('Fists', 'Just your good old hands.', 'Images/Items/ShortSword.png', 10, 0, 0, 0), 100);
   //Stuff just for testing the inventory
   Player1.AddItem(TItem.Create('some Key', 'it not usefull for any door...','Images/Items/Key1.png'));
-  Player1.AddItem(TItem.Create('ITEM', 'ITEM!!!!!!!!!!','Images/Items/ITEM.png'));
   Player1.AddItem(TItem.Create('DamageUpItemThingy', 'It boosts your Damage by 20%','Images/Items/DamageUp.png'));
-  Player1.itemInventory[2].SetDamageUp(0.2);
+  Player1.itemInventory[1].SetDamageUp(0.2);
   Player1.AddItem(TItem.Create('SomeBomb', 'Its a Bomb','Images/Items/Bomb.png'));
-  Player1.itemInventory[3].SetBomb(50);
+  Player1.itemInventory[2].SetBomb(50);
   Player1.AddWeapon(TWeapon.Create('Some Sword', 'It is acually sharp even thought it looks a bit blocky.', 'Images/Items/ShortSword.png', 0, 0, 15, 0));
   Player1.AddSkill(TSkill.Create('Some Skill', 'You can KILL with it.' +sLineBreak+ 'It deals Strike Damage', 'Images/Skills/someSkill.png', 2, 1.5, 0, 0, 0));
-  Player1.AddSkill(TSkill.Create('Some other Skill', 'This one is just useless...'+sLineBreak+ 'It deals Slash Damage', 'Images/Skills/someOtherSkill.png', 5, 0, 0, 1.2, 0));
 
 
   ChangeSituation(0); //updates UI
   Memo_Description.Clear();
-
 end;
 
 
@@ -166,6 +165,11 @@ procedure TForm1.Btn1Click(Sender: TObject); begin Button_1_Action(); end;
 procedure TForm1.Btn2Click(Sender: TObject); begin Button_2_Action(); end;
 procedure TForm1.Btn3Click(Sender: TObject); begin Button_3_Action(); end;
 procedure TForm1.Btn4Click(Sender: TObject); begin Button_4_Action(); end;
+
+procedure TForm1.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  Form2.close();
+end;
 
 //Schaut ob Tasten gedrückt wurden
 procedure TForm1.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -238,7 +242,7 @@ begin
   case UIState of
   0:
     begin
-      if (Player1.GetCurrendRoom.GetPosX+1 <= 5) and (RoomArr[Player1.GetCurrendRoom.getPosX+1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] <> nil) then
+      if (Player1.GetCurrendRoom.GetPosX+1 <= Room_x) and (RoomArr[Player1.GetCurrendRoom.getPosX+1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] <> nil) and (Player1.GetCurrendRoom.GetBlockedRight = false) and (Player1.GetCurrendRoom.GetDoorRight = false) then
       begin
         Player1.ChangeRoom('xPos');
         PrintRoomData(Player1.GetCurrendRoom());
@@ -278,7 +282,7 @@ begin
   case UIState of
   0:
     begin
-      if (Player1.GetCurrendRoom.GetPosX-1 >= 0) and (RoomArr[Player1.GetCurrendRoom.getPosX-1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] <> nil) then begin
+      if (Player1.GetCurrendRoom.GetPosX-1 >= 0) and (RoomArr[Player1.GetCurrendRoom.getPosX-1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] <> nil) and (Player1.GetCurrendRoom.GetBlockedLeft = false) and (Player1.GetCurrendRoom.GetDoorLeft = false) then begin
       Player1.ChangeRoom('xNeg');
       PrintRoomData(PLayer1.GetCurrendRoom());
       OnEnterRoom();
@@ -307,6 +311,34 @@ begin
       Player1.AddItem(Player1.GetCurrendRoom().ItemArr[roomStuffIndex]);
       Player1.GetCurrendRoom().ItemArr[roomStuffIndex] := nil;
       ChangeUIState(currendSituation);
+    end;
+  12:
+    begin
+      Player1.ChangeHealthBy(100); //<------------------------------------------I DONT KNOW ABOUT THIS HEALTH
+      PrintAndUIChange(currendSituation, 'You pray to the godess you dont know and ask for her assistance.'+sLineBreak+'You health has been restored.');
+      FreeAndNil(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex]);
+    end;
+  13:
+    begin
+      Player1.AddItem(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetChestItem());
+      PrintAndUIChange(currendSituation, 'You found '+Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetChestItem().GetName()+'. '+sLineBreak+Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetChestItem().GetDescription());
+      FreeAndNil(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex]);
+    end;
+  14:
+    begin
+      //Sets the chestItem to the item droped by the enemy
+      Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetMimicEnemy().SetItemDrop(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetChestItem());
+      FightingEnemy := Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetMimicEnemy();
+      PrintAndUIChange(2, 'The Chest was a Monster!'+sLineBreak+'It hit you before you could react.');
+      FreeAndNil(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex]);
+    end;
+  15:
+    begin
+      Player1.AddSkill(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetSkillToTeach());
+      PrintAndUIChange(currendSituation, 'As you touch the stature you feel great power and knowlegde flow throght your body.'+sLineBreak+
+                                         'You have learned '+Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetSkillToTeach().GetName()+sLineBreak+
+                                         Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetSkillToTeach().GetDescription());
+      FreeAndNil(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex]);
     end;
   53:
     begin
@@ -355,7 +387,7 @@ begin
   case UIState of
   0:
     begin
-      if (Player1.GetCurrendRoom.GetPosY+1 <= 5) and (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY+1,Player1.GetCurrendRoom.getPosZ] <> nil) then begin
+      if (Player1.GetCurrendRoom.GetPosY+1 <= Room_y) and (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY+1,Player1.GetCurrendRoom.getPosZ] <> nil) and (Player1.GetCurrendRoom.GetBlockedTop = false) and (Player1.GetCurrendRoom.GetDoorTop = false) then begin
       Player1.ChangeRoom('yPos');
       PrintRoomData(Player1.GetCurrendRoom());
       OnEnterRoom();
@@ -369,6 +401,10 @@ begin
   2: {do nothing};
   10: {do nothing};
   11: {do nothing};
+  12: {do nothing};
+  //13: ;
+  //14: ;
+  15: {do nothing};
   53:
     begin
       if (inventoryIndex - 1 >= 0) then
@@ -406,7 +442,7 @@ begin
   case UIState of
   0:
     begin
-      if (Player1.GetCurrendRoom.GetPosY-1 >= 0) and (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY-1,Player1.GetCurrendRoom.getPosZ] <> nil) then begin
+      if (Player1.GetCurrendRoom.GetPosY-1 >= 0) and (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY-1,Player1.GetCurrendRoom.getPosZ] <> nil) and (Player1.GetCurrendRoom.GetBlockedBottom = false) and (Player1.GetCurrendRoom.GetDoorBottom = false) then begin
       Player1.ChangeRoom('yNeg');
       PrintRoomData(Player1.GetCurrendRoom());
       OnEnterRoom();
@@ -420,6 +456,10 @@ begin
   2: {do nothing};
   10: {do nothing};
   11: {do nothing};
+  12: {do nothing};
+  13: {do nothing};
+  14: {do nothing};
+  15: {do nothing};
   53:
     begin
       if (inventoryIndex + 1 <= length(Player1.weaponInventory) - 1) then
@@ -491,8 +531,9 @@ begin
   SetButton(Btn4_Image, Btn4_Label, true);
 
   case UIState of
-    0: //walking UI
+    0: //walking
     begin
+      currendSituation := 0;
       Btn1_Label.caption := 'x Plus';
       Btn2_Label.caption := 'x Minus';
       Btn3_Label.caption := 'y Plus';
@@ -501,8 +542,9 @@ begin
 
       OnEnterRoom(); //whenever you can walk again it checks if there is (still) stuff in the Room
     end;
-  1: //fighting UI
+  1: //fighting
     begin
+      currendSituation := 1;
       Btn1_Label.caption := 'Skills';
       Btn2_Label.caption := 'Attack';
       Btn3_Label.caption := 'Weapons';
@@ -512,8 +554,9 @@ begin
       Memo1.Clear();
       Memo1.Lines.Add('The Enemy stands in front of you.'+sLineBreak+'What will you do?');
     end;
-  2:
+  2: //the Enemy turn
     begin
+      currendSituation := 2;
       Btn1_Label.caption := '';
       SetButton(Btn1_Image, Btn1_Label, false);
       Btn2_Label.caption := 'Ok';
@@ -527,8 +570,8 @@ begin
     end;
   10: //Room Weapons
     begin
-      Btn1_Label.caption := '';
-      SetButton(Btn1_Image, Btn1_Label, false);
+      Btn1_Label.caption := 'Leave it';
+      SetButton(Btn1_Image, Btn1_Label, true);
       Btn2_Label.caption := 'Take it';
       SetButton(Btn2_Image, Btn2_Label, true);
       Btn3_Label.caption := '';
@@ -537,18 +580,14 @@ begin
       SetButton(Btn4_Image, Btn4_Label, false);
 
       Memo1.Clear();
-      Memo1.Lines.AddText('You see a Weapon and inspect it closer.');
-      //Print item description
-      Memo_Description.Clear();
-      Memo_Description.Lines.AddText(Player1.GetCurrendRoom().WeaponArr[roomStuffIndex].GetName());
-      Memo_Description.Lines.Add('');
-      Memo_Description.Lines.AddText(Player1.GetCurrendRoom().WeaponArr[roomStuffIndex].GetDescription());
-      Image1.Picture.LoadFromFile(Player1.GetCurrendRoom().WeaponArr[roomStuffIndex].GetImagePath());
+      Memo1.Lines.AddText('You notice a Weapon and inspect it closer.');
+
+      PrintWeaponData(Player1.GetCurrendRoom().WeaponArr[roomStuffIndex]);
     end;
   11: //Room Items
     begin
-      Btn1_Label.caption := '';
-      SetButton(Btn1_Image, Btn1_Label, false);
+      Btn1_Label.caption := 'Leave it';
+      SetButton(Btn1_Image, Btn1_Label, true);
       Btn2_Label.caption := 'Take it';
       SetButton(Btn2_Image, Btn2_Label, true);
       Btn3_Label.caption := '';
@@ -557,13 +596,61 @@ begin
       SetButton(Btn4_Image, Btn4_Label, false);
 
       Memo1.Clear();
-      Memo1.Lines.AddText('You see a Item and inspect it closer.');
-      //Print item description
-      Memo_Description.Clear();
-      Memo_Description.Lines.AddText(Player1.GetCurrendRoom().ItemArr[roomStuffIndex].GetName());
-      Memo_Description.Lines.Add('');
-      Memo_Description.Lines.AddText(Player1.GetCurrendRoom().ItemArr[roomStuffIndex].GetDescription());
-      Image1.Picture.LoadFromFile(Player1.GetCurrendRoom().ItemArr[roomStuffIndex].GetImagePath());
+      Memo1.Lines.AddText('You notice a Item and inspect it closer.');
+
+      PrintItemData(Player1.GetCurrendRoom().ItemArr[roomStuffIndex]);
+    end;
+  12: //Interact with HealingObject
+    begin
+      Btn1_Label.caption := 'Leave';
+      SetButton(Btn1_Image, Btn1_Label, true);
+      Btn2_Label.caption := 'Pray';
+      SetButton(Btn2_Image, Btn2_Label, true);
+      Btn3_Label.caption := '';
+      SetButton(Btn3_Image, Btn3_Label, false);
+      Btn4_Label.caption := '';
+      SetButton(Btn4_Image, Btn4_Label, false);
+
+      PrintRoomObjectData(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex]);
+    end;
+  13: //Interact with Chest
+    begin
+      Btn1_Label.caption := 'Leave';
+      SetButton(Btn1_Image, Btn1_Label, true);
+      Btn2_Label.caption := 'Open';
+      SetButton(Btn2_Image, Btn2_Label, true);
+      Btn3_Label.caption := 'Attack';
+      SetButton(Btn3_Image, Btn3_Label, true);
+      Btn4_Label.caption := '';
+      SetButton(Btn4_Image, Btn4_Label, false);
+
+      PrintRoomObjectData(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex]);
+    end;
+  14: //Interact with Mimic
+    begin
+      Btn1_Label.caption := 'Leave';
+      SetButton(Btn1_Image, Btn1_Label, true);
+      Btn2_Label.caption := 'Open';
+      SetButton(Btn2_Image, Btn2_Label, true);
+      Btn3_Label.caption := 'Attack';
+      SetButton(Btn3_Image, Btn3_Label, true);
+      Btn4_Label.caption := '';
+      SetButton(Btn4_Image, Btn4_Label, false);
+
+      PrintRoomObjectData(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex]);
+    end;
+  15: //interact with SkillStature
+    begin
+      Btn1_Label.caption := 'Leave';
+      SetButton(Btn1_Image, Btn1_Label, true);
+      Btn2_Label.caption := 'Touch';
+      SetButton(Btn2_Image, Btn2_Label, true);
+      Btn3_Label.caption := '';
+      SetButton(Btn3_Image, Btn3_Label, false);
+      Btn4_Label.caption := '';
+      SetButton(Btn4_Image, Btn4_Label, false);
+
+      PrintRoomObjectData(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex]);
     end;
   53: //Weapon Menu
     begin
@@ -676,27 +763,34 @@ begin
     begin
       if (Player1.GetCurrendRoom().RoomObjectArr[i] <> nil) then
       begin
-        ShowMessage('There is a RoomObject but what to do with it...');
-        //change situation to inspectRoomObject
+        roomStuffIndex := i;
+        if (Player1.GetCurrendRoom().RoomObjectArr[i].GetIsHealing()) then
+          PrintAndUIChange(12, 'You notice a stature and get closer to it.');
+        if (Player1.GetCurrendRoom().RoomObjectArr[i].GetIsChest()) then
+          PrintAndUIChange(13, 'You notice a chest and get closer to it.');
+        if (Player1.GetCurrendRoom().RoomObjectArr[i].GetIsMimic()) then
+          PrintAndUIChange(14, 'You notice a chest and get closer to it.');
+        if (Player1.GetCurrendRoom().RoomObjectArr[i].GetIsSkillStatue()) then
+          PrintAndUIChange(15, 'You notice a stature and get closer to it.');
       end;
     end;
 
   //Check nach verfügbaren Räumen und aktiviere die Knöpfe dem entsprechend
   if (UIState = 0) then
   begin
-    if (Player1.GetCurrendRoom.GetPosX+1 > 5) or (RoomArr[Player1.GetCurrendRoom.getPosX+1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] = nil) then
+    if (Player1.GetCurrendRoom.GetPosX+1 > Room_x) or (RoomArr[Player1.GetCurrendRoom.getPosX+1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] = nil) or (Player1.GetCurrendRoom.GetBlockedRight = true) or (Player1.GetCurrendRoom.GetDoorRight = true) then
       SetButton(Btn1_Image, Btn1_Label, false)
     else SetButton(Btn1_Image, Btn1_Label, true);
 
-    if (Player1.GetCurrendRoom.GetPosX-1 < 0) or (RoomArr[Player1.GetCurrendRoom.getPosX-1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] = nil) then
+    if (Player1.GetCurrendRoom.GetPosX-1 < 0) or (RoomArr[Player1.GetCurrendRoom.getPosX-1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] = nil) or (Player1.GetCurrendRoom.GetBlockedLeft = true) or (Player1.GetCurrendRoom.GetDoorLeft = true) then
       SetButton(Btn2_Image, Btn2_Label, false)
     else SetButton(Btn2_Image, Btn2_Label, true);
 
-    if (Player1.GetCurrendRoom.GetPosY+1 > 5) or (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY+1,Player1.GetCurrendRoom.getPosZ] = nil) then
+    if (Player1.GetCurrendRoom.GetPosY+1 > Room_y) or (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY+1,Player1.GetCurrendRoom.getPosZ] = nil) or (Player1.GetCurrendRoom.GetBlockedTop = true) or (Player1.GetCurrendRoom.GetDoorTop = true) then
       SetButton(Btn3_Image, Btn3_Label, false)
     else SetButton(Btn3_Image, Btn3_Label, true);
 
-    if (Player1.GetCurrendRoom.GetPosY-1 < 0) or (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY-1,Player1.GetCurrendRoom.getPosZ] = nil) then
+    if (Player1.GetCurrendRoom.GetPosY-1 < 0) or (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY-1,Player1.GetCurrendRoom.getPosZ] = nil) or (Player1.GetCurrendRoom.GetBlockedBottom = true) or (Player1.GetCurrendRoom.GetDoorBottom = true) then
       SetButton(Btn4_Image, Btn4_Label, false)
     else SetButton(Btn4_Image, Btn4_Label, true);
   end;
@@ -800,7 +894,7 @@ begin
   Image1.Picture.LoadFromFile(_enemy.GetImagePath());
 end;
 
-procedure TForm1.PrintWeaponData(_weapon: TWeapon); //print situation = 53
+procedure TForm1.PrintWeaponData(_weapon: TWeapon); //print situation = 53 and 10
 begin
   Memo_Description.Clear();
   Memo_Description.Lines.AddText(_weapon.GetName());
@@ -809,7 +903,7 @@ begin
   Image1.Picture.LoadFromFile(_weapon.GetImagePath());
 end;
 
-procedure TForm1.PrintItemData(_item: TItem); //print situation = 54
+procedure TForm1.PrintItemData(_item: TItem); //print situation = 54 and 11
 begin
   Memo_Description.Clear();
   Memo_Description.Lines.AddText(_item.GetName());
@@ -826,6 +920,15 @@ begin
   Memo_Description.Lines.AddText(_skill.GetDescription());
   Image1.Picture.LoadFromFile(_skill.GetImagePath());
 end;
+
+procedure TForm1.PrintRoomObjectData(_roomObject: TRoomObject); //print situation = 12, 13, 14, 15
+begin
+  Memo_Description.Clear();
+  Memo_Description.Lines.AddText(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetName());
+  Memo1.Clear();
+  Memo1.Lines.AddText(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetDescription());
+  Image1.Picture.LoadFromFile(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetImagePath());
+end;
 {------------------------------------------------------------------------------}
 
 
@@ -838,32 +941,102 @@ end;
 
 procedure TForm1.CreateRooms(); //Erstellt den Inhalt des Spieles
 begin
-  CreateARoom('Your in your cell ...'+sLineBreak+'But you have a Bonfire!'+sLineBreak+sLineBreak+'Praise The Sun!', 'Images/Rooms/BonFireCellRoom.png', 1, 0, 0);
+  //Ebene 1
+  begin
+    CreateARoom('Your in your cell ...'+sLineBreak+'But you have a Bonfire!'+sLineBreak+sLineBreak+'Praise The Sun!', 'Images/Rooms/BonFireCellRoom.png', 1, 0, 0);
+    CreateARoom('Erste Kreuzung.', 'Images/Rooms/Höle.png', 2, 0, 0);
+    RoomArr[2, 0, 0].AddRoomObject(TRoomObject.Create('Sword Of The Moonlight', 'Pray To Me!'+sLineBreak+'I AM DIVINE!', 'Images/SwordOfMoonlightOnPedestal.png'));
+    //RoomArr[2, 0, 0].RoomObjectArr[0].SetHealing();
+    RoomArr[2, 0, 0].RoomObjectArr[0].SetChest(TItem.Create('ITEM', 'ITEM!!!!!!!!!!','Images/Items/ITEM.png'));
+    RoomArr[2, 0, 0].RoomObjectArr[0].SetMimic(TItem.Create('ITEM', 'ITEM!!!!!!!!!!','Images/Items/ITEM.png'), TEnemy.Create('Best Mimic Ever', 15, 15, 'Images/Enemies/BestMimicEver.jpg');
+    //RoomArr[2, 0, 0].RoomObjectArr[0].SetSkillStatue(TSkill.Create('Some other Skill', 'This one is just useless...'+sLineBreak+ 'It deals Slash Damage', 'Images/Skills/someOtherSkill.png', 5, 0, 0, 1.2, 0));
 
-  CreateARoom('Erste Kreuzung.', 'Images/Rooms/Höle.png', 2, 0, 0);
-  CreateARoom('Der Raum mit der Ratte.', 'Images/Rooms/Höle.png', 2, 1, 0);
-  RoomArr[2, 1, 0].AddEnemy(TEnemy.Create('AAAAA', 20, 5, 'Images/Enemies/AAAAA.png'));
-  RoomArr[2, 1, 0].EnemyArr[0].SetResistants(1, 1, 1);
-  RoomArr[2, 1, 0].EnemyArr[0].SetItemDrop(TItem.Create('Literely just Trash', 'Like acually.', 'Images/Items/ITEM.png'));
-  //RoomArr[2, 0, 0].EnemyArr[0].SetWeaponDrop(TWeapon.Create('Test Wep', 'Hi, i am a test wep.', 'Images/Items/ITEM.png', 1, 2, 3, 4));
-  RoomArr[2, 1, 0].AddEnemy(TEnemy.Create('AAAAA2', 20, 5, 'Images/Enemies/AAAAA.png'));
+    CreateARoom('Der Raum mit der Ratte.', 'Images/Rooms/Höle.png', 2, 1, 0);
+    RoomArr[2, 1, 0].AddEnemy(TEnemy.Create('AAAAA', 20, 5, 'Images/Enemies/AAAAA.png'));
+    RoomArr[2, 1, 0].EnemyArr[0].SetResistants(1, 1, 1);
+    RoomArr[2, 1, 0].EnemyArr[0].SetItemDrop(TItem.Create('Literely just Trash', 'Like acually.', 'Images/Items/ITEM.png'));
+    //RoomArr[2, 0, 0].EnemyArr[0].SetWeaponDrop(TWeapon.Create('Test Wep', 'Hi, i am a test wep.', 'Images/Items/ITEM.png', 1, 2, 3, 4));
+    RoomArr[2, 1, 0].AddEnemy(TEnemy.Create('AAAAA2', 20, 5, 'Images/Enemies/AAAAA.png'));
 
-  CreateARoom('Hier Liegt eine Eisenstange', 'Images/Rooms/Höle.png', 3, 0, 0);
-  RoomArr[3, 0, 0].AddWeapon(TWeapon.Create('Iron Bar', 'A brocken piece of a former cell.'+sLineBreak+'It is a bit rosty but can still function as a simple weapon.', 'Images/Items/IronBar.png', 15, 0, 0, 0));
-  CreateARoom('Vier Wege von hier aus', 'Images/Rooms/Höle.png', 2, 2, 0);
-  CreateARoom('Du siehst eine Waffe im nächsten Raum', 'Images/Rooms/Höle.png', 1, 2, 0);
-  CreateARoom('WOW hier liegt tatsächlich ein Dolch', 'Images/Rooms/Höle.png', 0, 2, 0);
-  CreateARoom('F*cking Goblins', 'Images/Rooms/Höle.png', 2, 3, 0);
-  CreateARoom('I see trouble', 'Images/Rooms/Höle.png', 3, 2, 0);
-  CreateARoom('And we make it tripple', 'Images/Rooms/Höle.png', 4, 2, 0);
-  CreateARoom('Gäb es doch nur Bonfire', 'Images/Rooms/Höle.png', 5, 2, 0);
-  CreateARoom('Praise the Bonfire', 'Images/Rooms/Höle.png', 5, 3, 0);
-  CreateARoom('Leerer Raum oder so', 'Images/Rooms/Höle.png', 4, 3, 0);
-  CreateARoom('Drop den Schlüssel Goblin', 'Images/Rooms/Höle.png', 4, 4, 0);
-  CreateARoom('Useless ahead', 'Images/Rooms/Höle.png', 3, 4, 0);
-  CreateARoom('Zum Glück hatte ich den schlüssel', 'Images/Rooms/Höle.png', 2, 4, 0);
-  CreateARoom('Estus vorraus', 'Images/Rooms/Höle.png', 1, 4, 0);
-  CreateARoom('This is so sad. Alexa, play Gwyns theme', 'Images/Rooms/Höle.png', 2, 5, 0);
+    CreateARoom('Hier Liegt eine Eisenstange', 'Images/Rooms/Höle.png', 3, 0, 0);
+    RoomArr[3, 0, 0].AddWeapon(TWeapon.Create('Iron Bar', 'A brocken piece of a former cell.'+sLineBreak+'It is a bit rosty but can still function as a simple weapon.', 'Images/Items/IronBar.png', 15, 0, 0, 0));
+    CreateARoom('Vier Wege von hier aus', 'Images/Rooms/Höle.png', 2, 2, 0);
+    CreateARoom('Du siehst eine Waffe im nächsten Raum', 'Images/Rooms/Höle.png', 1, 2, 0);
+    CreateARoom('WOW hier liegt tatsächlich ein Dolch', 'Images/Rooms/Höle.png', 0, 2, 0);
+    CreateARoom('F*cking Goblins', 'Images/Rooms/Höle.png', 2, 3, 0);
+    RoomArr[2,3,0].SetDoorTop(true);
+    CreateARoom('I see trouble', 'Images/Rooms/Höle.png', 3, 2, 0);
+    CreateARoom('And we make it tripple', 'Images/Rooms/Höle.png', 4, 2, 0);
+    CreateARoom('Gäb es doch nur Bonfire', 'Images/Rooms/Höle.png', 5, 2, 0);
+    CreateARoom('Praise the Bonfire', 'Images/Rooms/Höle.png', 5, 3, 0);
+    RoomArr[5,3,0].SetBlockedLeft(true);
+    CreateARoom('Leerer Raum oder so', 'Images/Rooms/Höle.png', 4, 3, 0);
+    RoomArr[4,3,0].SetBlockedRight(true);
+    CreateARoom('Drop den Schlüssel Goblin', 'Images/Rooms/Höle.png', 4, 4, 0);
+    CreateARoom('Useless ahead', 'Images/Rooms/Höle.png', 3, 4, 0);
+    CreateARoom('Zum Glück hatte ich den schlüssel', 'Images/Rooms/Höle.png', 2, 4, 0);
+    RoomArr[2,4,0].SetDoorBottom(true);
+    CreateARoom('Estus vorraus', 'Images/Rooms/Höle.png', 1, 4, 0);
+    CreateARoom('This is so sad. Alexa, play Gwyns theme', 'Images/Rooms/Höle.png', 2, 5, 0);
+  end;
+
+  //Ebene 2
+  begin
+    CreateARoom('Bossraum.', 'Images/Rooms/Höle.png', 2, 5, 1);
+    CreateARoom('Hier liegt ein Skill.', 'Images/Rooms/Höle.png', 0, 4, 1);
+    CreateARoom('Drei Wege.', 'Images/Rooms/Höle.png', 1, 4, 1);
+    CreateARoom('Hier gehts zum Boss.', 'Images/Rooms/Höle.png', 2, 4, 1);
+    RoomArr[2,4,1].setblockedright(true);
+    CreateARoom('Treppe zu Ebene 3.', 'Images/Rooms/Höle.png', 3, 4, 1);
+    RoomArr[3,4,1].setblockedleft(true);
+    RoomArr[3,4,1].setdoorright(true);
+    CreateARoom('Startraum der zeiten Ebene.', 'Images/Rooms/Höle.png', 4, 4, 1);
+    RoomArr[4,4,1].setdoorleft(true);
+    CreateARoom('Shiny Truhe.', 'Images/Rooms/Höle.png', 6, 4, 1);
+    CreateARoom('Schatz vorraus?.', 'Images/Rooms/Höle.png', 1, 3, 1);
+    RoomArr[1,3,1].setblockedright(true);
+    CreateARoom('Gut, dass ich den Schlüssel hatte.', 'Images/Rooms/Höle.png', 2, 3, 1);
+    RoomArr[2,3,1].setblockedleft(true);
+    RoomArr[2,3,1].setdoorright(true);
+    CreateARoom('Hätte ich doch nur Schlüssel.', 'Images/Rooms/Höle.png', 3, 3, 1);
+    RoomArr[3,3,1].setdoorleft(true);
+    RoomArr[3,3,1].setdoorbottom(true);
+    CreateARoom('F*cking Skelett.', 'Images/Rooms/Höle.png', 4, 3, 1);
+    RoomArr[4,3,1].setblockedbottom(true);
+    CreateARoom('Skelett im Doppelpack.', 'Images/Rooms/Höle.png', 5, 3, 1);
+    RoomArr[5,3,1].setblockedbottom(true);
+    CreateARoom('Schatz vorraus!.', 'Images/Rooms/Höle.png', 6, 3, 1);
+    CreateARoom('Heal me up Scotty!.', 'Images/Rooms/Höle.png', 0, 2, 1);
+    CreateARoom('Mimikrier mich nicht.', 'Images/Rooms/Höle.png', 1, 2, 1);
+    RoomArr[1,2,1].setblockedright(true);
+    CreateARoom('Leerer Raum.', 'Images/Rooms/Höle.png', 2, 2, 1);
+    RoomArr[2,2,1].setblockedleft(true);
+    RoomArr[2,2,1].setblockedright(true);
+    CreateARoom('Zum Glück hatte ich noch einen Schlüssel.', 'Images/Rooms/Höle.png', 3, 2, 1);
+    RoomArr[3,2,1].setblockedleft(true);
+    RoomArr[3,2,1].setdoortop(true);
+    RoomArr[3,2,1].setdoorright(true);
+    CreateARoom('Diese Wand sieht nicht sehr stabil aus....', 'Images/Rooms/Höle.png', 4, 2, 1);
+    RoomArr[4,2,1].setdoorleft(true);
+    RoomArr[4,2,1].setdoorbottom(true);
+    RoomArr[4,2,1].setblockedtop(true);
+    CreateARoom('Random Wächter.', 'Images/Rooms/Höle.png', 5, 2, 1);
+    RoomArr[5,2,1].setblockedtop(true);
+    RoomArr[5,2,1].setblockedbottom(true);
+    CreateARoom('Mehr Skills.', 'Images/Rooms/Höle.png', 6, 2, 1);
+    CreateARoom('Noch ein Skelett.', 'Images/Rooms/Höle.png', 3, 1, 1);
+    RoomArr[3,1,1].setblockedright(true);
+    CreateARoom('Ein Agriffsboost liegt hinter dieser Wand.', 'Images/Rooms/Höle.png', 4, 1, 1);
+    RoomArr[4,1,1].setblockedleft(true);
+    CreateARoom('Hey, wanna buy some Keys.', 'Images/Rooms/Höle.png', 5, 1, 1);
+    RoomArr[5,1,1].setblockedtop(true);
+    CreateARoom('Dieser Wächter hat 100 pro einen Schlüssel.', 'Images/Rooms/Höle.png', 3, 0, 1);
+  end;
+
+  //Ebene 3
+  begin
+
+  end;
 end;
 
 end.

@@ -10,32 +10,51 @@ uses
 type
   TRoomObject = class
   public
-    constructor Create(_name, _description: string);
+    constructor Create(_name, _description, _imagePath: string);
+
     procedure SetHealing();
     procedure SetChest(_item: TItem);
     procedure SetMimic(_item: TItem; _enemy: TEnemy);
-    procedure SetSkillTeacher(_skill: TSkill);
+    procedure SetSkillStatue(_skill: TSkill);
+
+    function GetName(): string;
+    function GetDescription(): string;
+    function GetImagePath(): string;
+
+    function GetIsUseless(): boolean;
+    function GetIsHealing(): boolean;
+    function GetIsChest(): boolean;
+    function GetIsMimic(): boolean;
+    function GetIsSkillStatue(): boolean;
+
+    function GetChestItem(): TItem;
+    function GetMimicEnemy(): TEnemy;
+    function GetSkillToTeach(): TSkill;
+
   private
     name: string;
     description: string;
+    ImagePath: string;
 
     IsUseless,
     IsHealing,
     IsChest,
     IsMimic,
-    IsSkillTeacher: boolean;
+    IsSkillStatue: boolean;
 
     ChestItem: TItem;
-    MimicEnemy: Tenemy;
+    MimicEnemy: TEnemy;
     SkillToTeach: TSkill;
   end;
 
 implementation
 
-constructor TRoomObject.Create(_name, _description: string);
+constructor TRoomObject.Create(_name, _description, _imagePath: string);
 begin
+  inherited Create;
   name := _name;
   description := _description;
+  ImagePath := _imagePath;
 end;
 
 procedure TRoomObject.SetHealing();
@@ -44,7 +63,7 @@ begin
   IsHealing := true;
   IsChest := false;
   IsMimic := false;
-  IsSkillTeacher := false;
+  IsSkillStatue := false;
 end;
 procedure TRoomObject.SetChest(_item: TItem);
 begin
@@ -52,7 +71,7 @@ begin
   IsHealing := false;
   IsChest := true;
   IsMimic := false;
-  IsSkillTeacher := false;
+  IsSkillStatue := false;
 
   ChestItem := _item;
 end;
@@ -62,20 +81,67 @@ begin
   IsHealing := false;
   IsChest := false;
   IsMimic := true;
-  IsSkillTeacher := false;
+  IsSkillStatue := false;
 
   ChestItem := _item;
   MimicEnemy := _enemy;
 end;
-procedure TRoomObject.SetSkillTeacher(_skill: TSkill);
+procedure TRoomObject.SetSkillStatue(_skill: TSkill);
 begin
   IsUseless := false;
   IsHealing := false;
   IsChest := false;
   IsMimic := false;
-  IsSkillTeacher := true;
+  IsSkillStatue := true;
 
   SkillToTeach := _skill;
+end;
+
+function TRoomObject.GetName(): string;
+begin
+  result := name;
+end;
+function TRoomObject.GetDescription(): string;
+begin
+  result := description;
+end;
+function TRoomObject.GetImagePath(): string;
+begin
+  result := ImagePath;
+end;
+
+function TRoomObject.GetIsUseless(): boolean;
+begin
+  result := IsUseless;
+end;
+function TRoomObject.GetIsHealing(): boolean;
+begin
+  result := IsHealing;
+end;
+function TRoomObject.GetIsChest(): boolean;
+begin
+  result := IsChest;
+end;
+function TRoomObject.GetIsMimic(): boolean;
+begin
+  result := IsMimic;
+end;
+function TRoomObject.GetIsSkillStatue(): boolean;
+begin
+  result := IsSkillStatue;
+end;
+
+function TRoomObject.GetChestItem(): TItem;
+begin
+  result := ChestItem;
+end;
+function TRoomObject.GetMimicEnemy(): TEnemy;
+begin
+  result := MimicEnemy;
+end;
+function TRoomObject.GetSkillToTeach(): TSkill;
+begin
+  result := SkillToTeach;
 end;
 
 end.

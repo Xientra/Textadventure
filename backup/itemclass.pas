@@ -153,7 +153,7 @@ begin
   IsBomb := true;
   IsKey := false;
 
-  BombDamage:=;
+  BombDamage := _damage;
 end;
 
 procedure TItem.SetKey(_keyIndex: real);

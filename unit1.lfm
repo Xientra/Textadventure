@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 1101
+  Left = 1088
   Height = 642
-  Top = 324
+  Top = 156
   Width = 800
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
@@ -58,7 +58,7 @@ object Form1: TForm1
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   Position = poScreenCenter
-  LCLVersion = '1.6.2.0'
+  LCLVersion = '1.8.4.0'
   object Btn1_Image: TImage
     Cursor = crHandPoint
     Left = 448
@@ -280,9 +280,9 @@ object Form1: TForm1
     Text = '2'
   end
   object Edit2: TEdit
-    Left = 688
+    Left = 592
     Height = 26
-    Top = 584
+    Top = 606
     Width = 96
     Color = clWhite
     NumbersOnly = True
@@ -389,6 +389,6 @@ object Form1: TForm1
     Enabled = False
     OnTimer = MusicTimerTimer
     left = 624
-    top = 568
+    top = 552
   end
 end

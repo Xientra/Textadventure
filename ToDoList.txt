@@ -11,6 +11,7 @@ _______________________________________
 -Bei den Items und dem Waffen ist das selbe problem und hier hat es auch starke auswirkungen, da die items ja irgentwann zerstört werden sollen...
 -(aber) Items/Waffen werden noch nicht zerstört
 
+-es ist nicht klar wieviel die Heistatur Heilen soll, da der Player keine max leben hat
 _______________________________________
 -> 2D Assets
 _______________________________________

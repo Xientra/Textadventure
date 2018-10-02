@@ -52,7 +52,6 @@ begin
 
   cooldown := _cooldown;
   turnsToWait := 0;
-
 end;
 
 procedure TSkill.SetTurnToWaitToCooldown();
