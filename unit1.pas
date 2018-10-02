@@ -127,8 +127,8 @@ begin
     MuteBtn_Image.Picture.LoadFromFile('Images/Buttons/MuteBtnOn.png');
 
   //Set RoomArray size
-  Room_x := 7-1;
-  Room_y := 7-1;
+  Room_x := 8-1;
+  Room_y := 8-1;
   Room_z := 7-1;
 
   //initilise RoomArray
@@ -244,7 +244,7 @@ begin
   case UIState of
   0:
     begin
-      if (Player1.GetCurrendRoom.GetPosX+1 <= 5) and (RoomArr[Player1.GetCurrendRoom.getPosX+1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] <> nil) and (Player1.GetCurrendRoom.GetBlockedRight = false) and (Player1.GetCurrendRoom.GetDoorRight = false) then
+      if (Player1.GetCurrendRoom.GetPosX+1 <= Room_x) and (RoomArr[Player1.GetCurrendRoom.getPosX+1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] <> nil) and (Player1.GetCurrendRoom.GetBlockedRight = false) and (Player1.GetCurrendRoom.GetDoorRight = false) then
       begin
         Player1.ChangeRoom('xPos');
         PrintRoomData(Player1.GetCurrendRoom());
@@ -361,7 +361,7 @@ begin
   case UIState of
   0:
     begin
-      if (Player1.GetCurrendRoom.GetPosY+1 <= 5) and (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY+1,Player1.GetCurrendRoom.getPosZ] <> nil) and (Player1.GetCurrendRoom.GetBlockedTop = false) and (Player1.GetCurrendRoom.GetDoorTop = false) then begin
+      if (Player1.GetCurrendRoom.GetPosY+1 <= Room_y) and (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY+1,Player1.GetCurrendRoom.getPosZ] <> nil) and (Player1.GetCurrendRoom.GetBlockedTop = false) and (Player1.GetCurrendRoom.GetDoorTop = false) then begin
       Player1.ChangeRoom('yPos');
       PrintRoomData(Player1.GetCurrendRoom());
       OnEnterRoom();
@@ -690,7 +690,7 @@ begin
   //Check nach verfügbaren Räumen und aktiviere die Knöpfe dem entsprechend
   if (UIState = 0) then
   begin
-    if (Player1.GetCurrendRoom.GetPosX+1 > 5) or (RoomArr[Player1.GetCurrendRoom.getPosX+1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] = nil) or (Player1.GetCurrendRoom.GetBlockedRight = true) or (Player1.GetCurrendRoom.GetDoorRight = true) then
+    if (Player1.GetCurrendRoom.GetPosX+1 > Room_x) or (RoomArr[Player1.GetCurrendRoom.getPosX+1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] = nil) or (Player1.GetCurrendRoom.GetBlockedRight = true) or (Player1.GetCurrendRoom.GetDoorRight = true) then
       SetButton(Btn1_Image, Btn1_Label, false)
     else SetButton(Btn1_Image, Btn1_Label, true);
 
@@ -698,7 +698,7 @@ begin
       SetButton(Btn2_Image, Btn2_Label, false)
     else SetButton(Btn2_Image, Btn2_Label, true);
 
-    if (Player1.GetCurrendRoom.GetPosY+1 > 5) or (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY+1,Player1.GetCurrendRoom.getPosZ] = nil) or (Player1.GetCurrendRoom.GetBlockedTop = true) or (Player1.GetCurrendRoom.GetDoorTop = true) then
+    if (Player1.GetCurrendRoom.GetPosY+1 > Room_y) or (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY+1,Player1.GetCurrendRoom.getPosZ] = nil) or (Player1.GetCurrendRoom.GetBlockedTop = true) or (Player1.GetCurrendRoom.GetDoorTop = true) then
       SetButton(Btn3_Image, Btn3_Label, false)
     else SetButton(Btn3_Image, Btn3_Label, true);
 
@@ -844,6 +844,7 @@ end;
 
 procedure TForm1.CreateRooms(); //Erstellt den Inhalt des Spieles
 begin
+  //Ebene 1
   CreateARoom('Your in your cell ...'+sLineBreak+'But you have a Bonfire!'+sLineBreak+sLineBreak+'Praise The Sun!', 'Images/Rooms/BonFireCellRoom.png', 1, 0, 0);
 
   CreateARoom('Erste Kreuzung.', 'Images/Rooms/Höle.png', 2, 0, 0);
@@ -874,6 +875,57 @@ begin
   RoomArr[2,4,0].SetDoorBottom(true);
   CreateARoom('Estus vorraus', 'Images/Rooms/Höle.png', 1, 4, 0);
   CreateARoom('This is so sad. Alexa, play Gwyns theme', 'Images/Rooms/Höle.png', 2, 5, 0);
+
+  //Ebene 2
+  CreateARoom('Bossraum.', 'Images/Rooms/Höle.png', 2, 5, 1);
+  CreateARoom('Hier liegt ein Skill.', 'Images/Rooms/Höle.png', 0, 4, 1);
+  CreateARoom('Drei Wege.', 'Images/Rooms/Höle.png', 1, 4, 1);
+  CreateARoom('Hier gehts zum Boss.', 'Images/Rooms/Höle.png', 2, 4, 1);
+  RoomArr[2,4,1].setblockedright(true);
+  CreateARoom('Treppe zu Ebene 3.', 'Images/Rooms/Höle.png', 3, 4, 1);
+  RoomArr[3,4,1].setblockedleft(true);
+  RoomArr[3,4,1].setdoorright(true);
+  CreateARoom('Startraum der zeiten Ebene.', 'Images/Rooms/Höle.png', 4, 4, 1);
+  RoomArr[4,4,1].setdoorleft(true);
+  CreateARoom('Shiny Truhe.', 'Images/Rooms/Höle.png', 6, 4, 1);
+  CreateARoom('Schatz vorraus?.', 'Images/Rooms/Höle.png', 1, 3, 1);
+  RoomArr[1,3,1].setblockedright(true);
+  CreateARoom('Gut, dass ich den Schlüssel hatte.', 'Images/Rooms/Höle.png', 2, 3, 1);
+  RoomArr[2,3,1].setblockedleft(true);
+  RoomArr[2,3,1].setdoorright(true);
+  CreateARoom('Hätte ich doch nur Schlüssel.', 'Images/Rooms/Höle.png', 3, 3, 1);
+  RoomArr[3,3,1].setdoorleft(true);
+  RoomArr[3,3,1].setdoorbottom(true);
+  CreateARoom('F*cking Skelett.', 'Images/Rooms/Höle.png', 4, 3, 1);
+  RoomArr[4,3,1].setblockedbottom(true);
+  CreateARoom('Skelett im Doppelpack.', 'Images/Rooms/Höle.png', 5, 3, 1);
+  RoomArr[5,3,1].setblockedbottom(true);
+  CreateARoom('Schatz vorraus!.', 'Images/Rooms/Höle.png', 6, 3, 1);
+  CreateARoom('Heal me up Scotty!.', 'Images/Rooms/Höle.png', 0, 2, 1);
+  CreateARoom('Mimikrier mich nicht.', 'Images/Rooms/Höle.png', 1, 2, 1);
+  RoomArr[1,2,1].setblockedright(true);
+  CreateARoom('Leerer Raum.', 'Images/Rooms/Höle.png', 2, 2, 1);
+  RoomArr[2,2,1].setblockedleft(true);
+  RoomArr[2,2,1].setblockedright(true);
+  CreateARoom('Zum Glück hatte ich noch einen Schlüssel.', 'Images/Rooms/Höle.png', 3, 2, 1);
+  RoomArr[3,2,1].setblockedleft(true);
+  RoomArr[3,2,1].setdoortop(true);
+  RoomArr[3,2,1].setdoorright(true);
+  CreateARoom('Diese Wand sieht nicht sehr stabil aus....', 'Images/Rooms/Höle.png', 4, 2, 1);
+  RoomArr[4,2,1].setdoorleft(true);
+  RoomArr[4,2,1].setdoorbottom(true);
+  RoomArr[4,2,1].setblockedtop(true);
+  CreateARoom('Random Wächter.', 'Images/Rooms/Höle.png', 5, 2, 1);
+  RoomArr[5,2,1].setblockedtop(true);
+  RoomArr[5,2,1].setblockedbottom(true);
+  CreateARoom('Mehr Skills.', 'Images/Rooms/Höle.png', 6, 2, 1);
+  CreateARoom('Noch ein Skelett.', 'Images/Rooms/Höle.png', 3, 1, 1);
+  RoomArr[3,1,1].setblockedright(true);
+  CreateARoom('Ein Agriffsboost liegt hinter dieser Wand.', 'Images/Rooms/Höle.png', 4, 1, 1);
+  RoomArr[4,1,1].setblockedleft(true);
+  CreateARoom('Hey, wanna buy some Keys.', 'Images/Rooms/Höle.png', 5, 1, 1);
+  RoomArr[5,1,1].setblockedtop(true);
+  CreateARoom('Dieser Wächter hat 100 pro einen Schlüssel.', 'Images/Rooms/Höle.png', 3, 0, 1);
 end;
 
 end.
