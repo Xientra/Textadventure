@@ -14,7 +14,6 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
-
     Btn1_Label: TLabel;
     Btn2_Label: TLabel;
     Btn3_Label: TLabel;
@@ -23,11 +22,9 @@ type
     Btn2_Image: TImage;
     Btn3_Image: TImage;
     Btn4_Image: TImage;
-    Button2: TButton;
     Edit1: TEdit;
     Edit2: TEdit;
     Edit3: TEdit;
-    Edit4: TEdit;
     MuteBtn_Image: TImage;
     Memo_Stats: TMemo;
     Memo_Description: TMemo;
@@ -40,7 +37,6 @@ type
     procedure Btn2Click(Sender: TObject);
     procedure Btn3Click(Sender: TObject);
     procedure Btn4Click(Sender: TObject);
-    procedure Button2Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure Label_LeaveClick(Sender: TObject);
@@ -48,34 +44,38 @@ type
     procedure MuteBtn_ImageClick(Sender: TObject);
 
   public
-    procedure OnEnterRoom();
+    procedure OnEnterRoom(); //beschreibung unter "Logic hinter bestimmten Situationen" unter private
 
   private
-    procedure CreateRooms(); //Erschafft das Spiel
-    procedure CreateARoom(_description: string; _imagePath: string; _pos_x, _pos_y, _pos_z: integer);
-    //procedure SetAllNeighborRooms();
-
+    //unabhängingig von den lazarus generierten ButtonClick proceduren
     procedure Button_1_Action();
     procedure Button_2_Action();
     procedure Button_3_Action();
     procedure Button_4_Action();
-
+    //ändert die Buttons
     procedure SetButton(_background: TImage; _text: TLabel; toSetTo: boolean); //aktiviert oder deaktiviert den Butten mit dem TImage _bg und dem TLbl _text
 
-    //Schreibt die jeweiligen Infos auf alle memos und so
-    procedure PrintRoomData(); //situation = 0
-    procedure PlayerEndTurn(); //situation = 1          //schaut ob der Enemy besiegt ist und verigert die cooldowns
-    procedure EnemyTurn(); //situation = 2              //macht dem Spieler schaden
-    procedure PrintEnemyData(); //situation = 1 and 2
-    procedure PrintWeaponData(); //situation = 53
-    procedure PrintItemData(); //situation = 54
-    procedure PrintSkillData(); //situation = 55
-
-    //damit man die Button label änder kann wenn sie geändert wird
+    //Verwaltung der Situation und UIState
     procedure ChangeSituation(_situation: integer);
     procedure ChangeUIState(_state: integer);
     procedure PrintAndUIChange(_changeUITo: integer; _toPrint: string); //zeigt zusätzlich zum ändern der UI noch eine einmalige Nachicht
 
+    //Logic hinter bestimmten Situationen
+    {procedure OnEnterRoom();} //situation = 0;  schaut ob dinge/Enemyies im Raum sind usw. ist public
+    procedure PlayerEndTurn(); //situation = 1;  schaut ob der Enemy besiegt ist und verigert die cooldowns
+    procedure EnemyTurn(); //situation = 2;  Runde des Gegners
+
+    //Schreibt die jeweiligen Infos auf dei jeweiligen memos und so
+    procedure PrintPlayerData(_player: TPlayer); //print situation all
+    procedure PrintRoomData(_room: TRoom); //print situation = 0
+    procedure PrintEnemyData(_enemy: TEnemy); //print situation = 1 and 2
+    procedure PrintWeaponData(_weapon: TWeapon); //print situation = 53 and 12
+    procedure PrintItemData(_item: TItem); //print situation = 54 and 11
+    procedure PrintSkillData(_skill: TSkill); //print situation = 55
+
+    //Erstellen der Räume
+    procedure CreateARoom(_description: string; _imagePath: string; _pos_x, _pos_y, _pos_z: integer); //ist besser, damit die position an der der Raum erstellt wurde auf jeden fall dem Raum bekannt ist
+    procedure CreateRooms(); //Erstellt den Inhalt des Spieles
   end;
 
 //------------------------------------------------------------------------------------------------------------------------//
@@ -111,7 +111,6 @@ implementation
 {$R *.lfm}
 
 { TForm1 }
-
 procedure TForm1.FormCreate(Sender: TObject);
 var
   i, ii: integer;
@@ -159,80 +158,90 @@ begin
 
 end;
 
-procedure TForm1.CreateRooms();
-begin
 
-  CreateARoom('Your in your cell ...'+sLineBreak+'But you have a Bonfire!'+sLineBreak+sLineBreak+'Praise The Sun!', 'Images/Rooms/BonFireCellRoom.png', 1, 0, 0);
-
-  CreateARoom('Erste Kreuzung.', 'Images/Rooms/Höle.png', 2, 0, 0);
-  CreateARoom('Der Raum mit der Ratte.', 'Images/Rooms/Höle.png', 2, 1, 0);
-  RoomArr[2, 1, 0].AddEnemy(TEnemy.Create('AAAAA', 20, 5, 'Images/Enemies/AAAAA.png'));
-  RoomArr[2, 1, 0].EnemyArr[0].SetResistants(1, 1, 1);
-  RoomArr[2, 1, 0].EnemyArr[0].SetItemDrop(TItem.Create('Literely just Trash', 'Like acually.', 'Images/Items/ITEM.png'));
-  //RoomArr[2, 0, 0].EnemyArr[0].SetWeaponDrop(TWeapon.Create('Test Wep', 'Hi, i am a test wep.', 'Images/Items/ITEM.png', 1, 2, 3, 4));
-  RoomArr[2, 1, 0].AddEnemy(TEnemy.Create('AAAAA2', 20, 5, 'Images/Enemies/AAAAA.png'));
-
-  CreateARoom('Hier Liegt eine Eisenstange', 'Images/Rooms/Höle.png', 3, 0, 0);
-  RoomArr[3, 0, 0].AddWeapon(TWeapon.Create('Iron Bar', 'A brocken piece of a former cell.'+sLineBreak+'It is a bit rosty but can still function as a simple weapon.', 'Images/Items/IronBar.png', 0, 0, 15, 0));
-  CreateARoom('Vier Wege von hier aus', 'Images/Rooms/Höle.png', 2, 2, 0);
-  CreateARoom('Du siehst eine Waffe im nächsten Raum', 'Images/Rooms/Höle.png', 1, 2, 0);
-  CreateARoom('WOW hier liegt tatsächlich ein Dolch', 'Images/Rooms/Höle.png', 0, 2, 0);
-  CreateARoom('F*cking Goblins', 'Images/Rooms/Höle.png', 2, 3, 0);
-  CreateARoom('I see trouble', 'Images/Rooms/Höle.png', 3, 2, 0);
-  CreateARoom('And we make it tripple', 'Images/Rooms/Höle.png', 4, 2, 0);
-  CreateARoom('Gäb es doch nur Bonfire', 'Images/Rooms/Höle.png', 5, 2, 0);
-  CreateARoom('Praise the Bonfire', 'Images/Rooms/Höle.png', 5, 3, 0);
-  CreateARoom('Leerer Raum oder so', 'Images/Rooms/Höle.png', 4, 3, 0);
-  CreateARoom('Drop den Schlüssel Goblin', 'Images/Rooms/Höle.png', 4, 4, 0);
-  CreateARoom('Useless ahead', 'Images/Rooms/Höle.png', 3, 4, 0);
-  CreateARoom('Zum Glück hatte ich den schlüssel', 'Images/Rooms/Höle.png', 2, 4, 0);
-  CreateARoom('Estus vorraus', 'Images/Rooms/Höle.png', 1, 4, 0);
-  CreateARoom('Alexa, spiel Gwyns theme', 'Images/Rooms/Höle.png', 2, 5, 0);
-end;
-
-//ist besser, damit die position an der der Raum erstellt wurde auf jeden fall dem Raum bekannt ist
-procedure TForm1.CreateARoom(_description: string; _imagePath: string; _pos_x, _pos_y, _pos_z: integer);
-begin
-  RoomArr[_pos_x, _pos_y, _pos_z] := TRoom.Create(_description, _imagePath, _pos_x, _pos_y, _pos_z);
-end;
-
-{
-procedure TForm1.SetAllNeighborRooms(); //for each created Room we have to set their Neighbor Rooms once all Rooms are created
-var
-  x, y, z: integer;
-begin
-
-  for z := 0 to Room_z - 1 do
-    for y := 0 to Room_y - 1 do
-      for x := 0 to Room_x - 1 do
-        if (RoomArr[x, y, z] <> nil) then RoomArr[x, y, z].SetNeighborRooms();
-end;
-}
-
+{------------------------------------------------------------------------------}
+{----------------------Lazarus-generierte-proceduren---------------------------}
+//Die von Lazarus Generierten procedure rufen nur unsere eigene auf sonst nichts
 procedure TForm1.Btn1Click(Sender: TObject); begin Button_1_Action(); end;
 procedure TForm1.Btn2Click(Sender: TObject); begin Button_2_Action(); end;
 procedure TForm1.Btn3Click(Sender: TObject); begin Button_3_Action(); end;
 procedure TForm1.Btn4Click(Sender: TObject); begin Button_4_Action(); end;
 
-procedure TForm1.Button2Click(Sender: TObject);
-begin   //Music test
-  if Edit4.text = '1' then begin
-    PlaySound('music\Dancing in the Moonlight piano.wav',0,SND_ASYNC);
-  end else if Edit4.text = '2' then begin
-    PlaySound('music\Textadventure Gwyn Theme piano.wav',0,SND_ASYNC);
+//Schaut ob Tasten gedrückt wurden
+procedure TForm1.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_ESCAPE) then Application.Terminate();
+
+  if (Key = VK_1) then Button_1_Action();
+  if (Key = VK_2) then Button_2_Action();
+  if (Key = VK_3) then Button_3_Action();
+  if (Key = VK_4) then Button_4_Action();
+end;
+
+procedure TForm1.Label_LeaveClick(Sender: TObject); //Exit Button
+begin
+  Application.Terminate();
+end;
+
+procedure TForm1.MuteBtn_ImageClick(Sender: TObject); //Mute Button
+begin
+  if (muted = false) then
+  begin
+    MuteBtn_Image.Picture.LoadFromFile('Images/Buttons/MuteBtnOff.png');
+    MusicTimer.Enabled := false;
+    MusicCounter := 0;
+    PlaySound('music/mute.wav', 0, SND_ASYNC);
+    muted := true;
+  end
+  else if (muted = true) then
+  begin
+    MuteBtn_Image.Picture.LoadFromFile('Images/Buttons/MuteBtnOn.png');
+    MusicCounter := songlength; //damit er wieder anfängt zu spielen
+    MusicTimer.Enabled := true;
+    muted := false;
   end;
 end;
 
-procedure TForm1.Button_1_Action();
+procedure TForm1.MusicTimerTimer(Sender: TObject);
 begin
-  //ShowMessage('Button 1 pressed');
+
+  Edit2.Text := IntToStr(MusicCounter);
+  if (MusicCounter = songlength) then
+  begin
+    PlaySound(songPath,0,SND_ASYNC);
+    MusicCounter := 0;
+  end;
+  MusicCounter := MusicCounter + 1;
+end;
+{------------------------------------------------------------------------------}
+
+
+{------------------------------------------------------------------------------}
+{----------------------Funktionen der Buttons----------------------------------}
+procedure TForm1.SetButton(_background: TImage; _text: TLabel; toSetTo: boolean);
+begin
+  if (toSetTo = true) then
+  begin
+    _text.Cursor := crHandPoint;
+    _background.Cursor := crHandPoint;
+    _background.Picture.LoadFromFile('Images/ButtonBgPlayeholder.png');
+  end
+  else begin
+    _text.Cursor := crDefault;
+    _background.Cursor := crDefault;
+    _background.Picture.LoadFromFile('Images/ButtonBgPlayeholderDisabled.png');
+  end;
+end;
+
+procedure TForm1.Button_1_Action(); //                                     --> 1
+begin
   case UIState of
   0:
     begin
       if (Player1.GetCurrendRoom.GetPosX+1 <= 5) and (RoomArr[Player1.GetCurrendRoom.getPosX+1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] <> nil) then
       begin
         Player1.ChangeRoom('xPos');
-        PrintRoomData();
+        PrintRoomData(Player1.GetCurrendRoom());
         OnEnterRoom();
       end;
     end;
@@ -241,9 +250,9 @@ begin
       if (Player1.HasSkills() = true) then ChangeUIState(55) //Skill Menu
       else Memo1.Lines.Add('You have no skills yet.')
     end;
-  2: ;
-  10: ;
-  11: ;
+  2: {do nothing};
+  10: {do nothing};
+  11: {do nothing};
   53:
     begin
       ChangeUIState(currendSituation);
@@ -254,7 +263,7 @@ begin
     end;
   55:
     begin
-      PrintRoomData();
+      PrintRoomData(Player1.GetCurrendRoom());
       ChangeUIState(currendSituation);
     end;
   99: ;
@@ -262,18 +271,16 @@ begin
     Memo1.Lines.Add('lol no');
   end;
 end;
-procedure TForm1.Button_2_Action();
+procedure TForm1.Button_2_Action(); //                                     --> 2
 var
   _dmg: real;
 begin
-  //ShowMessage('Button 2 pressed');
-
   case UIState of
   0:
     begin
       if (Player1.GetCurrendRoom.GetPosX-1 >= 0) and (RoomArr[Player1.GetCurrendRoom.getPosX-1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] <> nil) then begin
       Player1.ChangeRoom('xNeg');
-      PrintRoomData();
+      PrintRoomData(PLayer1.GetCurrendRoom());
       OnEnterRoom();
       end;
     end;
@@ -287,7 +294,6 @@ begin
     end;
   2:
     begin
-      //PrintAndUIChange(1, 'The Enemy delt ' + FloatToStr(FightingEnemy.GetDamage())+' damage.'+sLineBreak+'You now have ' + FloatToStr(Player1.GetHealth()) + ' health left');
       ChangeUIState(1);
     end;
   10:
@@ -344,16 +350,14 @@ begin
     Memo1.Lines.Add('lol no');
   end;
 end;
-procedure TForm1.Button_3_Action();
+procedure TForm1.Button_3_Action(); //                                     --> 3
 begin
-  //ShowMessage('Button 3 pressed');
-
   case UIState of
   0:
     begin
       if (Player1.GetCurrendRoom.GetPosY+1 <= 5) and (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY+1,Player1.GetCurrendRoom.getPosZ] <> nil) then begin
       Player1.ChangeRoom('yPos');
-      PrintRoomData();
+      PrintRoomData(Player1.GetCurrendRoom());
       OnEnterRoom();
       end;
     end;
@@ -362,9 +366,9 @@ begin
       if (Player1.HasWeaponsInInventory() = true) then  ChangeUIState(53) //Weapon Menu
       else Memo1.Lines.Add('You have no weapons in your arsenal.')
     end;
-  2: ;
-  10: ;
-  11: ;
+  2: {do nothing};
+  10: {do nothing};
+  11: {do nothing};
   53:
     begin
       if (inventoryIndex - 1 >= 0) then
@@ -372,7 +376,7 @@ begin
           inventoryIndex := inventoryIndex - 1
         else ShowMessage('There is no weapon down there')
       else ShowMessage('can now go futher down (index of Weapons)');
-      PrintWeaponData();
+      PrintWeaponData(Player1.weaponInventory[inventoryIndex]);
     end;
   54:
     begin
@@ -381,7 +385,7 @@ begin
           inventoryIndex := inventoryIndex - 1
         else ShowMessage('There is no item down there')
       else ShowMessage('can now go futher down (index of Weapons)');
-      PrintItemData();
+      PrintItemData(Player1.itemInventory[inventoryIndex]);
     end;
   55:
     begin
@@ -390,23 +394,21 @@ begin
           inventoryIndex := inventoryIndex - 1
         else ShowMessage('There is no skill down there')
       else ShowMessage('can now go futher down');
-      PrintSkillData();
+      PrintSkillData(Player1.Skills[inventoryIndex]);
     end;
   99: ;
   else
     Memo1.Lines.Add('lol no');
   end;
 end;
-procedure TForm1.Button_4_Action();
+procedure TForm1.Button_4_Action(); //                                     --> 4
 begin
-  //ShowMessage('Button 4 pressed');
-
   case UIState of
   0:
     begin
       if (Player1.GetCurrendRoom.GetPosY-1 >= 0) and (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY-1,Player1.GetCurrendRoom.getPosZ] <> nil) then begin
       Player1.ChangeRoom('yNeg');
-      PrintRoomData();
+      PrintRoomData(Player1.GetCurrendRoom());
       OnEnterRoom();
       end;
     end;
@@ -415,9 +417,9 @@ begin
       if (Player1.HasItemsInInventory() = true) then ChangeUIState(54) //Item Menu
       else Memo1.Lines.Add('You have no items in your inventory.')
     end;
-  2: ;
-  10: ;
-  11: ;
+  2: {do nothing};
+  10: {do nothing};
+  11: {do nothing};
   53:
     begin
       if (inventoryIndex + 1 <= length(Player1.weaponInventory) - 1) then
@@ -425,7 +427,7 @@ begin
           inventoryIndex := inventoryIndex + 1
         else ShowMessage('There is no weapon up there')
       else ShowMessage('can now go futher up (index of Items)');
-      PrintWeaponData();
+      PrintWeaponData(Player1.weaponInventory[inventoryIndex]);
     end;
   54:
     begin
@@ -434,7 +436,7 @@ begin
           inventoryIndex := inventoryIndex + 1
         else ShowMessage('There is no item up there')
       else ShowMessage('can now go futher up (index of Items)');
-      PrintItemData();
+      PrintItemData(Player1.itemInventory[inventoryIndex]);
     end;
   55:
     begin
@@ -443,205 +445,36 @@ begin
           inventoryIndex := inventoryIndex + 1
         else ShowMessage('There is no skill up there')
       else ShowMessage('can now go futher up (index of Skills)');
-      PrintSkillData();
+      PrintSkillData(Player1.Skills[inventoryIndex]);
     end;
   99: ;
   else
     Memo1.Lines.Add('lol no');
   end;
 end;
-procedure TForm1.SetButton(_background: TImage; _text: TLabel; toSetTo: boolean);
-begin
-  if (toSetTo = true) then
-  begin
-    _text.Cursor := crHandPoint;
-    _background.Cursor := crHandPoint;
-    _background.Picture.LoadFromFile('Images/ButtonBgPlayeholder.png');
-  end
-  else begin
-    _text.Cursor := crDefault;
-    _background.Cursor := crDefault;
-    _background.Picture.LoadFromFile('Images/ButtonBgPlayeholderDisabled.png');
-  end;
-end;
+{------------------------------------------------------------------------------}
 
-procedure TForm1.PrintRoomData(); //situation = 0
-begin
-  Memo1.Clear();
-  Memo1.Lines.Add(Player1.GetCurrendRoom().GetDescription());
-  Image1.Picture.LoadFromFile(Player1.GetCurrendRoom().GetImagePath());
-  Memo_Description.Clear();
-end;
 
-procedure TForm1.PlayerEndTurn(); //situation = 1
-var
-  i: integer;
-begin
-  //check if enemy is defeated
-  if (FightingEnemy.GetHealth() <= 0) then
-  begin
-    Memo1.Clear();
-    Memo1.Lines.Add('You defeated the Enemy');
-    if (FightingEnemy.GetWeaponDrop() <> nil) then
-    begin
-      PLayer1.AddWeapon((FightingEnemy.GetWeaponDrop()));
-      PrintAndUIChange(0, 'You Won!'+sLineBreak+
-                          'He dropt '+FightingEnemy.GetWeaponDrop().GetName()+'. '+sLineBreak+
-                          FightingEnemy.GetWeaponDrop().GetDescription()+sLineBreak+
-                          'It deals '+FloatToStr(FightingEnemy.GetWeaponDrop().GetStrikeDmg())+' strike, '+FloatToStr(FightingEnemy.GetWeaponDrop().GetThrustDmg())+' thrust, '+FloatToStr(FightingEnemy.GetWeaponDrop().GetSlashDmg())+' slash, '+FloatToStr(FightingEnemy.GetWeaponDrop().GetMagicDmg())+' magic damage.'+sLineBreak+
-                          'It was added to your Weapon arsenal.');
-    end else if (FightingEnemy.GetItemDrop() <> nil) then
-    begin
-      Player1.AddItem(FightingEnemy.GetItemDrop());
-      PrintAndUIChange(0, 'You Won!'+sLineBreak+
-                          'He dropt ' + FightingEnemy.GetItemDrop().GetName()+'. '+sLineBreak+
-                          FightingEnemy.GetItemDrop().GetDescription()+sLineBreak+
-                          'It was added to your Inventory.');
-    end
-    else PrintAndUIChange(0, 'You Won!');
-    //fight was ended
-
-    //Destroy den Enemy Object und setzt alle Variablen die auf ihn zeigen zu nil
-    for i := 0 to length(Player1.GetCurrendRoom.EnemyArr) do
-    begin
-      if (Player1.GetCurrendRoom.EnemyArr[i] = FightingEnemy) then
-        FreeAndNil(Player1.GetCurrendRoom().EnemyArr[i]); //FreeAndNil Destroyd ein Object und setz die pointer var (die in den Klammern) auf nil
-    end;
-    FightingEnemy := nil;  //da der gegner zerstört wurde sollte auch FightingEnemy wieder auf nil
-
-  end
-  else //Enemy deals damage
-  begin
-    //verringert den cooldoown von jedem skill
-    for i := 0 to length(Player1.Skills) - 1 do
-      if (Player1.Skills[i] <> nil) then Player1.Skills[i].ReduceTurnsToWait();
-  end;
-end;
-
-procedure TForm1.PrintEnemyData(); //situation 1 and 2
-begin
-  Memo_Description.Clear();
-  Memo_Description.Lines.AddText(FightingEnemy.GetName());
-  Memo_Description.Lines.Add('');
-  if Round(FightingEnemy.GetHealth()) > 0 then
-  Memo_Description.Lines.AddText('The '+FightingEnemy.GetName()+' has '+FloatToStr(Round(FightingEnemy.GetHealth()))+' health left.')
-  else Memo_Description.Lines.AddText('The '+FightingEnemy.GetName()+' has '+' 0 health left.');
-  Image1.Picture.LoadFromFile(FightingEnemy.GetImagePath());
-end;
-
-procedure TForm1.EnemyTurn(); //situation = 2
-begin
-  Player1.ChangeHealthBy(-(FightingEnemy.GetDamage()));
-  Memo1.Clear();
-  Memo1.Lines.Add('The Enemy delt ' + FloatToStr(FightingEnemy.GetDamage())+' damage.'+sLineBreak+'You now have ' + FloatToStr(Player1.GetHealth()) + ' health left');
-  PrintEnemyData();
-end;
-
-procedure TForm1.PrintWeaponData(); //situation = 53
-begin
-  Memo_Description.Clear();
-  Memo_Description.Lines.AddText(Player1.weaponInventory[inventoryIndex].GetName());
-  Memo_Description.Lines.Add('');
-  Memo_Description.Lines.AddText(Player1.weaponInventory[inventoryIndex].GetDescription());
-  Image1.Picture.LoadFromFile(Player1.weaponInventory[inventoryIndex].GetImagePath());
-end;
-
-procedure TForm1.PrintItemData(); //situation = 54
-begin
-  Memo_Description.Clear();
-  Memo_Description.Lines.AddText(Player1.itemInventory[inventoryIndex].GetName());
-  Memo_Description.Lines.Add('');
-  Memo_Description.Lines.AddText(Player1.itemInventory[inventoryIndex].GetDescription());
-  Image1.Picture.LoadFromFile(Player1.itemInventory[inventoryIndex].GetImagePath());
-end;
-
-procedure TForm1.PrintSkillData(); //situation = 55
-begin
-  Memo_Description.Clear();
-  Memo_Description.Lines.AddText(Player1.Skills[inventoryIndex].GetName());
-  Memo_Description.Lines.Add('');
-  Memo_Description.Lines.AddText(Player1.Skills[inventoryIndex].GetDescription());
-  Image1.Picture.LoadFromFile(Player1.Skills[inventoryIndex].GetImagePath());
-end;
-
-procedure TForm1.OnEnterRoom();
-var
-  i: integer;
-begin
-
-  //1. check nach Gegnern
-  if (length(Player1.GetCurrendRoom().EnemyArr) > 0) then
-    for i := 0 to length(Player1.GetCurrendRoom().EnemyArr) - 1 do
-    begin
-      if (Player1.GetCurrendRoom().EnemyArr[i] <> nil) then
-      begin  //start Fight
-        FightingEnemy := Player1.GetCurrendRoom().EnemyArr[i];
-        PrintAndUIChange(1, 'You are now fighting!');
-      end;
-    end;
-
-  //2. check nach waffen
-  if (length(Player1.GetCurrendRoom().WeaponArr) > 0) then
-    for i := 0 to length(Player1.GetCurrendRoom().WeaponArr) - 1 do
-    begin
-      if (Player1.GetCurrendRoom().WeaponArr[i] <> nil) then
-      begin
-        roomStuffIndex := i;
-        ChangeUIState(10);
-      end;
-    end
-  else
-  //3. check nach items
-  if (length(Player1.GetCurrendRoom().ItemArr) > 0) then
-    for i := 0 to length(Player1.GetCurrendRoom().ItemArr) - 1 do
-    begin
-      if (Player1.GetCurrendRoom().ItemArr[i] <> nil) then
-      begin
-        roomStuffIndex := i;
-        ChangeUIState(11);
-      end;
-    end
-  else
-  //4. check nach RoomObjects
-  if (length(Player1.GetCurrendRoom().RoomObjectArr) > 0) then
-    for i := 0 to length(Player1.GetCurrendRoom().RoomObjectArr) - 1 do
-    begin
-      if (Player1.GetCurrendRoom().RoomObjectArr[i] <> nil) then
-      begin
-        ShowMessage('There is a RoomObject but what to do with it...');
-        //change situation to inspectRoom
-      end;
-    end;
-
-  //Check nach verfügbaren Räumen und aktiviere die Knöpfe dem entsprechend
-  if (UIState = 0) then
-  begin
-    if (Player1.GetCurrendRoom.GetPosX+1 > 5) or (RoomArr[Player1.GetCurrendRoom.getPosX+1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] = nil) then
-      SetButton(Btn1_Image, Btn1_Label, false)
-    else SetButton(Btn1_Image, Btn1_Label, true);
-
-    if (Player1.GetCurrendRoom.GetPosX-1 < 0) or (RoomArr[Player1.GetCurrendRoom.getPosX-1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] = nil) then
-      SetButton(Btn2_Image, Btn2_Label, false)
-    else SetButton(Btn2_Image, Btn2_Label, true);
-
-    if (Player1.GetCurrendRoom.GetPosY+1 > 5) or (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY+1,Player1.GetCurrendRoom.getPosZ] = nil) then
-      SetButton(Btn3_Image, Btn3_Label, false)
-    else SetButton(Btn3_Image, Btn3_Label, true);
-
-    if (Player1.GetCurrendRoom.GetPosY-1 < 0) or (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY-1,Player1.GetCurrendRoom.getPosZ] = nil) then
-      SetButton(Btn4_Image, Btn4_Label, false)
-    else SetButton(Btn4_Image, Btn4_Label, true);
-  end;
-
-  if (currendSituation = 0) and (UIState = 0) then PrintRoomData();
-end;
-
+{------------------------------------------------------------------------------}
+{---------------------------Ändern-der-Situation-------------------------------}
 procedure TForm1.ChangeSituation(_situation: integer);
 begin
   currendSituation := _situation;
   ChangeUIState(currendSituation);
 
   Edit2.Text := IntToStr(currendSituation);
+end;
+
+procedure TForm1.PrintAndUIChange(_changeUITo: integer; _toPrint: string);
+begin
+  if (_changeUITo = 0) then ChangeSituation(0);
+  if (_changeUITo = 1) then ChangeSituation(1);
+
+  Memo1.Clear();
+  Memo1.Lines.Add(_toPrint);
+  UIStateCopy := _changeUITo;
+
+  ChangeUIState(99);
 end;
 
 procedure TForm1.ChangeUIState(_state: integer);
@@ -664,7 +497,7 @@ begin
       Btn2_Label.caption := 'x Minus';
       Btn3_Label.caption := 'y Plus';
       Btn4_Label.caption := 'y Minus';
-      PrintRoomData();
+      PrintRoomData(Player1.GetCurrendRoom());
 
       OnEnterRoom(); //whenever you can walk again it checks if there is (still) stuff in the Room
     end;
@@ -675,7 +508,7 @@ begin
       Btn3_Label.caption := 'Weapons';
       Btn4_Label.caption := 'Items';
 
-      PrintEnemyData();
+      PrintEnemyData(FightingEnemy);
       Memo1.Clear();
       Memo1.Lines.Add('The Enemy stands in front of you.'+sLineBreak+'What will you do?');
     end;
@@ -744,7 +577,7 @@ begin
       for i := 0 to length(Player1.weaponInventory) - 1 do
         if (Player1.weaponInventory[i] <> nil) then
           Memo1.Lines.Add('-'+Player1.weaponInventory[i].GetName());
-      PrintWeaponData();
+      PrintWeaponData(Player1.weaponInventory[inventoryIndex]);
     end;
   54: //Item Menu
     begin
@@ -758,7 +591,7 @@ begin
       for i := 0 to length(Player1.itemInventory) - 1 do
         if (Player1.itemInventory[i] <> nil) then
           Memo1.Lines.Add('-'+Player1.itemInventory[i].GetName());
-      PrintItemData();
+      PrintItemData(Player1.itemInventory[inventoryIndex]);
     end;
   55: //skills Menu
     begin
@@ -775,7 +608,7 @@ begin
           Memo1.Lines.Add('-'+Player1.Skills[i].GetName());
           inventoryIndex := i;
         end;
-      PrintSkillData();
+      PrintSkillData(Player1.Skills[inventoryIndex]);
     end;
 
   99: //Single Message
@@ -790,82 +623,247 @@ begin
       SetButton(Btn4_Image, Btn4_Label, false);
 
     end;
+  else ShowMessage('You are in a UIState which has no definition.'+slineBreak+'How the hell did you get here?!');
   end;
 
-  //Update the Player Stats
+  PrintPlayerData(Player1); //Schreibt die stats des Spielers
+end;
+{------------------------------------------------------------------------------}
+
+
+{------------------------------------------------------------------------------}
+{------------------Logic-hinter-bestimmten-Situationen-------------------------}
+procedure TForm1.OnEnterRoom(); //logic situation = 0
+var
+  i: integer;
+begin
+  //1. check nach Gegnern
+  if (length(Player1.GetCurrendRoom().EnemyArr) > 0) then
+    for i := 0 to length(Player1.GetCurrendRoom().EnemyArr) - 1 do
+    begin
+      if (Player1.GetCurrendRoom().EnemyArr[i] <> nil) then
+      begin  //start Fight
+        FightingEnemy := Player1.GetCurrendRoom().EnemyArr[i];
+        PrintAndUIChange(1, 'You are now fighting!');
+      end;
+    end;
+
+  //2. check nach waffen
+  if (length(Player1.GetCurrendRoom().WeaponArr) > 0) then
+    for i := 0 to length(Player1.GetCurrendRoom().WeaponArr) - 1 do
+    begin
+      if (Player1.GetCurrendRoom().WeaponArr[i] <> nil) then
+      begin
+        roomStuffIndex := i;
+        ChangeUIState(10);
+      end;
+    end
+  else
+  //3. check nach items
+  if (length(Player1.GetCurrendRoom().ItemArr) > 0) then
+    for i := 0 to length(Player1.GetCurrendRoom().ItemArr) - 1 do
+    begin
+      if (Player1.GetCurrendRoom().ItemArr[i] <> nil) then
+      begin
+        roomStuffIndex := i;
+        ChangeUIState(11);
+      end;
+    end
+  else
+  //4. check nach RoomObjects
+  if (length(Player1.GetCurrendRoom().RoomObjectArr) > 0) then
+    for i := 0 to length(Player1.GetCurrendRoom().RoomObjectArr) - 1 do
+    begin
+      if (Player1.GetCurrendRoom().RoomObjectArr[i] <> nil) then
+      begin
+        ShowMessage('There is a RoomObject but what to do with it...');
+        //change situation to inspectRoomObject
+      end;
+    end;
+
+  //Check nach verfügbaren Räumen und aktiviere die Knöpfe dem entsprechend
+  if (UIState = 0) then
+  begin
+    if (Player1.GetCurrendRoom.GetPosX+1 > 5) or (RoomArr[Player1.GetCurrendRoom.getPosX+1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] = nil) then
+      SetButton(Btn1_Image, Btn1_Label, false)
+    else SetButton(Btn1_Image, Btn1_Label, true);
+
+    if (Player1.GetCurrendRoom.GetPosX-1 < 0) or (RoomArr[Player1.GetCurrendRoom.getPosX-1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] = nil) then
+      SetButton(Btn2_Image, Btn2_Label, false)
+    else SetButton(Btn2_Image, Btn2_Label, true);
+
+    if (Player1.GetCurrendRoom.GetPosY+1 > 5) or (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY+1,Player1.GetCurrendRoom.getPosZ] = nil) then
+      SetButton(Btn3_Image, Btn3_Label, false)
+    else SetButton(Btn3_Image, Btn3_Label, true);
+
+    if (Player1.GetCurrendRoom.GetPosY-1 < 0) or (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY-1,Player1.GetCurrendRoom.getPosZ] = nil) then
+      SetButton(Btn4_Image, Btn4_Label, false)
+    else SetButton(Btn4_Image, Btn4_Label, true);
+  end;
+
+  if (currendSituation = 0) and (UIState = 0) then PrintRoomData(Player1.GetCurrendRoom());
+end;
+
+procedure TForm1.PlayerEndTurn(); //logic situation = 1
+var
+  i: integer;
+begin
+  //check if enemy is defeated
+  if (FightingEnemy.GetHealth() <= 0) then
+  begin
+    Memo1.Clear();
+    Memo1.Lines.Add('You defeated the Enemy');
+    if (FightingEnemy.GetWeaponDrop() <> nil) then
+    begin
+      PLayer1.AddWeapon((FightingEnemy.GetWeaponDrop()));
+      PrintAndUIChange(0, 'You Won!'+sLineBreak+
+                          'He dropt '+FightingEnemy.GetWeaponDrop().GetName()+'. '+sLineBreak+
+                          FightingEnemy.GetWeaponDrop().GetDescription()+sLineBreak+
+                          'It deals '+FloatToStr(FightingEnemy.GetWeaponDrop().GetStrikeDmg())+' strike, '+FloatToStr(FightingEnemy.GetWeaponDrop().GetThrustDmg())+' thrust, '+FloatToStr(FightingEnemy.GetWeaponDrop().GetSlashDmg())+' slash, '+FloatToStr(FightingEnemy.GetWeaponDrop().GetMagicDmg())+' magic damage.'+sLineBreak+
+                          'It was added to your Weapon arsenal.');
+    end else if (FightingEnemy.GetItemDrop() <> nil) then
+    begin
+      Player1.AddItem(FightingEnemy.GetItemDrop());
+      PrintAndUIChange(0, 'You Won!'+sLineBreak+
+                          'He dropt ' + FightingEnemy.GetItemDrop().GetName()+'. '+sLineBreak+
+                          FightingEnemy.GetItemDrop().GetDescription()+sLineBreak+
+                          'It was added to your Inventory.');
+    end
+    else PrintAndUIChange(0, 'You Won!');
+    //fight was ended
+
+    //Destroy den Enemy Object und setzt alle Variablen die auf ihn zeigen zu nil
+    for i := 0 to length(Player1.GetCurrendRoom.EnemyArr) do
+    begin
+      if (Player1.GetCurrendRoom.EnemyArr[i] = FightingEnemy) then
+        FreeAndNil(Player1.GetCurrendRoom().EnemyArr[i]); //FreeAndNil Destroyd ein Object und setz die pointer var (die in den Klammern) auf nil
+    end;
+    FightingEnemy := nil;  //da der gegner zerstört wurde sollte auch FightingEnemy wieder auf nil
+
+  end
+  else //Enemy deals damage
+  begin
+    //verringert den cooldoown von jedem skill
+    for i := 0 to length(Player1.Skills) - 1 do
+      if (Player1.Skills[i] <> nil) then Player1.Skills[i].ReduceTurnsToWait();
+  end;
+end;
+
+procedure TForm1.EnemyTurn(); //logic situation = 2
+begin
+  Player1.ChangeHealthBy(-(FightingEnemy.GetDamage()));
+  Memo1.Clear();
+  Memo1.Lines.Add('The Enemy delt ' + FloatToStr(FightingEnemy.GetDamage())+' damage.'+sLineBreak+'You now have ' + FloatToStr(Player1.GetHealth()) + ' health left');
+  PrintEnemyData(FightingEnemy);
+end;
+{------------------------------------------------------------------------------}
+
+
+{------------------------------------------------------------------------------}
+{-------------Das-Schreiben-von-Infos-zur-jeweiligen-Situation-----------------}
+procedure TForm1.PrintPlayerData(_player: TPlayer); //print situation all
+begin
   Memo_Stats.Clear();
   Memo_Stats.Lines.AddText('Health: '+sLineBreak+
-                           FloatToStr(Player1.GetHealth())+sLineBreak+
+                           FloatToStr(_player.GetHealth())+sLineBreak+
                            sLineBreak+
                            'Currend Weapon: '+sLineBreak+
-                           Player1.GetCurrendWeapon().GetName()+sLineBreak+
+                           _player.GetCurrendWeapon().GetName()+sLineBreak+
                            sLineBreak+
                            'Damage: '+sLineBreak+
-                           FloatToStr(Player1.GetCurrendWeapon().GetStrikeDmg())+' strike dmg'+sLineBreak+
-                           FloatToStr(Player1.GetCurrendWeapon().GetThrustDmg())+' thrust dmg'+sLineBreak+
-                           FloatToStr(Player1.GetCurrendWeapon().GetSlashDmg())+' slash dmg'+sLineBreak+
-                           FloatToStr(Player1.GetCurrendWeapon().GetMagicDmg())+' magic dmg'+sLineBreak+
+                           FloatToStr(_player.GetCurrendWeapon().GetStrikeDmg())+' strike dmg'+sLineBreak+
+                           FloatToStr(_player.GetCurrendWeapon().GetThrustDmg())+' thrust dmg'+sLineBreak+
+                           FloatToStr(_player.GetCurrendWeapon().GetSlashDmg())+' slash dmg'+sLineBreak+
+                           FloatToStr(_player.GetCurrendWeapon().GetMagicDmg())+' magic dmg'+sLineBreak+
                            sLineBreak+
                            'Amount of Skills: '+sLineBreak+
-                           IntToStr(Player1.GetMaxAmountOfSkills()-Player1.GetAmountOfSkills()));
+                           IntToStr(_player.GetMaxAmountOfSkills()-_player.GetAmountOfSkills()));
 end;
 
-procedure TForm1.PrintAndUIChange(_changeUITo: integer; _toPrint: string);
+procedure TForm1.PrintRoomData(_room: TRoom); //print situation = 0
 begin
-  if (_changeUITo = 0) then ChangeSituation(0);
-  if (_changeUITo = 1) then ChangeSituation(1);
-
   Memo1.Clear();
-  Memo1.Lines.Add(_toPrint);
-  UIStateCopy := _changeUITo;
-
-  ChangeUIState(99);
+  Memo1.Lines.Add(_room.GetDescription());
+  Image1.Picture.LoadFromFile(_room.GetImagePath());
+  Memo_Description.Clear();
 end;
 
-procedure TForm1.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+procedure TForm1.PrintEnemyData(_enemy: TEnemy); //print situation 1 and 2
 begin
-  if (Key = VK_ESCAPE) then Application.Terminate();
-
-  if (Key = VK_1) then Button_1_Action();
-  if (Key = VK_2) then Button_2_Action();
-  if (Key = VK_3) then Button_3_Action();
-  if (Key = VK_4) then Button_4_Action();
+  Memo_Description.Clear();
+  Memo_Description.Lines.AddText(_enemy.GetName());
+  Memo_Description.Lines.Add('');
+  if Round(_enemy.GetHealth()) > 0 then
+    Memo_Description.Lines.AddText('The '+_enemy.GetName()+' has '+FloatToStr(Round(FightingEnemy.GetHealth()))+' health left.')
+  else
+    Memo_Description.Lines.AddText('The '+_enemy.GetName()+' has '+' 0 health left.');
+  Image1.Picture.LoadFromFile(_enemy.GetImagePath());
 end;
 
-procedure TForm1.Label_LeaveClick(Sender: TObject);
+procedure TForm1.PrintWeaponData(_weapon: TWeapon); //print situation = 53 and 10
 begin
-  Application.Terminate();
+  Memo_Description.Clear();
+  Memo_Description.Lines.AddText(_weapon.GetName());
+  Memo_Description.Lines.Add('');
+  Memo_Description.Lines.AddText(_weapon.GetDescription());
+  Image1.Picture.LoadFromFile(_weapon.GetImagePath());
 end;
 
-procedure TForm1.MusicTimerTimer(Sender: TObject);
+procedure TForm1.PrintItemData(_item: TItem); //print situation = 54 and 11
 begin
-
-  Edit2.Text := IntToStr(MusicCounter);
-  if (MusicCounter = songlength) then
-  begin
-    PlaySound(songPath,0,SND_ASYNC);
-    MusicCounter := 0;
-  end;
-  MusicCounter := MusicCounter + 1;
+  Memo_Description.Clear();
+  Memo_Description.Lines.AddText(_item.GetName());
+  Memo_Description.Lines.Add('');
+  Memo_Description.Lines.AddText(_item.GetDescription());
+  Image1.Picture.LoadFromFile(_item.GetImagePath());
 end;
 
-procedure TForm1.MuteBtn_ImageClick(Sender: TObject);
+procedure TForm1.PrintSkillData(_skill: TSkill); //print situation = 55
 begin
-  if (muted = false) then
-  begin
-    MuteBtn_Image.Picture.LoadFromFile('Images/Buttons/MuteBtnOff.png');
-    MusicTimer.Enabled := false;
-    MusicCounter := 0;
-    PlaySound('music/mute.wav', 0, SND_ASYNC);
-    muted := true;
-  end
-  else if (muted = true) then
-  begin
-    MuteBtn_Image.Picture.LoadFromFile('Images/Buttons/MuteBtnOn.png');
-    MusicCounter := songlength; //damit er wieder anfängt zu spielen
-    MusicTimer.Enabled := true;
-    muted := false;
-  end;
+  Memo_Description.Clear();
+  Memo_Description.Lines.AddText(_skill.GetName());
+  Memo_Description.Lines.Add('');
+  Memo_Description.Lines.AddText(_skill.GetDescription());
+  Image1.Picture.LoadFromFile(_skill.GetImagePath());
+end;
+{------------------------------------------------------------------------------}
+
+
+{------------------------------------------------------------------------------}
+{------------------------Erstellen-der-Räume-----------------------------------}
+procedure TForm1.CreateARoom(_description: string; _imagePath: string; _pos_x, _pos_y, _pos_z: integer); //ist besser, damit die position an der der Raum erstellt wurde auf jeden fall dem Raum bekannt ist
+begin
+  RoomArr[_pos_x, _pos_y, _pos_z] := TRoom.Create(_description, _imagePath, _pos_x, _pos_y, _pos_z);
+end;
+
+procedure TForm1.CreateRooms(); //Erstellt den Inhalt des Spieles
+begin
+  CreateARoom('Your in your cell ...'+sLineBreak+'But you have a Bonfire!'+sLineBreak+sLineBreak+'Praise The Sun!', 'Images/Rooms/BonFireCellRoom.png', 1, 0, 0);
+
+  CreateARoom('Erste Kreuzung.', 'Images/Rooms/Höle.png', 2, 0, 0);
+  CreateARoom('Der Raum mit der Ratte.', 'Images/Rooms/Höle.png', 2, 1, 0);
+  RoomArr[2, 1, 0].AddEnemy(TEnemy.Create('AAAAA', 20, 5, 'Images/Enemies/AAAAA.png'));
+  RoomArr[2, 1, 0].EnemyArr[0].SetResistants(1, 1, 1);
+  RoomArr[2, 1, 0].EnemyArr[0].SetItemDrop(TItem.Create('Literely just Trash', 'Like acually.', 'Images/Items/ITEM.png'));
+  //RoomArr[2, 0, 0].EnemyArr[0].SetWeaponDrop(TWeapon.Create('Test Wep', 'Hi, i am a test wep.', 'Images/Items/ITEM.png', 1, 2, 3, 4));
+  RoomArr[2, 1, 0].AddEnemy(TEnemy.Create('AAAAA2', 20, 5, 'Images/Enemies/AAAAA.png'));
+
+  CreateARoom('Hier Liegt eine Eisenstange', 'Images/Rooms/Höle.png', 3, 0, 0);
+  RoomArr[3, 0, 0].AddWeapon(TWeapon.Create('Iron Bar', 'A brocken piece of a former cell.'+sLineBreak+'It is a bit rosty but can still function as a simple weapon.', 'Images/Items/IronBar.png', 15, 0, 0, 0));
+  CreateARoom('Vier Wege von hier aus', 'Images/Rooms/Höle.png', 2, 2, 0);
+  CreateARoom('Du siehst eine Waffe im nächsten Raum', 'Images/Rooms/Höle.png', 1, 2, 0);
+  CreateARoom('WOW hier liegt tatsächlich ein Dolch', 'Images/Rooms/Höle.png', 0, 2, 0);
+  CreateARoom('F*cking Goblins', 'Images/Rooms/Höle.png', 2, 3, 0);
+  CreateARoom('I see trouble', 'Images/Rooms/Höle.png', 3, 2, 0);
+  CreateARoom('And we make it tripple', 'Images/Rooms/Höle.png', 4, 2, 0);
+  CreateARoom('Gäb es doch nur Bonfire', 'Images/Rooms/Höle.png', 5, 2, 0);
+  CreateARoom('Praise the Bonfire', 'Images/Rooms/Höle.png', 5, 3, 0);
+  CreateARoom('Leerer Raum oder so', 'Images/Rooms/Höle.png', 4, 3, 0);
+  CreateARoom('Drop den Schlüssel Goblin', 'Images/Rooms/Höle.png', 4, 4, 0);
+  CreateARoom('Useless ahead', 'Images/Rooms/Höle.png', 3, 4, 0);
+  CreateARoom('Zum Glück hatte ich den schlüssel', 'Images/Rooms/Höle.png', 2, 4, 0);
+  CreateARoom('Estus vorraus', 'Images/Rooms/Höle.png', 1, 4, 0);
+  CreateARoom('This is so sad. Alexa, play Gwyns theme', 'Images/Rooms/Höle.png', 2, 5, 0);
 end;
 
 end.

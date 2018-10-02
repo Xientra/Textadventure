@@ -297,25 +297,6 @@ object Form1: TForm1
     Proportional = True
     Stretch = True
   end
-  object Button2: TButton
-    Left = 24
-    Height = 25
-    Hint = '(1) Dancing in the Moonlight'#13#10'(2) Textadventure Gwyn Theme'
-    Top = 526
-    Width = 75
-    Caption = 'Music'
-    OnClick = Button2Click
-    TabOrder = 3
-  end
-  object Edit4: TEdit
-    Left = 24
-    Height = 26
-    Hint = '(1) Dancing in the Moonlight'#13#10'(2) Textadventure Gwyn Theme'
-    Top = 558
-    Width = 75
-    NumbersOnly = True
-    TabOrder = 4
-  end
   object Memo_Description: TMemo
     Left = 16
     Height = 256
@@ -338,7 +319,7 @@ object Form1: TForm1
     )
     ParentFont = False
     ReadOnly = True
-    TabOrder = 5
+    TabOrder = 3
   end
   object Memo_Stats: TMemo
     Left = 552
@@ -371,7 +352,7 @@ object Form1: TForm1
     )
     ParentFont = False
     ReadOnly = True
-    TabOrder = 6
+    TabOrder = 4
     WantReturns = False
   end
   object MuteBtn_Image: TImage
@@ -400,7 +381,7 @@ object Form1: TForm1
     Height = 26
     Top = 531
     Width = 80
-    TabOrder = 7
+    TabOrder = 5
     Text = 'Edit3'
   end
   object MusicTimer: TTimer
