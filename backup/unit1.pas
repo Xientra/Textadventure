@@ -23,12 +23,12 @@ type
     Btn2_Image: TImage;
     Btn3_Image: TImage;
     Btn4_Image: TImage;
-    Button1: TButton;
     Button2: TButton;
     Edit1: TEdit;
     Edit2: TEdit;
     Edit3: TEdit;
     Edit4: TEdit;
+    MuteBtn_Image: TImage;
     Memo_Stats: TMemo;
     Memo_Description: TMemo;
     Image1: TImage;
@@ -40,12 +40,12 @@ type
     procedure Btn2Click(Sender: TObject);
     procedure Btn3Click(Sender: TObject);
     procedure Btn4Click(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure Label_LeaveClick(Sender: TObject);
     procedure MusicTimerTimer(Sender: TObject);
+    procedure MuteBtn_ImageClick(Sender: TObject);
 
   public
     procedure OnEnterRoom();
@@ -84,9 +84,13 @@ type
 
 var
   Form1: TForm1;
+
+  //Music Vars
   MusicTimer: TTimer;
   MusicCounter: integer;
+  songPath: PChar; //PChar ist irgentwie string aber PlayerSound breacht genau das
   songlength: integer; //in seconds?
+  muted: boolean;
 
   RoomArr: Array of Array of Array of TRoom;
   Room_x, Room_y, Room_z: integer;
@@ -114,6 +118,13 @@ var
 begin
   inventoryIndex := 0;
 
+  songPath := 'music\overworldTheme_loop.wav';
+  songlength := 27; //27s ist die exakte länge von overworldTheme_loop
+  muted := true;
+  if (muted = true) then
+    MuteBtn_Image.Picture.LoadFromFile('Images/Buttons/MuteBtnOff.png')
+  else if (muted = false) then
+    MuteBtn_Image.Picture.LoadFromFile('Images/Buttons/MuteBtnOn.png');
 
   //Set RoomArray size
   Room_x := 7-1;
@@ -145,6 +156,7 @@ begin
 
   ChangeSituation(0); //updates UI
   Memo_Description.Clear();
+
 end;
 
 procedure TForm1.CreateRooms();
@@ -201,15 +213,6 @@ procedure TForm1.Btn1Click(Sender: TObject); begin Button_1_Action(); end;
 procedure TForm1.Btn2Click(Sender: TObject); begin Button_2_Action(); end;
 procedure TForm1.Btn3Click(Sender: TObject); begin Button_3_Action(); end;
 procedure TForm1.Btn4Click(Sender: TObject); begin Button_4_Action(); end;
-
-procedure TForm1.Button1Click(Sender: TObject);
-begin
-  if (RoomArr[StrToInt(Edit1.Text), StrToInt(Edit2.Text), StrToInt(Edit3.Text)] = nil) then
-    Memo1.Lines.Add('nil')
-  else
-    Memo1.Lines.Add(RoomArr[StrToInt(Edit1.Text), StrToInt(Edit2.Text), StrToInt(Edit3.Text)].GetDescription);
-
-end;
 
 procedure TForm1.Button2Click(Sender: TObject);
 begin   //Music test
@@ -637,6 +640,8 @@ procedure TForm1.ChangeSituation(_situation: integer);
 begin
   currendSituation := _situation;
   ChangeUIState(currendSituation);
+
+  Edit2.Text := IntToStr(currendSituation);
 end;
 
 procedure TForm1.ChangeUIState(_state: integer);
@@ -644,6 +649,8 @@ var i: integer;
 begin
   UIState := _state;
   Edit1.Text := IntToStr(UIState);
+  Edit2.Text := IntToStr(currendSituation);
+
   //Activate all Buttons at first
   SetButton(Btn1_Image, Btn1_Label, true);
   SetButton(Btn2_Image, Btn2_Label, true);
@@ -659,11 +666,6 @@ begin
       Btn4_Label.caption := 'y Minus';
       PrintRoomData();
 
-      PlaySound('music\overworldTheme_loop.wav',0,SND_ASYNC);
-      songlength := 27;  //27s ist die exakte länge von overworldTheme_loop
-      MusicCounter := 0;
-      MusicTimer.Enabled := true;
-
       OnEnterRoom(); //whenever you can walk again it checks if there is (still) stuff in the Room
     end;
   1: //fighting UI
@@ -672,8 +674,6 @@ begin
       Btn2_Label.caption := 'Attack';
       Btn3_Label.caption := 'Weapons';
       Btn4_Label.caption := 'Items';
-
-      PlaySound('music\FightingTrack1.wav',0,SND_ASYNC);
 
       PrintEnemyData();
       Memo1.Clear();
@@ -839,14 +839,33 @@ end;
 
 procedure TForm1.MusicTimerTimer(Sender: TObject);
 begin
-  MusicCounter := MusicCounter + 1;
+
   Edit2.Text := IntToStr(MusicCounter);
   if (MusicCounter = songlength) then
   begin
-    PlaySound('music\overworldTheme_loop.wav',0,SND_ASYNC);
+    PlaySound(songPath,0,SND_ASYNC);
     MusicCounter := 0;
   end;
+  MusicCounter := MusicCounter + 1;
+end;
 
+procedure TForm1.MuteBtn_ImageClick(Sender: TObject);
+begin
+  if (muted = false) then
+  begin
+    MuteBtn_Image.Picture.LoadFromFile('Images/Buttons/MuteBtnOff.png');
+    MusicTimer.Enabled := false;
+    MusicCounter := 0;
+    PlaySound('music/mute.wav', 0, SND_ASYNC);
+    muted := true;
+  end
+  else if (muted = true) then
+  begin
+    MuteBtn_Image.Picture.LoadFromFile('Images/Buttons/MuteBtnOn.png');
+    MusicCounter := songlength; //damit er wieder anfängt zu spielen
+    MusicTimer.Enabled := true;
+    muted := false;
+  end;
 end;
 
 end.
