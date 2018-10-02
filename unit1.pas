@@ -238,7 +238,7 @@ begin
   case UIState of
   0:
     begin
-      if (Player1.GetCurrendRoom.GetPosX+1 <= 5) and (RoomArr[Player1.GetCurrendRoom.getPosX+1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] <> nil) then
+      if (Player1.GetCurrendRoom.GetPosX+1 <= 5) and (RoomArr[Player1.GetCurrendRoom.getPosX+1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] <> nil) and (Player1.GetCurrendRoom.GetBlockedRight = false) and (Player1.GetCurrendRoom.GetDoorRight = false) then
       begin
         Player1.ChangeRoom('xPos');
         PrintRoomData(Player1.GetCurrendRoom());
@@ -278,7 +278,7 @@ begin
   case UIState of
   0:
     begin
-      if (Player1.GetCurrendRoom.GetPosX-1 >= 0) and (RoomArr[Player1.GetCurrendRoom.getPosX-1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] <> nil) then begin
+      if (Player1.GetCurrendRoom.GetPosX-1 >= 0) and (RoomArr[Player1.GetCurrendRoom.getPosX-1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] <> nil) and (Player1.GetCurrendRoom.GetBlockedLeft = false) and (Player1.GetCurrendRoom.GetDoorLeft = false) then begin
       Player1.ChangeRoom('xNeg');
       PrintRoomData(PLayer1.GetCurrendRoom());
       OnEnterRoom();
@@ -355,7 +355,7 @@ begin
   case UIState of
   0:
     begin
-      if (Player1.GetCurrendRoom.GetPosY+1 <= 5) and (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY+1,Player1.GetCurrendRoom.getPosZ] <> nil) then begin
+      if (Player1.GetCurrendRoom.GetPosY+1 <= 5) and (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY+1,Player1.GetCurrendRoom.getPosZ] <> nil) and (Player1.GetCurrendRoom.GetBlockedTop = false) and (Player1.GetCurrendRoom.GetDoorTop = false) then begin
       Player1.ChangeRoom('yPos');
       PrintRoomData(Player1.GetCurrendRoom());
       OnEnterRoom();
@@ -406,7 +406,7 @@ begin
   case UIState of
   0:
     begin
-      if (Player1.GetCurrendRoom.GetPosY-1 >= 0) and (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY-1,Player1.GetCurrendRoom.getPosZ] <> nil) then begin
+      if (Player1.GetCurrendRoom.GetPosY-1 >= 0) and (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY-1,Player1.GetCurrendRoom.getPosZ] <> nil) and (Player1.GetCurrendRoom.GetBlockedBottom = false) and (Player1.GetCurrendRoom.GetDoorBottom = false) then begin
       Player1.ChangeRoom('yNeg');
       PrintRoomData(Player1.GetCurrendRoom());
       OnEnterRoom();
@@ -684,19 +684,19 @@ begin
   //Check nach verfügbaren Räumen und aktiviere die Knöpfe dem entsprechend
   if (UIState = 0) then
   begin
-    if (Player1.GetCurrendRoom.GetPosX+1 > 5) or (RoomArr[Player1.GetCurrendRoom.getPosX+1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] = nil) then
+    if (Player1.GetCurrendRoom.GetPosX+1 > 5) or (RoomArr[Player1.GetCurrendRoom.getPosX+1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] = nil) or (Player1.GetCurrendRoom.GetBlockedRight = true) or (Player1.GetCurrendRoom.GetDoorRight = true) then
       SetButton(Btn1_Image, Btn1_Label, false)
     else SetButton(Btn1_Image, Btn1_Label, true);
 
-    if (Player1.GetCurrendRoom.GetPosX-1 < 0) or (RoomArr[Player1.GetCurrendRoom.getPosX-1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] = nil) then
+    if (Player1.GetCurrendRoom.GetPosX-1 < 0) or (RoomArr[Player1.GetCurrendRoom.getPosX-1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] = nil) or (Player1.GetCurrendRoom.GetBlockedLeft = true) or (Player1.GetCurrendRoom.GetDoorLeft = true) then
       SetButton(Btn2_Image, Btn2_Label, false)
     else SetButton(Btn2_Image, Btn2_Label, true);
 
-    if (Player1.GetCurrendRoom.GetPosY+1 > 5) or (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY+1,Player1.GetCurrendRoom.getPosZ] = nil) then
+    if (Player1.GetCurrendRoom.GetPosY+1 > 5) or (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY+1,Player1.GetCurrendRoom.getPosZ] = nil) or (Player1.GetCurrendRoom.GetBlockedTop = true) or (Player1.GetCurrendRoom.GetDoorTop = true) then
       SetButton(Btn3_Image, Btn3_Label, false)
     else SetButton(Btn3_Image, Btn3_Label, true);
 
-    if (Player1.GetCurrendRoom.GetPosY-1 < 0) or (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY-1,Player1.GetCurrendRoom.getPosZ] = nil) then
+    if (Player1.GetCurrendRoom.GetPosY-1 < 0) or (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY-1,Player1.GetCurrendRoom.getPosZ] = nil) or (Player1.GetCurrendRoom.GetBlockedBottom = true) or (Player1.GetCurrendRoom.GetDoorBottom = true) then
       SetButton(Btn4_Image, Btn4_Label, false)
     else SetButton(Btn4_Image, Btn4_Label, true);
   end;
@@ -854,14 +854,18 @@ begin
   CreateARoom('Du siehst eine Waffe im nächsten Raum', 'Images/Rooms/Höle.png', 1, 2, 0);
   CreateARoom('WOW hier liegt tatsächlich ein Dolch', 'Images/Rooms/Höle.png', 0, 2, 0);
   CreateARoom('F*cking Goblins', 'Images/Rooms/Höle.png', 2, 3, 0);
+  RoomArr[2,3,0].SetDoorTop(true);
   CreateARoom('I see trouble', 'Images/Rooms/Höle.png', 3, 2, 0);
   CreateARoom('And we make it tripple', 'Images/Rooms/Höle.png', 4, 2, 0);
   CreateARoom('Gäb es doch nur Bonfire', 'Images/Rooms/Höle.png', 5, 2, 0);
   CreateARoom('Praise the Bonfire', 'Images/Rooms/Höle.png', 5, 3, 0);
+  RoomArr[5,3,0].SetBlockedLeft(true);
   CreateARoom('Leerer Raum oder so', 'Images/Rooms/Höle.png', 4, 3, 0);
+  RoomArr[4,3,0].SetBlockedRight(true);
   CreateARoom('Drop den Schlüssel Goblin', 'Images/Rooms/Höle.png', 4, 4, 0);
   CreateARoom('Useless ahead', 'Images/Rooms/Höle.png', 3, 4, 0);
   CreateARoom('Zum Glück hatte ich den schlüssel', 'Images/Rooms/Höle.png', 2, 4, 0);
+  RoomArr[2,4,0].SetDoorBottom(true);
   CreateARoom('Estus vorraus', 'Images/Rooms/Höle.png', 1, 4, 0);
   CreateARoom('This is so sad. Alexa, play Gwyns theme', 'Images/Rooms/Höle.png', 2, 5, 0);
 end;
