@@ -19,6 +19,10 @@ uses
       function GetSlashDmg(): real;
       function GetMagicDmg(): real;
       function GetHighestDmg(): real;
+
+      function GetIgnore(): boolean;
+      procedure SetIgnore(_setTo: boolean);
+
     private
       name : string;
       description : string;
@@ -30,6 +34,8 @@ uses
       : real;
 
       MagicDamage: real;
+
+      Ignore: boolean;
     end;
 
 implementation
@@ -45,6 +51,8 @@ begin
   ThrustDamage := _ThrustDmg;
   SlashDamage := _SlashDmg;
   MagicDamage := _MagicDmg;
+
+  Ignore := false;
 end;
 
 function TWeapon.GetName(): string;
@@ -57,7 +65,7 @@ begin
 end;
 function TWeapon.GetImagePath(): string;
 begin
-  result := name;
+  result := ImagePath;
 end;
 
 function TWeapon.GetStrikeDmg(): real;
@@ -84,5 +92,13 @@ begin
   if (MagicDamage > SlashDamage) then result := MagicDamage;
 end;
 
+function TWeapon.GetIgnore(): boolean;
+begin
+  result := Ignore;
+end;
+procedure TWeapon.SetIgnore(_setTo: boolean);
+begin
+  Ignore := _setTo;
+end;
 end.
 

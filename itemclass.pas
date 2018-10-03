@@ -25,6 +25,9 @@ type
     procedure SetBomb(_damage: real);
     function GetKeyIndex: real;
 
+    function GetIgnore(): boolean;
+    procedure SetIgnore(_setTo: boolean);
+
   private
     ItemName: string;
     ItemDescription: string;
@@ -46,6 +49,7 @@ type
     KeyIndex
     : real;
 
+    Ignore: boolean;
   end;
 
 implementation
@@ -65,6 +69,8 @@ begin
   IsDefenseUp := false;
   IsBomb := false;
   IsKey := false;
+
+  Ignore := false;
 end;
 
 function TItem.UseItem(): boolean;
@@ -171,6 +177,15 @@ end;
 function TItem.GetKeyIndex(): real;
 begin
   result := KeyIndex;
+end;
+
+function TItem.GetIgnore(): boolean;
+begin
+  result := Ignore;
+end;
+procedure TItem.SetIgnore(_setTo: boolean);
+begin
+  Ignore := _setTo;
 end;
 
 end.

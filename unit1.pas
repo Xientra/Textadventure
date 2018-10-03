@@ -45,7 +45,7 @@ type
     procedure MuteBtn_ImageClick(Sender: TObject);
 
   public
-    procedure OnEnterRoom(); //beschreibung unter "Logic hinter bestimmten Situationen" unter private
+
 
   private
     //unabhängingig von den lazarus generierten ButtonClick proceduren
@@ -62,7 +62,8 @@ type
     procedure PrintAndUIChange(_changeUITo: integer; _toPrint: string); //zeigt zusätzlich zum ändern der UI noch eine einmalige Nachicht
 
     //Logic hinter bestimmten Situationen
-    {procedure OnEnterRoom();} //situation = 0;  schaut ob dinge/Enemyies im Raum sind usw. ist public
+    procedure OnEnterRoom(); //situation = 0;  schaut ob dinge/Enemyies im Raum sind usw.
+    procedure OnLeaveRoom();
     procedure PlayerEndTurn(); //situation = 1;  schaut ob der Enemy besiegt ist und verigert die cooldowns
     procedure EnemyTurn(); //situation = 2;  Runde des Gegners
 
@@ -99,10 +100,10 @@ var
   Player1: TPlayer;
   FightingEnemy: TEnemy;
 
-  currendSituation: integer; //0 = map; 1 = combat;  = interact with RoomObjects;
-  //0: Btn1: Norden; Btn2: Westen; Btn3: Süden; Btn: Osten;
-  //1: Btn1: Angriff; Btn2: Skills; Btn3: Items; Btn4: Flee;
-  UIState, UIStateCopy: integer;
+  //Diese Variablen sind dafür da die Spielsituationen zu äandern
+  currendSituation: integer; //diese variable merkt sich die grundlegende Spielsituation unabhängig von dem möglicherweise offenen Menü
+  UIState: integer; //diese Variable ist dafür da alle Menüs zu navigieren
+  UIStateCopy: integer; //diese var ist für situation 99 um dahin zurück zukehren wo man vorher war
 
   //diese Beiden vars sind dafür da, das die information an welcher stelle das item/etc jewailigen array des Inventar/Raum ist. bsp: man hat zwei items in inventar was auch immer danach geschaut hat weiß das und will, das infos zum ersten gedruckt werden also setzt es die var auf die stelle des items
   inventoryIndex: integer;
@@ -244,6 +245,7 @@ begin
     begin
       if (Player1.GetCurrendRoom.GetPosX+1 <= Room_x) and (RoomArr[Player1.GetCurrendRoom.getPosX+1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] <> nil) and (Player1.GetCurrendRoom.GetBlockedRight = false) and (Player1.GetCurrendRoom.GetDoorRight = false) then
       begin
+        OnLeaveRoom();
         Player1.ChangeRoom('xPos');
         PrintRoomData(Player1.GetCurrendRoom());
         OnEnterRoom();
@@ -255,8 +257,36 @@ begin
       else Memo1.Lines.Add('You have no skills yet.')
     end;
   2: {do nothing};
-  10: {do nothing};
-  11: {do nothing};
+  10:
+    begin
+      Player1.GetCurrendRoom().WeaponArr[roomStuffIndex].SetIgnore(true);
+      PrintAndUIChange(currendSituation, 'You leave the Weapon where it is.');
+    end;
+  11:
+    begin
+      Player1.GetCurrendRoom().ItemArr[roomStuffIndex].SetIgnore(true);
+      PrintAndUIChange(currendSituation, 'You leave the Item where it is.');
+    end;
+  12:
+    begin
+      Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].SetIgnore(true);
+      PrintAndUIChange(currendSituation, 'You leave the Stature be.');
+    end;
+  13:
+    begin
+      Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].SetIgnore(true);
+      PrintAndUIChange(currendSituation, 'You leave the Chest where it is.');
+    end;
+  14:
+    begin
+      Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].SetIgnore(true);
+      PrintAndUIChange(currendSituation, 'You leave the Chest where it is.');
+    end;
+  15:
+    begin
+      Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].SetIgnore(true);
+      PrintAndUIChange(currendSituation, 'You leave the Stature be.');
+    end;
   53:
     begin
       ChangeUIState(currendSituation);
@@ -283,9 +313,10 @@ begin
   0:
     begin
       if (Player1.GetCurrendRoom.GetPosX-1 >= 0) and (RoomArr[Player1.GetCurrendRoom.getPosX-1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] <> nil) and (Player1.GetCurrendRoom.GetBlockedLeft = false) and (Player1.GetCurrendRoom.GetDoorLeft = false) then begin
-      Player1.ChangeRoom('xNeg');
-      PrintRoomData(PLayer1.GetCurrendRoom());
-      OnEnterRoom();
+        OnLeaveRoom();
+        Player1.ChangeRoom('xNeg');
+        PrintRoomData(PLayer1.GetCurrendRoom());
+        OnEnterRoom();
       end;
     end;
   1:
@@ -310,6 +341,7 @@ begin
     begin
       Player1.AddItem(Player1.GetCurrendRoom().ItemArr[roomStuffIndex]);
       Player1.GetCurrendRoom().ItemArr[roomStuffIndex] := nil;
+      PrintAndUIChange(currendSituation, '');
       ChangeUIState(currendSituation);
     end;
   12:
@@ -371,7 +403,7 @@ begin
         PlayerEndTurn();
       end else
       begin
-        ShowMessage('You have to wait '+IntToStr(Player1.Skills[inventoryIndex].GetTurnsToWait())+' more turns to use this skill.');
+        PrintAndUIChange(UIState, 'You have to wait '+IntToStr(Player1.Skills[inventoryIndex].GetTurnsToWait())+' turn(s) until you can use this skill again.');
       end;
     end;
   99:
@@ -388,9 +420,10 @@ begin
   0:
     begin
       if (Player1.GetCurrendRoom.GetPosY+1 <= Room_y) and (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY+1,Player1.GetCurrendRoom.getPosZ] <> nil) and (Player1.GetCurrendRoom.GetBlockedTop = false) and (Player1.GetCurrendRoom.GetDoorTop = false) then begin
-      Player1.ChangeRoom('yPos');
-      PrintRoomData(Player1.GetCurrendRoom());
-      OnEnterRoom();
+        OnLeaveRoom();
+        Player1.ChangeRoom('yPos');
+        PrintRoomData(Player1.GetCurrendRoom());
+        OnEnterRoom();
       end;
     end;
   1:
@@ -402,8 +435,8 @@ begin
   10: {do nothing};
   11: {do nothing};
   12: {do nothing};
-  //13: ;
-  //14: ;
+  //13: ; attack
+  //14: ; attack
   15: {do nothing};
   53:
     begin
@@ -443,9 +476,10 @@ begin
   0:
     begin
       if (Player1.GetCurrendRoom.GetPosY-1 >= 0) and (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY-1,Player1.GetCurrendRoom.getPosZ] <> nil) and (Player1.GetCurrendRoom.GetBlockedBottom = false) and (Player1.GetCurrendRoom.GetDoorBottom = false) then begin
-      Player1.ChangeRoom('yNeg');
-      PrintRoomData(Player1.GetCurrendRoom());
-      OnEnterRoom();
+        OnLeaveRoom();
+        Player1.ChangeRoom('yNeg');
+        PrintRoomData(Player1.GetCurrendRoom());
+        OnEnterRoom();
       end;
     end;
   1:
@@ -692,7 +726,7 @@ begin
       for i := 0 to length(Player1.Skills) - 1 do
         if (Player1.Skills[i] <> nil) then
         begin
-          Memo1.Lines.Add('-'+Player1.Skills[i].GetName());
+          Memo1.Lines.Add('-'+Player1.Skills[i].GetName()+' ('+IntToStr(Player1.Skills[i].GetTurnsToWait())+')');
           inventoryIndex := i;
         end;
       PrintSkillData(Player1.Skills[inventoryIndex]);
@@ -726,54 +760,55 @@ var
 begin
   //1. check nach Gegnern
   if (length(Player1.GetCurrendRoom().EnemyArr) > 0) then
+  begin
     for i := 0 to length(Player1.GetCurrendRoom().EnemyArr) - 1 do
-    begin
       if (Player1.GetCurrendRoom().EnemyArr[i] <> nil) then
       begin  //start Fight
         FightingEnemy := Player1.GetCurrendRoom().EnemyArr[i];
         PrintAndUIChange(1, 'You are now fighting!');
       end;
-    end;
+  end;
 
   //2. check nach waffen
   if (length(Player1.GetCurrendRoom().WeaponArr) > 0) then
+  begin
     for i := 0 to length(Player1.GetCurrendRoom().WeaponArr) - 1 do
-    begin
       if (Player1.GetCurrendRoom().WeaponArr[i] <> nil) then
-      begin
-        roomStuffIndex := i;
-        ChangeUIState(10);
-      end;
-    end
-  else
+        if (Player1.GetCurrendRoom().WeaponArr[i].GetIgnore() = false) then
+        begin
+          roomStuffIndex := i;
+          ChangeUIState(10);
+        end;
+  end else
   //3. check nach items
   if (length(Player1.GetCurrendRoom().ItemArr) > 0) then
+  begin
     for i := 0 to length(Player1.GetCurrendRoom().ItemArr) - 1 do
-    begin
       if (Player1.GetCurrendRoom().ItemArr[i] <> nil) then
-      begin
-        roomStuffIndex := i;
-        ChangeUIState(11);
-      end;
-    end
-  else
+        if (Player1.GetCurrendRoom().ItemArr[i].GetIgnore() = false) then
+        begin
+          roomStuffIndex := i;
+          ChangeUIState(11);
+        end;
+  end else
   //4. check nach RoomObjects
   if (length(Player1.GetCurrendRoom().RoomObjectArr) > 0) then
+  begin
     for i := 0 to length(Player1.GetCurrendRoom().RoomObjectArr) - 1 do
-    begin
       if (Player1.GetCurrendRoom().RoomObjectArr[i] <> nil) then
-      begin
-        roomStuffIndex := i;
-        if (Player1.GetCurrendRoom().RoomObjectArr[i].GetIsHealing()) then
-          PrintAndUIChange(12, 'You notice a stature and get closer to it.');
-        if (Player1.GetCurrendRoom().RoomObjectArr[i].GetIsChest()) then
-          PrintAndUIChange(13, 'You notice a chest and get closer to it.');
-        if (Player1.GetCurrendRoom().RoomObjectArr[i].GetIsMimic()) then
-          PrintAndUIChange(14, 'You notice a chest and get closer to it.');
-        if (Player1.GetCurrendRoom().RoomObjectArr[i].GetIsSkillStatue()) then
-          PrintAndUIChange(15, 'You notice a stature and get closer to it.');
-      end;
-    end;
+        if (Player1.GetCurrendRoom().RoomObjectArr[i].GetIgnore() = false) then
+        begin
+          roomStuffIndex := i;
+          if (Player1.GetCurrendRoom().RoomObjectArr[i].GetIsHealing()) then
+            PrintAndUIChange(12, 'You notice a stature and get closer to it.');
+          if (Player1.GetCurrendRoom().RoomObjectArr[i].GetIsChest()) then
+            PrintAndUIChange(13, 'You notice a chest and get closer to it.');
+          if (Player1.GetCurrendRoom().RoomObjectArr[i].GetIsMimic()) then
+            PrintAndUIChange(14, 'You notice a chest and get closer to it.');
+          if (Player1.GetCurrendRoom().RoomObjectArr[i].GetIsSkillStatue()) then
+            PrintAndUIChange(15, 'You notice a stature and get closer to it.');
+        end;
+  end;
 
   //Check nach verfügbaren Räumen und aktiviere die Knöpfe dem entsprechend
   if (UIState = 0) then
@@ -796,6 +831,28 @@ begin
   end;
 
   if (currendSituation = 0) and (UIState = 0) then PrintRoomData(Player1.GetCurrendRoom());
+end;
+
+procedure TForm1.OnLeaveRoom(); //logic situation = 0
+var i: integer;
+begin
+  //resets all cooldowns
+  for i := 0 to length(Player1.Skills) - 1 do
+    if (Player1.Skills[i] <> nil) then
+      Player1.Skills[i].SetTurnToWaitToZero();
+
+  //Sets all Ignore values back to false so that the items/whatever are interactable again
+  for i := 0 to length(Player1.GetCurrendRoom().ItemArr) - 1 do
+    if (Player1.GetCurrendRoom().ItemArr[i] <> nil) then
+      Player1.GetCurrendRoom().ItemArr[i].SetIgnore(false);
+
+  for i := 0 to length(Player1.GetCurrendRoom().WeaponArr) - 1 do
+    if (Player1.GetCurrendRoom().WeaponArr[i] <> nil) then
+      Player1.GetCurrendRoom().WeaponArr[i].SetIgnore(false);
+
+  for i := 0 to length(Player1.GetCurrendRoom().RoomObjectArr) - 1 do
+    if (Player1.GetCurrendRoom().RoomObjectArr[i] <> nil) then
+      Player1.GetCurrendRoom().RoomObjectArr[i].SetIgnore(false);
 end;
 
 procedure TForm1.PlayerEndTurn(); //logic situation = 1
@@ -924,10 +981,10 @@ end;
 procedure TForm1.PrintRoomObjectData(_roomObject: TRoomObject); //print situation = 12, 13, 14, 15
 begin
   Memo_Description.Clear();
-  Memo_Description.Lines.AddText(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetName());
+  Memo_Description.Lines.AddText(_roomObject.GetName());
   Memo1.Clear();
-  Memo1.Lines.AddText(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetDescription());
-  Image1.Picture.LoadFromFile(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetImagePath());
+  Memo1.Lines.AddText(_roomObject.GetDescription());
+  Image1.Picture.LoadFromFile(_roomObject.GetImagePath());
 end;
 {------------------------------------------------------------------------------}
 
@@ -946,9 +1003,9 @@ begin
     CreateARoom('Your in your cell ...'+sLineBreak+'But you have a Bonfire!'+sLineBreak+sLineBreak+'Praise The Sun!', 'Images/Rooms/BonFireCellRoom.png', 1, 0, 0);
     CreateARoom('Erste Kreuzung.', 'Images/Rooms/Höle.png', 2, 0, 0);
     RoomArr[2, 0, 0].AddRoomObject(TRoomObject.Create('Sword Of The Moonlight', 'Pray To Me!'+sLineBreak+'I AM DIVINE!', 'Images/SwordOfMoonlightOnPedestal.png'));
-    //RoomArr[2, 0, 0].RoomObjectArr[0].SetHealing();
-    RoomArr[2, 0, 0].RoomObjectArr[0].SetChest(TItem.Create('ITEM', 'ITEM!!!!!!!!!!','Images/Items/ITEM.png'));
-    RoomArr[2, 0, 0].RoomObjectArr[0].SetMimic(TItem.Create('ITEM', 'ITEM!!!!!!!!!!','Images/Items/ITEM.png'), TEnemy.Create('Best Mimic Ever', 15, 15, 'Images/Enemies/BestMimicEver.jpg'));
+    RoomArr[2, 0, 0].RoomObjectArr[0].SetHealing();
+    //RoomArr[2, 0, 0].RoomObjectArr[0].SetChest(TItem.Create('ITEM', 'ITEM!!!!!!!!!!','Images/Items/ITEM.png'));
+    //RoomArr[2, 0, 0].RoomObjectArr[0].SetMimic(TItem.Create('ITEM', 'ITEM!!!!!!!!!!','Images/Items/ITEM.png'), TEnemy.Create('Best Mimic Ever', 15, 15, 'Images/Enemies/BestMimicEver.jpg'));
     //RoomArr[2, 0, 0].RoomObjectArr[0].SetSkillStatue(TSkill.Create('Some other Skill', 'This one is just useless...'+sLineBreak+ 'It deals Slash Damage', 'Images/Skills/someOtherSkill.png', 5, 0, 0, 1.2, 0));
 
     CreateARoom('Der Raum mit der Ratte.', 'Images/Rooms/Höle.png', 2, 1, 0);

@@ -12,11 +12,14 @@ type
   public
     constructor Create(_name, _description, _imagePath: string; _cooldown: integer; _strikeMulti, _thrustMulti, _slashMulti, _magicMulti: real);
     procedure SetTurnToWaitToCooldown();
+    procedure SetTurnToWaitToZero();
     function GetTurnsToWait(): integer;
     procedure ReduceTurnsToWait();
+
     function GetName(): string;
     function GetDescription(): string;
     function GetImagePath(): string;
+
     function GetStrikeMulti(): real;
     function GetThrustMulti(): real;
     function GetSlashMulti(): real;
@@ -52,12 +55,15 @@ begin
 
   cooldown := _cooldown;
   turnsToWait := 0;
-
 end;
 
 procedure TSkill.SetTurnToWaitToCooldown();
 begin
   turnsToWait := cooldown;
+end;
+procedure TSkill.SetTurnToWaitToZero();
+begin
+
 end;
 function TSkill.GetTurnsToWait(): integer;
 begin

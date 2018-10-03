@@ -31,6 +31,9 @@ type
     function GetMimicEnemy(): TEnemy;
     function GetSkillToTeach(): TSkill;
 
+    function GetIgnore(): boolean;
+    procedure SetIgnore(_setTo: boolean);
+
   private
     name: string;
     description: string;
@@ -45,6 +48,8 @@ type
     ChestItem: TItem;
     MimicEnemy: TEnemy;
     SkillToTeach: TSkill;
+
+    Ignore: boolean;
   end;
 
 implementation
@@ -55,6 +60,14 @@ begin
   name := _name;
   description := _description;
   ImagePath := _imagePath;
+
+  IsUseless := true;
+  IsHealing := false;
+  IsChest := false;
+  IsMimic := false;
+  IsSkillStatue := false;
+
+  Ignore := false;
 end;
 
 procedure TRoomObject.SetHealing();
@@ -142,6 +155,15 @@ end;
 function TRoomObject.GetSkillToTeach(): TSkill;
 begin
   result := SkillToTeach;
+end;
+
+function TRoomObject.GetIgnore(): boolean;
+begin
+  result := Ignore;
+end;
+procedure TRoomObject.SetIgnore(_setTo: boolean);
+begin
+  Ignore := _setTo;
 end;
 
 end.
