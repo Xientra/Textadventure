@@ -827,7 +827,7 @@ begin
     //fight was ended
 
     //Destroy den Enemy Object und setzt alle Variablen die auf ihn zeigen zu nil
-    for i := 0 to length(Player1.GetCurrendRoom.EnemyArr) do
+    for i := 0 to length(Player1.GetCurrendRoom.EnemyArr)-1 do
     begin
       if (Player1.GetCurrendRoom.EnemyArr[i] = FightingEnemy) then
         FreeAndNil(Player1.GetCurrendRoom().EnemyArr[i]); //FreeAndNil Destroyd ein Object und setz die pointer var (die in den Klammern) auf nil

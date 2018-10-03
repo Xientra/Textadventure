@@ -27,7 +27,7 @@ uses
       function GetItemDrop(): TItem;
 
 
-      destructor Destroy();
+      destructor Destroy();override;
     private
       name: string;
       ImagePath: string;
@@ -132,9 +132,10 @@ end;
 
 destructor TEnemy.Destroy();  //this is never acually called
 begin
+  inherited Destroy;
   FreeAndNil(self);
   ShowMessage('I ll be back!');
-  inherited Destroy;
+
 
 end;
 
