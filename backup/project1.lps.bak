@@ -20,9 +20,8 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Unit1"/>
-        <IsVisibleTab Value="True"/>
-        <TopLine Value="761"/>
-        <CursorPos X="43" Y="781"/>
+        <TopLine Value="822"/>
+        <CursorPos X="40" Y="837"/>
         <FoldState Value=" T3kd03632i"/>
         <UsageCount Value="88"/>
         <Loaded Value="True"/>
@@ -71,8 +70,10 @@
         <Filename Value="enemyclass.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="EnemyClass"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="5"/>
-        <CursorPos X="37" Y="30"/>
+        <TopLine Value="103"/>
+        <CursorPos X="3" Y="138"/>
         <UsageCount Value="73"/>
         <Loaded Value="True"/>
       </Unit6>

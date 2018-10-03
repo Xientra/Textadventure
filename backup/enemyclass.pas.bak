@@ -27,7 +27,7 @@ uses
       function GetItemDrop(): TItem;
 
 
-      destructor Destroy();
+      destructor Destroy();override;
     private
       name: string;
       ImagePath: string;
