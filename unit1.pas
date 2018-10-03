@@ -778,7 +778,7 @@ begin
   //Check nach verfügbaren Räumen und aktiviere die Knöpfe dem entsprechend
   if (UIState = 0) then
   begin
-    if (Player1.GetCurrendRoom.GetPosX+1 > Room_x) or (RoomArr[Player1.GetCurrendRoom.getPosX+1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] = nil) or (Player1.GetCurrendRoom.GetBlockedRight = true) or (Player1.GetCurrendRoom.GetDoorRight = true) then
+    if (Player1.GetCurrendRoom.GetPosX+1 > Room_x-1) or (RoomArr[Player1.GetCurrendRoom.getPosX+1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] = nil) or (Player1.GetCurrendRoom.GetBlockedRight = true) or (Player1.GetCurrendRoom.GetDoorRight = true) then
       SetButton(Btn1_Image, Btn1_Label, false)
     else SetButton(Btn1_Image, Btn1_Label, true);
 
@@ -786,7 +786,7 @@ begin
       SetButton(Btn2_Image, Btn2_Label, false)
     else SetButton(Btn2_Image, Btn2_Label, true);
 
-    if (Player1.GetCurrendRoom.GetPosY+1 > Room_y) or (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY+1,Player1.GetCurrendRoom.getPosZ] = nil) or (Player1.GetCurrendRoom.GetBlockedTop = true) or (Player1.GetCurrendRoom.GetDoorTop = true) then
+    if (Player1.GetCurrendRoom.GetPosY+1 > Room_y-1) or (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY+1,Player1.GetCurrendRoom.getPosZ] = nil) or (Player1.GetCurrendRoom.GetBlockedTop = true) or (Player1.GetCurrendRoom.GetDoorTop = true) then
       SetButton(Btn3_Image, Btn3_Label, false)
     else SetButton(Btn3_Image, Btn3_Label, true);
 
