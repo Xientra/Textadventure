@@ -10,7 +10,7 @@
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="9"/>
         <CursorPos X="27" Y="13"/>
-        <UsageCount Value="91"/>
+        <UsageCount Value="92"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
@@ -21,10 +21,10 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Unit1"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="514"/>
-        <CursorPos X="23" Y="479"/>
-        <FoldState Value=" T3ke035423 p0x00h9 T0.82o?"/>
-        <UsageCount Value="91"/>
+        <TopLine Value="430"/>
+        <CursorPos X="74" Y="441"/>
+        <FoldState Value=" T3ke03542 T0.I2og"/>
+        <UsageCount Value="92"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit1>
@@ -34,7 +34,7 @@
         <UnitName Value="Unit2"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="15"/>
-        <UsageCount Value="91"/>
+        <UsageCount Value="92"/>
         <Bookmarks Count="1">
           <Item0 X="90" Y="43" ID="8"/>
         </Bookmarks>
@@ -46,7 +46,7 @@
         <EditorIndex Value="2"/>
         <TopLine Value="60"/>
         <CursorPos X="27" Y="10"/>
-        <UsageCount Value="86"/>
+        <UsageCount Value="87"/>
         <Loaded Value="True"/>
       </Unit3>
       <Unit4>
@@ -56,7 +56,7 @@
         <EditorIndex Value="6"/>
         <TopLine Value="10"/>
         <CursorPos X="14" Y="29"/>
-        <UsageCount Value="77"/>
+        <UsageCount Value="78"/>
         <Loaded Value="True"/>
       </Unit4>
       <Unit5>
@@ -65,7 +65,7 @@
         <UnitName Value="KeyClass"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="21" Y="4"/>
-        <UsageCount Value="77"/>
+        <UsageCount Value="78"/>
       </Unit5>
       <Unit6>
         <Filename Value="enemyclass.pas"/>
@@ -74,7 +74,7 @@
         <EditorIndex Value="4"/>
         <TopLine Value="106"/>
         <CursorPos X="32" Y="44"/>
-        <UsageCount Value="76"/>
+        <UsageCount Value="77"/>
         <Loaded Value="True"/>
       </Unit6>
       <Unit7>
@@ -84,8 +84,7 @@
         <EditorIndex Value="5"/>
         <TopLine Value="64"/>
         <CursorPos X="24" Y="93"/>
-        <FoldState Value=" T3j803u"/>
-        <UsageCount Value="76"/>
+        <UsageCount Value="77"/>
         <Loaded Value="True"/>
       </Unit7>
       <Unit8>
@@ -95,7 +94,7 @@
         <EditorIndex Value="8"/>
         <TopLine Value="57"/>
         <CursorPos X="84" Y="73"/>
-        <UsageCount Value="66"/>
+        <UsageCount Value="67"/>
         <Loaded Value="True"/>
       </Unit8>
       <Unit9>
@@ -104,7 +103,7 @@
         <UnitName Value="RoomObjectClass"/>
         <EditorIndex Value="7"/>
         <CursorPos X="54" Y="22"/>
-        <UsageCount Value="40"/>
+        <UsageCount Value="41"/>
         <Loaded Value="True"/>
       </Unit9>
       <Unit10>
@@ -117,7 +116,7 @@
         <EditorIndex Value="1"/>
         <TopLine Value="24"/>
         <CursorPos X="51" Y="49"/>
-        <UsageCount Value="32"/>
+        <UsageCount Value="33"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit10>

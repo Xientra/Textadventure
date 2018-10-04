@@ -353,7 +353,7 @@ begin
   13:
     begin
       Player1.AddItem(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetChestItem());
-      PrintAndUIChange(currendSituation, 'You found '+Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetChestItem().GetName()+'. '+sLineBreak+Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetChestItem().GetDescription());
+      PrintAndUIChange(currendSituation, 'You open the chest.'+sLineBreak+'You found '+Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetChestItem().GetName()+'. '+sLineBreak+Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetChestItem().GetDescription());
       FreeAndNil(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex]);
     end;
   14:
@@ -435,8 +435,18 @@ begin
   10: {do nothing};
   11: {do nothing};
   12: {do nothing};
-  //13: ; attack
-  //14: ; attack
+  13: //attack chest
+    begin
+      PrintAndUIChange(0, 'You attack the chest and break it.'+sLineBreak+'Whatever has been inside is now destroyed.');
+      FreeAndNil(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex]);
+    end;
+  14: //attack mimic
+    begin
+      Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetMimicEnemy().SetItemDrop(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetChestItem());
+      FightingEnemy := Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetMimicEnemy();
+      PrintAndUIChange(1, 'Before you can attack the Chest it jumpes up and reveals itself to be a monster.');
+      FreeAndNil(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex]);
+    end;
   15: {do nothing};
   53:
     begin
@@ -1002,9 +1012,9 @@ begin
   begin
     CreateARoom('Your in your cell ...'+sLineBreak+'But you have a Bonfire!'+sLineBreak+sLineBreak+'Praise The Sun!', 'Images/Rooms/BonFireCellRoom.png', 1, 0, 0);
     CreateARoom('Erste Kreuzung.', 'Images/Rooms/Höle.png', 2, 0, 0);
-    RoomArr[2, 0, 0].AddRoomObject(TRoomObject.Create('Sword Of The Moonlight', 'Pray To Me!'+sLineBreak+'I AM DIVINE!', 'Images/SwordOfMoonlightOnPedestal.png'));
+    RoomArr[2, 0, 0].AddRoomObject(TRoomObject.Create('Definitly a chest', 'Why dont you open it?', 'Images/Enemies/BestMimicEver.jpg'));
     RoomArr[2, 0, 0].RoomObjectArr[0].SetHealing();
-    //RoomArr[2, 0, 0].RoomObjectArr[0].SetChest(TItem.Create('ITEM', 'ITEM!!!!!!!!!!','Images/Items/ITEM.png'));
+    RoomArr[2, 0, 0].RoomObjectArr[0].SetChest(TItem.Create('ITEM', 'ITEM!!!!!!!!!!','Images/Items/ITEM.png'));
     //RoomArr[2, 0, 0].RoomObjectArr[0].SetMimic(TItem.Create('ITEM', 'ITEM!!!!!!!!!!','Images/Items/ITEM.png'), TEnemy.Create('Best Mimic Ever', 15, 15, 'Images/Enemies/BestMimicEver.jpg'));
     //RoomArr[2, 0, 0].RoomObjectArr[0].SetSkillStatue(TSkill.Create('Some other Skill', 'This one is just useless...'+sLineBreak+ 'It deals Slash Damage', 'Images/Skills/someOtherSkill.png', 5, 0, 0, 1.2, 0));
 
