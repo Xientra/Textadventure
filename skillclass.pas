@@ -11,32 +11,37 @@ type
   TSkill = class
   public
     constructor Create(_name, _description, _imagePath: string; _cooldown: integer; _strikeMulti, _thrustMulti, _slashMulti, _magicMulti: real);
-    procedure SetTurnToWaitToCooldown();
-    procedure SetTurnToWaitToZero();
-    function GetTurnsToWait(): integer;
-    procedure ReduceTurnsToWait();
 
+    procedure SetTurnToWaitToCooldown(); //wird aufgerufen wenn man einen Skill einsetzt um den Cooldown zu setzten
+    procedure SetTurnToWaitToZero(); //wir aufgerufen wenn man einen Raum verlässt um den Cooldown zu reseten
+    procedure ReduceTurnsToWait(); //wird jede PlayerTurn aufgerufen um den Colldown von allen Skill um eins zu verringern
+
+    //Get Data
     function GetName(): string;
     function GetDescription(): string;
     function GetImagePath(): string;
+    function GetTurnsToWait(): integer;
 
+    //Get Damage Multipliers
     function GetStrikeMulti(): real;
     function GetThrustMulti(): real;
     function GetSlashMulti(): real;
     function GetMagicMulti(): real;
+
   private
     name: string;
     description: string;
     ImagePath: string;
 
+    cooldown: integer;
+    turnsToWait: integer;
+
+    //Damage Multipliers
     StrikeMultiplyer,
     ThrustMultiplyer,
     SlashMultiplyer,
     MagicMultiplyer
     : real;
-
-    cooldown: integer;
-    turnsToWait: integer;
   end;
 
 implementation
@@ -57,6 +62,7 @@ begin
   turnsToWait := 0;
 end;
 
+//Verändert TurnsToWait
 procedure TSkill.SetTurnToWaitToCooldown();
 begin
   turnsToWait := cooldown;
@@ -65,14 +71,12 @@ procedure TSkill.SetTurnToWaitToZero();
 begin
   turnsToWait := 0;
 end;
-function TSkill.GetTurnsToWait(): integer;
-begin
-  result := turnsToWait;
-end;
 procedure TSkill.ReduceTurnsToWait();
 begin
   if (turnsToWait > 0) then turnsToWait := turnsToWait - 1;
 end;
+
+//Get Data
 function TSkill.GetName(): string;
 begin
   result := name;
@@ -86,6 +90,7 @@ begin
   result := ImagePath;
 end;
 
+//Get Damage Multipliers
 function TSkill.GetStrikeMulti(): real;
 begin
   result := StrikeMultiplyer;
@@ -104,4 +109,3 @@ begin
 end;
 
 end.
-

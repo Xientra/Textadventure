@@ -5,34 +5,38 @@ unit RoomObjectClass;
 interface
 
 uses
-  Classes, SysUtils, EnemyClass, ItemClass, SkillClass;
+  Classes, SysUtils,
+  EnemyClass{für TEnemy}, ItemClass{für TItem}, SkillClass{für TSkill};
 
 type
   TRoomObject = class
   public
     constructor Create(_name, _description, _imagePath: string);
 
+    //Get Data
+    function GetName(): string;
+    function GetDescription(): string;
+    function GetImagePath(): string;
+    //Get/Set Ignore
+    function GetIgnore(): boolean;
+    procedure SetIgnore(_setTo: boolean);
+
+    //Setzt was das RoomObject ist
     procedure SetHealing();
     procedure SetChest(_item: TItem);
     procedure SetMimic(_item: TItem; _enemy: TEnemy);
     procedure SetSkillStatue(_skill: TSkill);
 
-    function GetName(): string;
-    function GetDescription(): string;
-    function GetImagePath(): string;
-
+    //Get Effect
     function GetIsUseless(): boolean;
     function GetIsHealing(): boolean;
     function GetIsChest(): boolean;
     function GetIsMimic(): boolean;
     function GetIsSkillStatue(): boolean;
-
+    //Get Effect Values
     function GetChestItem(): TItem;
     function GetMimicEnemy(): TEnemy;
     function GetSkillToTeach(): TSkill;
-
-    function GetIgnore(): boolean;
-    function SetIgnore(_setTo: boolean);
 
   private
     name: string;
@@ -43,7 +47,8 @@ type
     IsHealing,
     IsChest,
     IsMimic,
-    IsSkillStatue: boolean;
+    IsSkillStatue,
+    IsLadder: boolean;
 
     ChestItem: TItem;
     MimicEnemy: TEnemy;
@@ -70,6 +75,30 @@ begin
   Ignore := false;
 end;
 
+//Get Data
+function TRoomObject.GetName(): string;
+begin
+  result := name;
+end;
+function TRoomObject.GetDescription(): string;
+begin
+  result := description;
+end;
+function TRoomObject.GetImagePath(): string;
+begin
+  result := ImagePath;
+end;
+//Get/Set Ignore
+function TRoomObject.GetIgnore(): boolean;
+begin
+  result := Ignore;
+end;
+procedure TRoomObject.SetIgnore(_setTo: boolean);
+begin
+  Ignore := _setTo;
+end;
+
+//Setzt was das RoomObject ist
 procedure TRoomObject.SetHealing();
 begin
   IsUseless := false;
@@ -110,19 +139,7 @@ begin
   SkillToTeach := _skill;
 end;
 
-function TRoomObject.GetName(): string;
-begin
-  result := name;
-end;
-function TRoomObject.GetDescription(): string;
-begin
-  result := description;
-end;
-function TRoomObject.GetImagePath(): string;
-begin
-  result := ImagePath;
-end;
-
+//Get Effect
 function TRoomObject.GetIsUseless(): boolean;
 begin
   result := IsUseless;
@@ -144,6 +161,7 @@ begin
   result := IsSkillStatue;
 end;
 
+//Get Effect Values
 function TRoomObject.GetChestItem(): TItem;
 begin
   result := ChestItem;
@@ -157,14 +175,7 @@ begin
   result := SkillToTeach;
 end;
 
-function TRoomObject.GetIgnore(): boolean;
-begin
-  result := Ignore;
-end;
-procedure TRoomObject.SetIgnore(_setTo: boolean);
-begin
-  Ignore := _setTo;
-end;
+
 
 end.
 

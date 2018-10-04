@@ -12,29 +12,32 @@ type
   public
     constructor Create(_name, _description, _imagePath: string);
 
-    function UseItem(): boolean;
+    function UseItem(): boolean; //Macht sachen basierent auf der Art des Items; returns false wenn man das Item nicht benutzen kann (sowas wie Schlüssel)
 
+    //Get Stuff
     function GetName(): string;
     function GetDescription(): string;
     function GetImagePath(): string;
+    //Get/Set Ignore
+    function GetIgnore(): boolean;
+    procedure SetIgnore(_setTo: boolean);
 
+    //Gibt dem Item ein bestimmten Effekt
     procedure SetHealing(_factor: real);
     procedure SetDamageUp(_factor: real);
     procedure SetDefenseUp(_factor: real);
     procedure SetKey(_keyIndex: real);
     procedure SetBomb(_damage: real);
-    function GetKeyIndex: real;
 
-    function GetIgnore(): boolean;
-    function SetIgnore(_setTo: boolean);
+    function GetKeyIndex: real;
 
   private
     ItemName: string;
     ItemDescription: string;
     ImagePath: string;
 
+    //Die Verschiedene Arten von Items
     IsUseless: boolean;
-
     IsHealing,
     IsDamageUp,
     IsDefenseUp,
@@ -42,6 +45,7 @@ type
     IsKey
     : boolean;
 
+    //Werte zu den Verschiedene
     HealingFactor,
     DamageUpFactor,
     DefenseUpFactor,
@@ -49,7 +53,7 @@ type
     KeyIndex
     : real;
 
-    Ignore: boolean;
+    Ignore: boolean; //Diese Variable ist dafür da um das Item die im Raum liegt einmalig zu ignorieren fallst man sie nicht aufheben will
   end;
 
 implementation
@@ -73,6 +77,7 @@ begin
   Ignore := false;
 end;
 
+//benutzt das Item
 function TItem.UseItem(): boolean;
 begin
   result := false;
@@ -82,20 +87,20 @@ begin
   begin
     if (IsHealing) then
     begin
-      Unit1.Player1.ChangeHealthBy(HealingFactor);
+      Unit1.Player1.ChangeHealthBy(HealingFactor); //gibt dem Spieler Heilung
       result := true;
     end;
-    if (IsDamageUp) then
+    if (IsDamageUp) then //erhöt den Damage Multiplier des Players
     begin
       Unit1.Player1.SetDamageMultiplyer(DamageUpFactor);
       result := true;
     end;
-    if (IsDefenseUp) then
+    if (IsDefenseUp) then //erhöt den Defense Multiplier des Players
     begin
       Unit1.Player1.SetDefenseMultiplyer(DefenseUpFactor);
       result := true;
     end;
-    if (IsBomb) then
+    if (IsBomb) then //macht dem Gegner Schaden
     begin
       Unit1.FightingEnemy.DoDamage(0, 0, 0, BombDamage);
       result := true;
@@ -103,6 +108,7 @@ begin
   end;
 end;
 
+//Get Stuff
 function TItem.GetName(): string;
 begin
   result := ItemName;
@@ -115,7 +121,18 @@ function TItem.GetImagePath(): string;
 begin
   result := ImagePath;
 end;
+//Get/Set Ignore
+function TItem.GetIgnore(): boolean;
+begin
+  result := Ignore;
+end;
+procedure TItem.SetIgnore(_setTo: boolean);
+begin
+  Ignore := _setTo;
+end;
 
+
+//Sets den Effekt des Items
 procedure TItem.SetHealing(_factor: real);
 begin
   IsUseless := false;
@@ -149,7 +166,6 @@ begin
 
   DefenseUpFactor := _factor;
 end;
-
 procedure TItem.SetBomb(_damage: real);
 begin
   IsUseless := false;
@@ -161,7 +177,6 @@ begin
 
   BombDamage := _damage;
 end;
-
 procedure TItem.SetKey(_keyIndex: real);
 begin
   IsUseless := false;
@@ -179,20 +194,4 @@ begin
   result := KeyIndex;
 end;
 
-function TItem.GetIgnore(): boolean;
-begin
-  result := Ignore;
-end;
-procedure TItem.SetIgnore(_setTo: boolean);
-begin
-  Ignore := _setTo;
-end;
-
 end.
-
-
-
-
-
-
-

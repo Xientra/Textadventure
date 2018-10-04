@@ -46,7 +46,6 @@ type
 
   public
 
-
   private
     //unabhängingig von den lazarus generierten ButtonClick proceduren
     procedure Button_1_Action();
@@ -57,13 +56,13 @@ type
     procedure SetButton(_background: TImage; _text: TLabel; toSetTo: boolean); //aktiviert oder deaktiviert den Butten mit dem TImage _bg und dem TLbl _text
 
     //Verwaltung der Situation und UIState
-    procedure ChangeSituation(_situation: integer);
-    procedure ChangeUIState(_state: integer);
-    procedure PrintAndUIChange(_changeUITo: integer; _toPrint: string); //zeigt zusätzlich zum ändern der UI noch eine einmalige Nachicht
+    procedure ChangeSituation(_situation: integer); //ändert die grundlegende Situation und ruft danach auch ChangeUIState(); auf um die UI zu updaten
+    procedure ChangeUIState(_state: integer); //Updatet die UI kann das Inventar öffnen
+    procedure PrintAndUIChange(_changeUITo: integer; _toPrint: string); //zeigt zusätzlich zum ändern der UI noch eine einmalige Nachicht. Sollte man es mit UIState aufrufen zeigt sie einfach nur eine Nachricht und geht dan zurück zu wo es war
 
     //Logic hinter bestimmten Situationen
     procedure OnEnterRoom(); //situation = 0;  schaut ob dinge/Enemyies im Raum sind usw.
-    procedure OnLeaveRoom();
+    procedure OnLeaveRoom(); //Resetet cooldowns und alle Ignore Variablen von Sahcen die im Raum sind
     procedure PlayerEndTurn(); //situation = 1;  schaut ob der Enemy besiegt ist und verigert die cooldowns
     procedure EnemyTurn(); //situation = 2;  Runde des Gegners
 
@@ -81,28 +80,23 @@ type
     procedure CreateRooms(); //Erstellt den Inhalt des Spieles
   end;
 
-//------------------------------------------------------------------------------------------------------------------------//
-//-----------------------------------------------Schau in die ToDoListe---------------------------------------------------//
-//------------------------------------------------------------------------------------------------------------------------//
-
 var
   Form1: TForm1;
 
   //Music Vars
-  MusicTimer: TTimer;
-  MusicCounter: integer;
-  songPath: PChar; //PChar ist irgentwie string aber PlayerSound breacht genau das
-  songlength: integer; //in seconds?
-  muted: boolean;
+  MusicCounter: integer; //Der Musik counter, der die Zeit zählt bis die Musik wiederholt werden muss
+  songPath: PChar; //PChar ist irgentwie string aber PlayerSound braucht genau das
+  songlength: integer; //wie lange MusicTimer warten muss bis er den song wiederholt. In secunden, da alles darunter irgentwie nicht mehr richtig die Zeit wiederspiegelt
+  muted: boolean; //wenn false wird musik gespielt
 
-  RoomArr: Array of Array of Array of TRoom;
-  Room_x, Room_y, Room_z: integer;
-  Player1: TPlayer;
-  FightingEnemy: TEnemy;
+  RoomArr: Array of Array of Array of TRoom; //Das Array aller Räume
+  Room_x, Room_y, Room_z: integer; //Die Länge des RoomArray in alle drei Richtungen
+  Player1: TPlayer; //Das Spieler Object welches leben und Inventar speichert
+  FightingEnemy: TEnemy; //Der gegner gegen den man Kämpft wenn man in Situation 1 oder 2 ist
 
-  //Diese Variablen sind dafür da die Spielsituationen zu äandern
-  currendSituation: integer; //diese variable merkt sich die grundlegende Spielsituation unabhängig von dem möglicherweise offenen Menü
-  UIState: integer; //diese Variable ist dafür da alle Menüs zu navigieren
+  //Diese Variablen sind dafür da die Spielsituationen zu ändern
+  currendSituation: integer; //diese variable merkt sich die grundlegende Spielsituation unabhängig von dem möglicherweise offenen Menü //0 = laufen; 1 = Kampf(Runde des Spielers) 2 = Kampf(Runde des Gegners)
+  UIState: integer; //diese Variable ist dafür da alle Menüs zu navigieren sie ist unabhängig von currendSituation damit man wieder dahin zurückkehren kann von wo man das Menu geöffnet hat
   UIStateCopy: integer; //diese var ist für situation 99 um dahin zurück zukehren wo man vorher war
 
   //diese Beiden vars sind dafür da, das die information an welcher stelle das item/etc jewailigen array des Inventar/Raum ist. bsp: man hat zwei items in inventar was auch immer danach geschaut hat weiß das und will, das infos zum ersten gedruckt werden also setzt es die var auf die stelle des items
@@ -112,6 +106,10 @@ var
 implementation
 
 {$R *.lfm}
+
+//-------------------------------------------------------------------------------------------------------------------//
+//-----------------------------------------------Schau in die ToDoListe----------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
 
 { TForm1 }
 procedure TForm1.FormCreate(Sender: TObject);
@@ -133,7 +131,7 @@ begin
   Room_y := 8-1;
   Room_z := 7-1;
 
-  //initilise RoomArray
+  //Setzt die Länge des RoomArray erst in x dann y und dann z Richtung
   SetLength(RoomArr, Room_x);
   for i := 0 to Room_y - 1 do
   begin
@@ -141,9 +139,10 @@ begin
     for ii := 0 to Room_z - 1 do SetLength(RoomArr[i, ii], Room_z);
   end;
 
-  CreateRooms(); //Creates all the Rooms
-  //SetAllNeighborRooms();
+  CreateRooms(); //Erstellt das Spiel
+  //Erschafft den Spieler in einem Raum
   Player1 := TPlayer.Create(RoomArr[1, 0, 0], TWeapon.Create('Fists', 'Just your good old hands.', 'Images/Items/ShortSword.png', 10, 0, 0, 0), 100);
+
   //Stuff just for testing the inventory
   Player1.AddItem(TItem.Create('some Key', 'it not usefull for any door...','Images/Items/Key1.png'));
   Player1.AddItem(TItem.Create('DamageUpItemThingy', 'It boosts your Damage by 20%','Images/Items/DamageUp.png'));
@@ -152,12 +151,12 @@ begin
   Player1.itemInventory[2].SetBomb(50);
   Player1.AddWeapon(TWeapon.Create('Some Sword', 'It is acually sharp even thought it looks a bit blocky.', 'Images/Items/ShortSword.png', 0, 0, 15, 0));
   Player1.AddSkill(TSkill.Create('Some Skill', 'You can KILL with it.' +sLineBreak+ 'It deals Strike Damage', 'Images/Skills/someSkill.png', 2, 1.5, 0, 0, 0));
+  //---
 
-
-  ChangeSituation(0); //updates UI
+  //Ändert die Situation zum erstem mal
+  ChangeSituation(0); //also updates UI
   Memo_Description.Clear();
 end;
-
 
 {------------------------------------------------------------------------------}
 {----------------------Lazarus-generierte-proceduren---------------------------}
@@ -172,8 +171,7 @@ begin
   Form2.close();
 end;
 
-//Schaut ob Tasten gedrückt wurden
-procedure TForm1.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+procedure TForm1.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState); //Schaut ob Tasten gedrückt wurden
 begin
   if (Key = VK_ESCAPE) then Application.Terminate();
 
@@ -207,7 +205,7 @@ begin
   end;
 end;
 
-procedure TForm1.MusicTimerTimer(Sender: TObject);
+procedure TForm1.MusicTimerTimer(Sender: TObject); //Der Timer welcher die Musik wiederholt
 begin
 
   Edit2.Text := IntToStr(MusicCounter);
@@ -241,7 +239,7 @@ end;
 procedure TForm1.Button_1_Action(); //                                     --> 1
 begin
   case UIState of
-  0:
+  0: //x Plus im RoomArr
     begin
       if (Player1.GetCurrendRoom.GetPosX+1 <= Room_x) and (RoomArr[Player1.GetCurrendRoom.getPosX+1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] <> nil) and (Player1.GetCurrendRoom.GetBlockedRight = false) and (Player1.GetCurrendRoom.GetDoorRight = false) then
       begin
@@ -251,58 +249,58 @@ begin
         OnEnterRoom();
       end;
     end;
-  1:
+  1: //Öffnet das Skill Menu
     begin
       if (Player1.HasSkills() = true) then ChangeUIState(55) //Skill Menu
       else Memo1.Lines.Add('You have no skills yet.')
     end;
   2: {do nothing};
-  10:
+  10: //lässt die Waffe im Raum liegen
     begin
       Player1.GetCurrendRoom().WeaponArr[roomStuffIndex].SetIgnore(true);
       PrintAndUIChange(currendSituation, 'You leave the Weapon where it is.');
     end;
-  11:
+  11: //lässt das Item im Raum liegen
     begin
       Player1.GetCurrendRoom().ItemArr[roomStuffIndex].SetIgnore(true);
       PrintAndUIChange(currendSituation, 'You leave the Item where it is.');
     end;
-  12:
+  12: //lässt das RoomObject im Raum
     begin
       Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].SetIgnore(true);
       PrintAndUIChange(currendSituation, 'You leave the Stature be.');
     end;
-  13:
+  13: //lässt das RoomObject im Raum
     begin
       Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].SetIgnore(true);
       PrintAndUIChange(currendSituation, 'You leave the Chest where it is.');
     end;
-  14:
+  14: //lässt das RoomObject im Raum
     begin
       Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].SetIgnore(true);
       PrintAndUIChange(currendSituation, 'You leave the Chest where it is.');
     end;
-  15:
+  15: //lässt das RoomObject im Raum
     begin
       Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].SetIgnore(true);
       PrintAndUIChange(currendSituation, 'You leave the Stature be.');
     end;
-  53:
+  53: //Geht aus dem Waffen Menu zurück in das Kampf Menu
     begin
       ChangeUIState(currendSituation);
     end;
-  54:
+  54: //Geht aus dem Item Menu zurück in das Kampf Menu
     begin
       ChangeUIState(currendSituation);
     end;
-  55:
+  55: //Geht aus dem Skill Menu zurück in das Kampf Menu
     begin
       PrintRoomData(Player1.GetCurrendRoom());
       ChangeUIState(currendSituation);
     end;
-  99: ;
+  99: {do nothing};
   else
-    Memo1.Lines.Add('lol no');
+    Memo1.Lines.Add('lol no'); //Debug
   end;
 end;
 procedure TForm1.Button_2_Action(); //                                     --> 2
@@ -310,7 +308,7 @@ var
   _dmg: real;
 begin
   case UIState of
-  0:
+  0: //x Minus im RoomArr
     begin
       if (Player1.GetCurrendRoom.GetPosX-1 >= 0) and (RoomArr[Player1.GetCurrendRoom.getPosX-1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] <> nil) and (Player1.GetCurrendRoom.GetBlockedLeft = false) and (Player1.GetCurrendRoom.GetDoorLeft = false) then begin
         OnLeaveRoom();
@@ -319,7 +317,7 @@ begin
         OnEnterRoom();
       end;
     end;
-  1:
+  1: //Greift den Gegner an und macht ihm Schaden; Beendet die Runde des Spielers
     begin
       _dmg := FightingEnemy.DoDamage(Player1.GetCurrendWeapon().GetStrikeDmg(), Player1.GetCurrendWeapon().GetThrustDmg(), Player1.GetCurrendWeapon().GetSlashDmg(), Player1.GetCurrendWeapon().GetMagicDmg());
 
@@ -327,36 +325,36 @@ begin
 
       PlayerEndTurn();
     end;
-  2:
+  2: //Beendet die Runde des Gegners
     begin
       ChangeUIState(1);
     end;
-  10:
+  10: //Nimmt die Waffe die im Raum liegt und geht weiter
     begin
       Player1.AddWeapon(Player1.GetCurrendRoom().WeaponArr[roomStuffIndex]);
       Player1.GetCurrendRoom().WeaponArr[roomStuffIndex] := nil;
       ChangeUIState(currendSituation);
     end;
-  11:
+  11: //Nimmt das Item die im Raum liegt und geht weiter
     begin
       Player1.AddItem(Player1.GetCurrendRoom().ItemArr[roomStuffIndex]);
       Player1.GetCurrendRoom().ItemArr[roomStuffIndex] := nil;
       PrintAndUIChange(currendSituation, '');
       ChangeUIState(currendSituation);
     end;
-  12:
+  12: //Interagiert mit der HeilStatur und heit den Spieler
     begin
       Player1.ChangeHealthBy(100); //<------------------------------------------I DONT KNOW ABOUT THIS HEALTH
       PrintAndUIChange(currendSituation, 'You pray to the godess you dont know and ask for her assistance.'+sLineBreak+'You health has been restored.');
       FreeAndNil(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex]);
     end;
-  13:
+  13: //Öffnet die Chest und gibt dem Spieler das Item in der Truhe
     begin
       Player1.AddItem(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetChestItem());
-      PrintAndUIChange(currendSituation, 'You open the chest and find '+Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetChestItem().GetName()+'. '+sLineBreak+Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetChestItem().GetDescription());
+      PrintAndUIChange(currendSituation, 'You open the chest.'+sLineBreak+'You found '+Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetChestItem().GetName()+'. '+sLineBreak+Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetChestItem().GetDescription());
       FreeAndNil(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex]);
     end;
-  14:
+  14: //Versucht die Mimic zu öffnen; Startet einen Kampf den der Gegner beginnt
     begin
       //Sets the chestItem to the item droped by the enemy
       Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetMimicEnemy().SetItemDrop(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetChestItem());
@@ -364,7 +362,7 @@ begin
       PrintAndUIChange(2, 'The Chest was a Monster!'+sLineBreak+'It hit you before you could react.');
       FreeAndNil(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex]);
     end;
-  15:
+  15: //Interagiet mit der Skill Statur und erhalte den ihren Skill
     begin
       Player1.AddSkill(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetSkillToTeach());
       PrintAndUIChange(currendSituation, 'As you touch the stature you feel great power and knowlegde flow throght your body.'+sLineBreak+
@@ -372,13 +370,13 @@ begin
                                          Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetSkillToTeach().GetDescription());
       FreeAndNil(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex]);
     end;
-  53:
+  53: //Rüstet die im Inventar ausgewählte waffe aus und beendet die Runde des Spielers
     begin
       Player1.SetCurrendWeapon(Player1.weaponInventory[inventoryIndex]);
       PrintAndUIChange(2, 'You equiped '+Player1.weaponInventory[inventoryIndex].GetName()+'.');
       PlayerEndTurn();
     end;
-  54:
+  54: //Benutzt das im Inventar ausgewählte Item und beendet die Runde des Spielers
     begin
       If (Player1.itemInventory[inventoryIndex].UseItem() = false) then ShowMessage('You are not able to use this Item in combat.')
       else begin
@@ -386,7 +384,7 @@ begin
         PlayerEndTurn();
       end;
     end;
-  55:
+  55: //Bunutzt den im Inventar ausgewählten Skill, macht dem Gegner Schaden und beendet die Runde des Spielers
     begin
       if (Player1.Skills[inventoryIndex].GetTurnsToWait() = 0) then
       begin
@@ -406,18 +404,17 @@ begin
         PrintAndUIChange(UIState, 'You have to wait '+IntToStr(Player1.Skills[inventoryIndex].GetTurnsToWait())+' turn(s) until you can use this skill again.');
       end;
     end;
-  99:
+  99: //Akzeptiert die Geschriebene Nachricht und geht zu der in den PrintAndUIChange(); ausgewählten UIState
     begin
       ChangeUIState(UIStateCopy);
     end
-  else
-    Memo1.Lines.Add('lol no');
+  else ShowMessage('This Button has no effect'); //Debug
   end;
 end;
 procedure TForm1.Button_3_Action(); //                                     --> 3
 begin
   case UIState of
-  0:
+  0: //y Positiv im RoomArr
     begin
       if (Player1.GetCurrendRoom.GetPosY+1 <= Room_y) and (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY+1,Player1.GetCurrendRoom.getPosZ] <> nil) and (Player1.GetCurrendRoom.GetBlockedTop = false) and (Player1.GetCurrendRoom.GetDoorTop = false) then begin
         OnLeaveRoom();
@@ -426,7 +423,7 @@ begin
         OnEnterRoom();
       end;
     end;
-  1:
+  1: //Öffnet das Waffen Menü
     begin
       if (Player1.HasWeaponsInInventory() = true) then  ChangeUIState(53) //Weapon Menu
       else Memo1.Lines.Add('You have no weapons in your arsenal.')
@@ -435,12 +432,12 @@ begin
   10: {do nothing};
   11: {do nothing};
   12: {do nothing};
-  13: //attack chest
+  13: //greift die Truhe an und zerstört sie
     begin
       PrintAndUIChange(0, 'You attack the chest and break it.'+sLineBreak+'Whatever has been inside is now destroyed.');
       FreeAndNil(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex]);
     end;
-  14: //attack mimic
+  14: //greift die Mimic an und startet den Kampf mit der Runde des Spieles als erstes
     begin
       Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetMimicEnemy().SetItemDrop(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetChestItem());
       FightingEnemy := Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetMimicEnemy();
@@ -448,7 +445,7 @@ begin
       FreeAndNil(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex]);
     end;
   15: {do nothing};
-  53:
+  53: //geht im Waffen Menü nach oben
     begin
       if (inventoryIndex - 1 >= 0) then
         if (Player1.weaponInventory[inventoryIndex - 1] <> nil) then
@@ -457,7 +454,7 @@ begin
       else ShowMessage('can now go futher down (index of Weapons)');
       PrintWeaponData(Player1.weaponInventory[inventoryIndex]);
     end;
-  54:
+  54: //geht im Item Menü nach oben
     begin
       if (inventoryIndex - 1 >= 0) then
         if (Player1.itemInventory[inventoryIndex - 1] <> nil) then
@@ -466,7 +463,7 @@ begin
       else ShowMessage('can now go futher down (index of Weapons)');
       PrintItemData(Player1.itemInventory[inventoryIndex]);
     end;
-  55:
+  55: //geht im Skill Menü nach oben
     begin
       if (inventoryIndex - 1 >= 0) then
         if (Player1.Skills[inventoryIndex - 1] <> nil) then
@@ -475,15 +472,14 @@ begin
       else ShowMessage('can now go futher down');
       PrintSkillData(Player1.Skills[inventoryIndex]);
     end;
-  99: ;
-  else
-    Memo1.Lines.Add('lol no');
+  99: {Do Nothing};
+  else ShowMessage('This Button has no effect'); //Debug
   end;
 end;
 procedure TForm1.Button_4_Action(); //                                     --> 4
 begin
   case UIState of
-  0:
+  0: //y Minus im RoomArray
     begin
       if (Player1.GetCurrendRoom.GetPosY-1 >= 0) and (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY-1,Player1.GetCurrendRoom.getPosZ] <> nil) and (Player1.GetCurrendRoom.GetBlockedBottom = false) and (Player1.GetCurrendRoom.GetDoorBottom = false) then begin
         OnLeaveRoom();
@@ -492,7 +488,7 @@ begin
         OnEnterRoom();
       end;
     end;
-  1:
+  1: //Öffnet das Item Menü
     begin
       if (Player1.HasItemsInInventory() = true) then ChangeUIState(54) //Item Menu
       else Memo1.Lines.Add('You have no items in your inventory.')
@@ -504,7 +500,7 @@ begin
   13: {do nothing};
   14: {do nothing};
   15: {do nothing};
-  53:
+  53: //geht im Waffen Menü nach unten
     begin
       if (inventoryIndex + 1 <= length(Player1.weaponInventory) - 1) then
         if (Player1.weaponInventory[inventoryIndex + 1] <> nil) then
@@ -513,7 +509,7 @@ begin
       else ShowMessage('can now go futher up (index of Items)');
       PrintWeaponData(Player1.weaponInventory[inventoryIndex]);
     end;
-  54:
+  54: //geht im Item Menü nach unten
     begin
       if (inventoryIndex + 1 <= length(Player1.itemInventory) - 1) then
         if (Player1.itemInventory[inventoryIndex + 1] <> nil) then
@@ -522,7 +518,7 @@ begin
       else ShowMessage('can now go futher up (index of Items)');
       PrintItemData(Player1.itemInventory[inventoryIndex]);
     end;
-  55:
+  55: //geht im Skill Menü nach unten
     begin
       if (inventoryIndex + 1 <= length(Player1.Skills) - 1) then
         if (Player1.Skills[inventoryIndex + 1] <> nil) then
@@ -531,9 +527,8 @@ begin
       else ShowMessage('can now go futher up (index of Skills)');
       PrintSkillData(Player1.Skills[inventoryIndex]);
     end;
-  99: ;
-  else
-    Memo1.Lines.Add('lol no');
+  99: {Do Nothing};
+  else ShowMessage('This Button has no effect'); //Debug
   end;
 end;
 {------------------------------------------------------------------------------}
@@ -541,7 +536,8 @@ end;
 
 {------------------------------------------------------------------------------}
 {---------------------------Ändern-der-Situation-------------------------------}
-procedure TForm1.ChangeSituation(_situation: integer);
+
+procedure TForm1.ChangeSituation(_situation: integer); //ändert currendSituation
 begin
   currendSituation := _situation;
   ChangeUIState(currendSituation);
@@ -549,7 +545,7 @@ begin
   Edit2.Text := IntToStr(currendSituation);
 end;
 
-procedure TForm1.PrintAndUIChange(_changeUITo: integer; _toPrint: string);
+procedure TForm1.PrintAndUIChange(_changeUITo: integer; _toPrint: string); //änderd UIState und zeigt vorher noch eine Nachricht
 begin
   if (_changeUITo = 0) then ChangeSituation(0);
   if (_changeUITo = 1) then ChangeSituation(1);
@@ -561,10 +557,12 @@ begin
   ChangeUIState(99);
 end;
 
-procedure TForm1.ChangeUIState(_state: integer);
+procedure TForm1.ChangeUIState(_state: integer); //ändert UIState und Updatet dementsprechend die UI
 var i: integer;
 begin
   UIState := _state;
+
+  //Debug
   Edit1.Text := IntToStr(UIState);
   Edit3.Text := IntToStr(currendSituation);
 
@@ -575,7 +573,7 @@ begin
   SetButton(Btn4_Image, Btn4_Label, true);
 
   case UIState of
-    0: //walking
+    0: //das Bewegen in den Räumen
     begin
       currendSituation := 0;
       Btn1_Label.caption := 'x Plus';
@@ -586,7 +584,7 @@ begin
 
       OnEnterRoom(); //whenever you can walk again it checks if there is (still) stuff in the Room
     end;
-  1: //fighting
+  1: //Kämpfen mit normalen Gegnern (Runde des Spielers)
     begin
       currendSituation := 1;
       Btn1_Label.caption := 'Skills';
@@ -594,11 +592,12 @@ begin
       Btn3_Label.caption := 'Weapons';
       Btn4_Label.caption := 'Items';
 
-      PrintEnemyData(FightingEnemy);
       Memo1.Clear();
       Memo1.Lines.Add('The Enemy stands in front of you.'+sLineBreak+'What will you do?');
+
+      PrintEnemyData(FightingEnemy);
     end;
-  2: //the Enemy turn
+  2: //Kämpfen mit normalen Gegnern (Runde des Gegners)
     begin
       currendSituation := 2;
       Btn1_Label.caption := '';
@@ -611,8 +610,10 @@ begin
       SetButton(Btn4_Image, Btn4_Label, false);
 
       EnemyTurn(); //The Enemy deals Damage
+
+      PrintEnemyData(FightingEnemy);
     end;
-  10: //Room Weapons
+  10: //Interagiert mit einer Waffe in einem Raum
     begin
       Btn1_Label.caption := 'Leave it';
       SetButton(Btn1_Image, Btn1_Label, true);
@@ -628,7 +629,7 @@ begin
 
       PrintWeaponData(Player1.GetCurrendRoom().WeaponArr[roomStuffIndex]);
     end;
-  11: //Room Items
+  11: //Interagiert mit einem Item in einem Raum
     begin
       Btn1_Label.caption := 'Leave it';
       SetButton(Btn1_Image, Btn1_Label, true);
@@ -644,7 +645,7 @@ begin
 
       PrintItemData(Player1.GetCurrendRoom().ItemArr[roomStuffIndex]);
     end;
-  12: //Interact with HealingObject
+  12: //Interagiert mit einer Heil Statur in einem Raum
     begin
       Btn1_Label.caption := 'Leave';
       SetButton(Btn1_Image, Btn1_Label, true);
@@ -657,7 +658,7 @@ begin
 
       PrintRoomObjectData(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex]);
     end;
-  13: //Interact with Chest
+  13: //Interagiert mit einer Truhe in einem Raum
     begin
       Btn1_Label.caption := 'Leave';
       SetButton(Btn1_Image, Btn1_Label, true);
@@ -670,7 +671,7 @@ begin
 
       PrintRoomObjectData(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex]);
     end;
-  14: //Interact with Mimic
+  14: //Interagiert mit einer Mimic in einem Raum
     begin
       Btn1_Label.caption := 'Leave';
       SetButton(Btn1_Image, Btn1_Label, true);
@@ -683,7 +684,7 @@ begin
 
       PrintRoomObjectData(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex]);
     end;
-  15: //interact with SkillStature
+  15: //Interagiert mit einer Skill Statur in einem Raum
     begin
       Btn1_Label.caption := 'Leave';
       SetButton(Btn1_Image, Btn1_Label, true);
@@ -696,7 +697,7 @@ begin
 
       PrintRoomObjectData(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex]);
     end;
-  53: //Weapon Menu
+  53: //Das Waffen Menu
     begin
       Btn1_Label.caption := 'Back';
       Btn2_Label.caption := 'Equip';
@@ -710,7 +711,7 @@ begin
           Memo1.Lines.Add('-'+Player1.weaponInventory[i].GetName());
       PrintWeaponData(Player1.weaponInventory[inventoryIndex]);
     end;
-  54: //Item Menu
+  54: //Das Item Menu
     begin
       Btn1_Label.caption := 'Back';
       Btn2_Label.caption := 'Use';
@@ -724,7 +725,7 @@ begin
           Memo1.Lines.Add('-'+Player1.itemInventory[i].GetName());
       PrintItemData(Player1.itemInventory[inventoryIndex]);
     end;
-  55: //skills Menu
+  55: //Das Skill Menu
     begin
       Btn1_Label.caption := 'Back';
       Btn2_Label.caption := 'Use';
@@ -742,7 +743,7 @@ begin
       PrintSkillData(Player1.Skills[inventoryIndex]);
     end;
 
-  99: //Single Message
+  99: //Die einmalige Nachricht
     begin
       Btn1_Label.caption := '';
       SetButton(Btn1_Image, Btn1_Label, false);
@@ -754,7 +755,7 @@ begin
       SetButton(Btn4_Image, Btn4_Label, false);
 
     end;
-  else ShowMessage('You are in a UIState which has no definition.'+slineBreak+'How the hell did you get here?!');
+  else ShowMessage('You are in a UIState which has no definition.'+slineBreak+'How the hell did you get here?!'); //Debug
   end;
 
   PrintPlayerData(Player1); //Schreibt die stats des Spielers
@@ -764,6 +765,7 @@ end;
 
 {------------------------------------------------------------------------------}
 {------------------Logic-hinter-bestimmten-Situationen-------------------------}
+//wird aufgerufen wenn man einen Raum betritt und wenn man eine aktion im Raum beendet hat (Kämpfen, Interagieren)
 procedure TForm1.OnEnterRoom(); //logic situation = 0
 var
   i: integer;
@@ -779,7 +781,7 @@ begin
       end;
   end;
 
-  //2. check nach waffen
+  //2. check nach Waffen
   if (length(Player1.GetCurrendRoom().WeaponArr) > 0) then
   begin
     for i := 0 to length(Player1.GetCurrendRoom().WeaponArr) - 1 do
@@ -790,7 +792,7 @@ begin
           ChangeUIState(10);
         end;
   end else
-  //3. check nach items
+  //3. check nach Items
   if (length(Player1.GetCurrendRoom().ItemArr) > 0) then
   begin
     for i := 0 to length(Player1.GetCurrendRoom().ItemArr) - 1 do
@@ -843,6 +845,7 @@ begin
   if (currendSituation = 0) and (UIState = 0) then PrintRoomData(Player1.GetCurrendRoom());
 end;
 
+//wird aufgerufen bevor man den Raum ändert
 procedure TForm1.OnLeaveRoom(); //logic situation = 0
 var i: integer;
 begin
@@ -865,6 +868,7 @@ begin
       Player1.GetCurrendRoom().RoomObjectArr[i].SetIgnore(false);
 end;
 
+//wird am Ende der Spieler Runde aufgerufen und schaut ob der Gegner besiegt wurde
 procedure TForm1.PlayerEndTurn(); //logic situation = 1
 var
   i: integer;
@@ -910,12 +914,12 @@ begin
   end;
 end;
 
+//wird am ende/in der Runde des Gegners aufgerufen und macht dem Spieler Schaden
 procedure TForm1.EnemyTurn(); //logic situation = 2
 begin
   Player1.ChangeHealthBy(-(FightingEnemy.GetDamage()));
   Memo1.Clear();
   Memo1.Lines.Add('The Enemy delt ' + FloatToStr(FightingEnemy.GetDamage())+' damage.'+sLineBreak+'You now have ' + FloatToStr(Player1.GetHealth()) + ' health left');
-  PrintEnemyData(FightingEnemy);
 end;
 {------------------------------------------------------------------------------}
 
@@ -1001,7 +1005,7 @@ end;
 
 {------------------------------------------------------------------------------}
 {------------------------Erstellen-der-Räume-----------------------------------}
-procedure TForm1.CreateARoom(_description: string; _imagePath: string; _pos_x, _pos_y, _pos_z: integer); //ist besser, damit die position an der der Raum erstellt wurde auf jeden fall dem Raum bekannt ist
+procedure TForm1.CreateARoom(_description: string; _imagePath: string; _pos_x, _pos_y, _pos_z: integer); //Erstellt einen Raum in der angegebenen Position im RoomArray
 begin
   RoomArr[_pos_x, _pos_y, _pos_z] := TRoom.Create(_description, _imagePath, _pos_x, _pos_y, _pos_z);
 end;
@@ -1105,6 +1109,6 @@ begin
 
   end;
 end;
+{------------------------------------------------------------------------------}
 
 end.
-

@@ -9,41 +9,42 @@ uses
   WeaponClass{TWeapon}, ItemClass{TItem};
 
 
-  type
-    TEnemy = class
-    public
-      constructor Create(_name: string; _health, _damage: real; _imagePath: string);
-      function DoDamage(_strikeDmg, _thrustDmg, _slashDmg: real; _magicDmg: real): real;
-      procedure SetResistants(_strikeResist, _thrustResist, _slashResist: real);
+type
+  TEnemy = class
+  public
+    constructor Create(_name: string; _health, _damage: real; _imagePath: string);
+    function DoDamage(_strikeDmg, _thrustDmg, _slashDmg: real; _magicDmg: real): real; //macht dem Gegner Schaden multipliziert mit den Stärken und Schwächen des Gegners
+    procedure SetResistants(_strikeResist, _thrustResist, _slashResist: real); //Gibt dem Gegner stärken oder Schwächen gegen bestimme Angriffe
 
-      function GetName(): string;
-      function GetImagePath(): string;
-      function GetHealth(): real;
-      function GetDamage(): real;
+    //GetStuff
+    function GetName(): string;
+    function GetImagePath(): string;
+    function GetHealth(): real;
+    function GetDamage(): real;
 
-      procedure SetWeaponDrop(_weapon: TWeapon);
-      function GetWeaponDrop(): TWeapon;
-      procedure SetItemDrop(_item: TItem);
-      function GetItemDrop(): TItem;
+    //Get/Set Stuff
+    procedure SetWeaponDrop(_weapon: TWeapon);
+    function GetWeaponDrop(): TWeapon;
+    procedure SetItemDrop(_item: TItem);
+    function GetItemDrop(): TItem;
 
+  private
+    name: string;
+    ImagePath: string;
 
-      destructor Destroy();
-    private
-      name: string;
-      ImagePath: string;
+    health: real;
+    damage: real;
 
-      health: real;
-      damage: real;
+    //Stärken/Schwächen Multiplier
+    strikeResist,
+    thrustResist,
+    slashResist
+    : real;
 
-      strikeResist,
-      thrustResist,
-      slashResist
-      : real;
-
-      weaponDrop: TWeapon;
-      itemDrop: TItem;
-
-    end;
+    //Sachen die der Gegner fallen läst wenn er besiegt wurde
+    weaponDrop: TWeapon;
+    itemDrop: TItem;
+  end;
 
 implementation
 
@@ -53,6 +54,7 @@ begin
   name := _name;
   health := _health;
   damage := _damage;
+  ImagePath := _imagePath;
 
   strikeResist := 1;
   thrustResist := 1;
@@ -62,6 +64,7 @@ begin
   itemDrop := nil;
 end;
 
+//Setzt die Resistenzen
 procedure TEnemy.SetResistants(_strikeResist, _thrustResist, _slashResist: real);
 begin
   strikeResist := _strikeResist;
@@ -69,6 +72,7 @@ begin
   slashResist := _slashResist;
 end;
 
+//Macht dem gegner Schaden
 function TEnemy.DoDamage(_strikeDmg, _thrustDmg, _slashDmg: real; _magicDmg: real): real;
 var
   tempHealth: real;
@@ -82,6 +86,7 @@ begin
   //Round(Health);
 end;
 
+//Get Stuff
 function TEnemy.GetName(): string;
 begin
   result := name;
@@ -90,7 +95,16 @@ function TEnemy.GetImagePath(): string;
 begin
   result := ImagePath;
 end;
+function TEnemy.GetHealth(): real;
+begin
+  result := health;
+end;
+function TEnemy.GetDamage(): real;
+begin
+  result := damage;
+end;
 
+//Get/Set Drop
 procedure TEnemy.SetWeaponDrop(_weapon: TWeapon);
 begin
   weaponDrop := _weapon;
@@ -104,7 +118,6 @@ function TEnemy.GetWeaponDrop(): TWeapon;
 begin
   result := weaponDrop;
 end;
-
 procedure TEnemy.SetItemDrop(_item: TItem);
 begin
   itemDrop := _item;
@@ -119,23 +132,6 @@ begin
   result := itemDrop;
 end;
 
-function TEnemy.GetHealth(): real;
-begin
-  result := health;
-end;
-
-function TEnemy.GetDamage(): real;
-begin
-  result := damage;
-end;
-
-destructor TEnemy.Destroy();  //this is never acually called
-begin
-  FreeAndNil(self);
-  ShowMessage('I ll be back!');
-  inherited Destroy;
-
-end;
 
 end.
 

@@ -6,37 +6,40 @@ interface
 
 uses
   Classes, SysUtils;
-  type
-    TWeapon = class
-    public
-      constructor Create(_name, _description, _imagePath: string; _StrikeDmg, _ThrustDmg, _SlashDmg, _MagicDmg: real);
 
-      function GetName(): string;
-      function GetDescription(): string;
-      function GetImagePath(): string;
-      function GetStrikeDmg(): real;
-      function GetThrustDmg(): real;
-      function GetSlashDmg(): real;
-      function GetMagicDmg(): real;
-      function GetHighestDmg(): real;
+type
+  TWeapon = class
+  public
+    constructor Create(_name, _description, _imagePath: string; _StrikeDmg, _ThrustDmg, _SlashDmg, _MagicDmg: real);
 
-      function GetIgnore(): boolean;
-      procedure SetIgnore(_setTo: boolean);
+    //Get Stuff
+    function GetName(): string;
+    function GetDescription(): string;
+    function GetImagePath(): string;
+    //Get Damage
+    function GetStrikeDmg(): real;
+    function GetThrustDmg(): real;
+    function GetSlashDmg(): real;
+    function GetMagicDmg(): real;
+    function GetHighestDmg(): real; //returnt den höhsten Schaden welcher benutzt wird wenn man einen Skill benutzt
+    //Get/Set Ignore
+    function GetIgnore(): boolean;
+    procedure SetIgnore(_setTo: boolean);
 
-    private
-      name : string;
-      description : string;
-      ImagePath: string;
+  private
+    name : string;
+    description : string;
+    ImagePath: string;
 
-      StrikeDamage,
-      ThrustDamage,
-      SlashDamage
-      : real;
+    //Die verschiedenen Schadens Arten
+    StrikeDamage,
+    ThrustDamage,
+    SlashDamage,
+    MagicDamage
+    : real;
 
-      MagicDamage: real;
-
-      Ignore: boolean;
-    end;
+    Ignore: boolean; //Diese Variable ist dafür da um die Waffe die im Raum liegt einmalig zu ignorieren fallst man sie nicht aufheben will
+  end;
 
 implementation
 
@@ -55,6 +58,7 @@ begin
   Ignore := false;
 end;
 
+//Get Stuff
 function TWeapon.GetName(): string;
 begin
   result := name;
@@ -67,7 +71,7 @@ function TWeapon.GetImagePath(): string;
 begin
   result := ImagePath;
 end;
-
+//GetDamage
 function TWeapon.GetStrikeDmg(): real;
 begin
   result := StrikeDamage;
@@ -91,7 +95,7 @@ begin
   if (SlashDamage > ThrustDamage) then result := SlashDamage;
   if (MagicDamage > SlashDamage) then result := MagicDamage;
 end;
-
+//Get/SetIgnore
 function TWeapon.GetIgnore(): boolean;
 begin
   result := Ignore;
@@ -102,4 +106,3 @@ begin
 end;
 
 end.
-

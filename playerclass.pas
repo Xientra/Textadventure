@@ -12,27 +12,31 @@ type
   TPlayer = class
   public
     //public da man Array of X nicht returnen kann...
-    itemInventory: Array of TItem;
-    weaponInventory: Array of TWeapon;
-    Skills: Array of TSkill;
+    itemInventory: Array of TItem; //Item Inventar
+    weaponInventory: Array of TWeapon; //Waffen Inventar
+    Skills: Array of TSkill; //Skill Inventar
 
     constructor Create(startRoom: TRoom; startWeapon: TWeapon; _health: real);
-    procedure ChangeRoom(_direction: string);
+
+    procedure ChangeRoom(_direction: string); //ändert den Raum in der gegebenen Richtung
 
     function GetHealth(): real;
     procedure ChangeHealthBy(_amount: real);
     function GetCurrendRoom(): TRoom;
     function GetCurrendWeapon(): TWeapon;
     procedure SetCurrendWeapon(_weapon: TWeapon);
-    procedure AddItem(_item: TItem);
-    procedure AddWeapon(_weapon: TWeapon);
-    procedure AddSkill(_skill: TSkill);
-    function HasSkills(): boolean;
-    function HasWeaponsInInventory(): boolean;
-    function HasItemsInInventory(): boolean;
     function GetAmountOfSkills(): integer; //results AountOfSkills
-    function GetMaxAmountOfSkills(): integer;
+    function GetMaxAmountOfSkills(): integer; //Der Spieler kann nur eine begrenzte anzahl Skills haben
 
+    procedure AddItem(_item: TItem); //erhöht die größe des Item Inventar und fügt ein Item hinzu
+    procedure AddWeapon(_weapon: TWeapon); //erhöht die größe des Waffen Inventar und fügt eine Waffen hinzu
+    procedure AddSkill(_skill: TSkill); //erhöht die größe des Skill Inventar und fügt einen Skill hinzu
+
+    function HasWeaponsInInventory(): boolean; //Schaut ob der Spieler überhaupt Waffen hat
+    function HasItemsInInventory(): boolean; //Schaut ob der Spieler überhaupt Items hat
+    function HasSkills(): boolean; //Schaut ob der Spieler überhaupt Skills hat
+
+    //für die Beiden Buff Items zur verbessern des Agrifffes/ der Verteidigung
     procedure SetDamageMultiplyer(_multi: real);
     procedure SetDefenseMultiplyer(_multi: real);
 
@@ -44,8 +48,9 @@ type
     standartWeapon: TWeapon;
 
     AmountOfSkills: integer; //die länge des Skills Array und gleichzeitig der Counter zum hinuzufügen von skills
-    MaxAmountOfSkills: integer;
+    MaxAmountOfSkills: integer; //die Maximale anzahl Skills die ein Spieler haben kann
 
+    //für die Beiden Buff Items zur verbessern des Agrifffes/ der Verteidigung
     DamageMultiplyer,
     DefenseMultiplyer: real;
   end;
@@ -67,9 +72,8 @@ begin
   SetLength(Skills, AmountOfSkills);
 end;
 
-procedure TPlayer.ChangeRoom(_direction: string);
+procedure TPlayer.ChangeRoom(_direction: string); //ändert den Raum
 begin
-  //currendRoom := currendRoom.GetNeighborRooms(_direction);
   case _direction of
   'xPos': currendRoom := Unit1.RoomArr[currendRoom.GetPosX+1,currendRoom.GetPosY,currendRoom.GetPosZ];
   'yPos': currendRoom := Unit1.RoomArr[currendRoom.GetPosX,currendRoom.GetPosY+1,currendRoom.GetPosZ];
@@ -80,16 +84,15 @@ begin
   end;
 end;
 
+//Get/Set Stuff
 function TPlayer.GetHealth(): real;
 begin
   result := health;
 end;
-
 procedure TPlayer.ChangeHealthBy(_amount: real);
 begin
   health := health + _amount;
 end;
-
 function TPlayer.GetCurrendRoom(): TRoom;
 begin
   result := currendRoom;
@@ -102,7 +105,17 @@ procedure TPlayer.SetCurrendWeapon(_weapon: TWeapon);
 begin
   currendWeapon := _weapon;
 end;
+function TPlayer.GetAmountOfSkills(): integer;
+begin
+  result := AmountOfSkills;
+end;
+function TPlayer.GetMaxAmountOfSkills(): integer;
+begin
+  result := MaxAmountOfSkills;
+end;
 
+
+//Add Stuff
 procedure TPlayer.AddItem(_item: TItem);
 begin
   SetLength(itemInventory, Length(itemInventory) + 1);
@@ -122,14 +135,7 @@ begin
   end;
 end;
 
-function TPlayer.HasSkills(): boolean;
-var i: integer;
-begin
-  if (length(Skills) = 0) then result := false
-  else
-    for i := 0 to length(self.Skills) - 1 do
-      if (self.Skills[i] <> nil) then result := true;
-end;
+//Player has Stuff
 function TPlayer.HasWeaponsInInventory(): boolean;
 var i: integer;
 begin
@@ -146,16 +152,16 @@ begin
     for i := 0 to length(self.itemInventory) - 1 do
       if (self.itemInventory[i] <> nil) then result := true;
 end;
-
-function TPlayer.GetAmountOfSkills(): integer;
+function TPlayer.HasSkills(): boolean;
+var i: integer;
 begin
-  result := AmountOfSkills;
-end;
-function TPlayer.GetMaxAmountOfSkills(): integer;
-begin
-  result := MaxAmountOfSkills;
+  if (length(Skills) = 0) then result := false
+  else
+    for i := 0 to length(self.Skills) - 1 do
+      if (self.Skills[i] <> nil) then result := true;
 end;
 
+//Stuff for the Buff Items
 procedure TPlayer.SetDamageMultiplyer(_multi: real);
 begin
   DamageMultiplyer := _multi;

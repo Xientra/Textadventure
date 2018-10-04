@@ -2,37 +2,37 @@
 
 -> Code
 _______________________________________
--wenn du herrausfindest wie man etwas in das Nachrichten Fenster unten schreibt sag es mir bitte...
+-wenn jemand herrausfindest wie man etwas in das Nachrichten Fenster unten schreibt sag es mir (Paul) bitte...
 -es sollte vieleicht ein Knopf für das bestätigen von text gemacht werden oder diese funktion sollte in den ersten Btn eingefügt werden
 -die start Waffe des Players ist nicht teil seines Waffen Inventares
 
+-Das ändern der Köpfe muss noch an die Türen angepasst werden
+-Räume brauchen noch eine zweite beschreibung wenn man sie das zweite mal besucht
+
 -Im Skills Menu fängt man unten an (just saying)
--Das Skill menu kann keine Sprünge im array machen, heißt es hält bei einem nil an, auch wenn danach noch ein Skill kommen würde
--Bei den Items und dem Waffen ist das selbe problem und hier hat es auch starke auswirkungen, da die items ja irgentwann zerstört werden sollen...
--(aber) Items/Waffen werden noch nicht zerstört
+-Das Skill und das Waffen menu kann keine Sprünge im array machen, heißt es hält bei einem nil an, auch wenn danach noch ein Skill kommen würde
+-Auch das fucking Item menü kann das nicht MEHR nachdem es vermutlich überschrieben wurde
+-Items/Waffen werden noch nicht zerstört
 
+-Die Leiter muss noch als RoomObject gemacht werden
+-Bosse müssen noch gemacht werden
+-Damage und Defense Up müssen noch einen Effekt haben
 -es ist nicht klar wieviel die Heistatur Heilen soll, da der Player keine max leben hat
-_______________________________________
+-es muss noch entschieden werden ob Items verschiedene Effekte haben sollen können
+
 -> 2D Assets
-_______________________________________
 	-Buttons Sprites
-	-Enemy Sprites (oder 3D?)
 
-_______________________________________
 -> "3D" Assets
-_______________________________________
--> Items	
-	-Skill 1
-	-Skill 2
-	-Skill 3
-	-Skill 4	
+	-> Items	
+		-Skill 1
+		-Skill 2
+		-Skill 3
+		-Skill 4	
+	-> Räume
+		-literally alle...
 
--> Räume
-	-literally alle...
-_______________________________________
 -> Musik
-_______________________________________
-	-Ebene 1
 	-Ebene 2
 	-Ebene 3
 	-Kampf normal
