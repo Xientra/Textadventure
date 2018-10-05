@@ -956,7 +956,9 @@ end;
 //wird am ende/in der Runde des Gegners aufgerufen und macht dem Spieler Schaden
 procedure TForm1.EnemyTurn(); //logic situation = 2
 begin
-  Player1.ChangeHealthBy(-(FightingEnemy.GetDamage()));
+  if Player1.itemInventory[DefBuffIndex].GetDefFuration > 0 then
+  Player1.ChangeHealthBy(-(FightingEnemy.GetDamage())*Player1.itemInventory[DefBuffIndex].GetDefenseUp)
+  else Player1.ChangeHealthBy(-(FightingEnemy.GetDamage()));
   Memo1.Clear();
   if Player1.getHealth > 0 then
   Memo1.Lines.Add('The Enemy delt ' + FloatToStr(FightingEnemy.GetDamage())+' damage.'+sLineBreak+'You now have ' + FloatToStr(Player1.GetHealth()) + ' health left')

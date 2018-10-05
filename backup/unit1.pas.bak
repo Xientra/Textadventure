@@ -323,7 +323,7 @@ begin
   1: //Greift den Gegner an und macht ihm Schaden; Beendet die Runde des Spielers
     begin
       if Player1.itemInventory[DmgBuffIndex].GetDmgDuration > 0 then
-      _dmg := FightingEnemy.DoDamage(Player1.GetCurrendWeapon().GetStrikeDmg()*Player1.itemInventory[inventoryIndex].GetDamageUp, Player1.GetCurrendWeapon().GetThrustDmg()*Player1.itemInventory[inventoryIndex].GetDamageUp, Player1.GetCurrendWeapon().GetSlashDmg()*Player1.itemInventory[inventoryIndex].GetDamageUp, Player1.GetCurrendWeapon().GetMagicDmg()*Player1.itemInventory[inventoryIndex].GetDamageUp)
+      _dmg := FightingEnemy.DoDamage(Player1.GetCurrendWeapon().GetStrikeDmg()*Player1.itemInventory[DmgBuffIndex].GetDamageUp, Player1.GetCurrendWeapon().GetThrustDmg()*Player1.itemInventory[DmgBuffIndex].GetDamageUp, Player1.GetCurrendWeapon().GetSlashDmg()*Player1.itemInventory[DmgBuffIndex].GetDamageUp, Player1.GetCurrendWeapon().GetMagicDmg()*Player1.itemInventory[DmgBuffIndex].GetDamageUp)
       else _dmg := FightingEnemy.DoDamage(Player1.GetCurrendWeapon().GetStrikeDmg(), Player1.GetCurrendWeapon().GetThrustDmg(), Player1.GetCurrendWeapon().GetSlashDmg(), Player1.GetCurrendWeapon().GetMagicDmg());
 
       PrintAndUIChange(2, 'You delt ' + FloatToStr(Round(_dmg)) + ' damage.'+sLineBreak+'The Enemy now has ' + FloatToStr(Round(FightingEnemy.GetHealth())) + ' health left');
@@ -886,6 +886,8 @@ begin
     if (Player1.Skills[i] <> nil) then
       Player1.Skills[i].SetTurnToWaitToZero();
 
+  Player1.itemInventory[DmgBuffIndex].SetDmgDuration(0);
+  Player1.itemInventory[DefBuffIndex].SetDefDuration(0);
   //Sets all Ignore values back to false so that the items/whatever are interactable again
   for i := 0 to length(Player1.GetCurrendRoom().ItemArr) - 1 do
     if (Player1.GetCurrendRoom().ItemArr[i] <> nil) then
