@@ -1,19 +1,25 @@
 object Form2: TForm2
-  Left = 941
+  Left = 1230
   Height = 418
-  Top = 187
+  Top = 310
   Width = 571
-  Caption = 'Form2'
+  Caption = 'Main Menu'
   ClientHeight = 418
   ClientWidth = 571
+  Color = clWhite
+  Font.CharSet = ANSI_CHARSET
+  Font.Height = -13
+  Font.Name = 'Georgia'
+  Font.Pitch = fpVariable
+  Font.Quality = fqDraft
   OnCreate = FormCreate
-  Position = poDesktopCenter
-  LCLVersion = '1.6.2.0'
+  Position = poScreenCenter
+  LCLVersion = '1.8.4.0'
   object Image1: TImage
     Cursor = crHandPoint
     Left = 208
     Height = 64
-    Top = 160
+    Top = 144
     Width = 128
     OnClick = Image1Click
     Picture.Data = {
@@ -40,7 +46,7 @@ object Form2: TForm2
     Cursor = crHandPoint
     Left = 208
     Height = 64
-    Top = 224
+    Top = 208
     Width = 128
     OnClick = Image2Click
     Picture.Data = {
@@ -67,8 +73,9 @@ object Form2: TForm2
     Cursor = crHandPoint
     Left = 208
     Height = 64
-    Top = 288
+    Top = 272
     Width = 128
+    OnClick = Image3Click
     Picture.Data = {
       1754506F727461626C654E6574776F726B47726170686963F501000089504E47
       0D0A1A0A0000000D4948445200000080000000400806000000D2D67F7F000001
@@ -91,13 +98,13 @@ object Form2: TForm2
   end
   object Label1: TLabel
     Left = 96
-    Height = 70
+    Height = 74
     Top = 48
-    Width = 385
+    Width = 334
     Caption = 'Textadventure (WOW)'#13#10'              \[T]/'
     Font.CharSet = ANSI_CHARSET
     Font.Height = -32
-    Font.Name = 'Algerian'
+    Font.Name = 'Arial'
     Font.Pitch = fpVariable
     Font.Quality = fqDraft
     Font.Style = [fsBold]
@@ -107,14 +114,14 @@ object Form2: TForm2
   object Label2: TLabel
     Left = 248
     Height = 18
-    Top = 184
-    Width = 40
+    Top = 168
+    Width = 31
     Caption = 'Play'
     Enabled = False
     Font.CharSet = ANSI_CHARSET
     Font.Color = clWhite
     Font.Height = -16
-    Font.Name = 'Algerian'
+    Font.Name = 'Georgia'
     Font.Pitch = fpVariable
     Font.Quality = fqDraft
     ParentColor = False
@@ -123,30 +130,30 @@ object Form2: TForm2
   object Label3: TLabel
     Left = 240
     Height = 18
-    Top = 312
-    Width = 62
+    Top = 296
+    Width = 55
     Caption = 'Options'
     Enabled = False
     Font.CharSet = ANSI_CHARSET
     Font.Color = clWhite
     Font.Height = -16
-    Font.Name = 'Algerian'
+    Font.Name = 'Georgia'
     Font.Pitch = fpVariable
     Font.Quality = fqDraft
     ParentColor = False
     ParentFont = False
   end
   object Label4: TLabel
-    Left = 224
+    Left = 232
     Height = 18
-    Top = 248
-    Width = 90
+    Top = 232
+    Width = 81
     Caption = 'Load Game'
     Enabled = False
     Font.CharSet = ANSI_CHARSET
     Font.Color = clWhite
     Font.Height = -16
-    Font.Name = 'Algerian'
+    Font.Name = 'Georgia'
     Font.Pitch = fpVariable
     Font.Quality = fqDraft
     ParentColor = False

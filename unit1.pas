@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
   StdCtrls, LCLType, ActnList, MMSystem{für die Musik},
-  RoomClass{für TRoom}, PlayerClass{für TPlayer}, EnemyClass{für TEnemy}, WeaponClass{für TWeapon}, ItemClass{für TItem}, SkillClass{I think you know by now...}, RoomObjectClass{could it be? is this really for TRoomClass?!}, menue;
+  RoomClass{für TRoom}, PlayerClass{für TPlayer}, EnemyClass{für TEnemy}, WeaponClass{für TWeapon}, ItemClass{für TItem}, SkillClass{I think you know by now...}, RoomObjectClass{could it be? is this really for TRoomClass?!}, menue, youdied;
 
 type
 
@@ -102,6 +102,7 @@ var
   //diese Beiden vars sind dafür da, das die information an welcher stelle das item/etc jewailigen array des Inventar/Raum ist. bsp: man hat zwei items in inventar was auch immer danach geschaut hat weiß das und will, das infos zum ersten gedruckt werden also setzt es die var auf die stelle des items
   inventoryIndex: integer;
   roomStuffIndex: integer;
+  DmgBuffIndex, DefBuffIndex: integer;
 
 implementation
 
@@ -147,7 +148,7 @@ begin
   //Stuff just for testing the inventory
   Player1.AddItem(TItem.Create('some Key', 'it not usefull for any door...','Images/Items/Key1.png'));
   Player1.AddItem(TItem.Create('DamageUpItemThingy', 'It boosts your Damage by 20%','Images/Items/DamageUp.png'));
-  Player1.itemInventory[1].SetDamageUp(0.2);
+  Player1.itemInventory[1].SetDamageUp(1.2);
   Player1.AddItem(TItem.Create('SomeBomb', 'Its a Bomb','Images/Items/Bomb.png'));
   Player1.itemInventory[2].SetBomb(50);
 
@@ -321,7 +322,9 @@ begin
     end;
   1: //Greift den Gegner an und macht ihm Schaden; Beendet die Runde des Spielers
     begin
-      _dmg := FightingEnemy.DoDamage(Player1.GetCurrendWeapon().GetStrikeDmg(), Player1.GetCurrendWeapon().GetThrustDmg(), Player1.GetCurrendWeapon().GetSlashDmg(), Player1.GetCurrendWeapon().GetMagicDmg());
+      if Player1.itemInventory[DmgBuffIndex].GetDmgDuration > 0 then
+      _dmg := FightingEnemy.DoDamage(Player1.GetCurrendWeapon().GetStrikeDmg()*Player1.itemInventory[DmgBuffIndex].GetDamageUp, Player1.GetCurrendWeapon().GetThrustDmg()*Player1.itemInventory[DmgBuffIndex].GetDamageUp, Player1.GetCurrendWeapon().GetSlashDmg()*Player1.itemInventory[DmgBuffIndex].GetDamageUp, Player1.GetCurrendWeapon().GetMagicDmg()*Player1.itemInventory[DmgBuffIndex].GetDamageUp)
+      else _dmg := FightingEnemy.DoDamage(Player1.GetCurrendWeapon().GetStrikeDmg(), Player1.GetCurrendWeapon().GetThrustDmg(), Player1.GetCurrendWeapon().GetSlashDmg(), Player1.GetCurrendWeapon().GetMagicDmg());
 
       PrintAndUIChange(2, 'You delt ' + FloatToStr(Round(_dmg)) + ' damage.'+sLineBreak+'The Enemy now has ' + FloatToStr(Round(FightingEnemy.GetHealth())) + ' health left');
 
@@ -382,6 +385,16 @@ begin
       If (Player1.itemInventory[inventoryIndex].UseItem() = false) then PrintAndUIChange(UIState, 'You are not able to use this Item in combat.')
       else begin
         PrintAndUIChange(2, 'You used '+Player1.itemInventory[inventoryIndex].GetName()+'.');
+        if Player1.itemInventory[inventoryIndex].GetDmgDuration = 0 then
+        begin
+          Player1.itemInventory[inventoryIndex].SetDmgDuration(3);
+          DmgBuffIndex := inventoryindex;
+        end;
+        if Player1.itemInventory[inventoryIndex].GetDefDuration = 0 then
+          begin
+          Player1.itemInventory[inventoryIndex].SetDefDuration(3);
+          DefBuffIndex := inventoryindex;
+          end;
         PlayerEndTurn();
       end;
     end;
@@ -389,7 +402,13 @@ begin
     begin
       if (Player1.Skills[inventoryIndex].GetTurnsToWait() = 0) then
       begin
+        if Player1.itemInventory[DmgBuffIndex].GetDmgDuration > 0 then
         _dmg := FightingEnemy.DoDamage(
+          Player1.GetCurrendWeapon().GetHighestDmg() * Player1.Skills[inventoryIndex].GetStrikeMulti()*Player1.itemInventory[DmgBuffIndex].GetDamageUp,
+          Player1.GetCurrendWeapon().GetHighestDmg() * Player1.Skills[inventoryIndex].GetThrustMulti()*Player1.itemInventory[DmgBuffIndex].GetDamageUp,
+          Player1.GetCurrendWeapon().GetHighestDmg() * Player1.Skills[inventoryIndex].GetSlashMulti()*Player1.itemInventory[DmgBuffIndex].GetDamageUp,
+          Player1.GetCurrendWeapon().GetHighestDmg() * Player1.Skills[inventoryIndex].GetMagicMulti()*Player1.itemInventory[DmgBuffIndex].GetDamageUp)
+          else _dmg := FightingEnemy.DoDamage(
           Player1.GetCurrendWeapon().GetHighestDmg() * Player1.Skills[inventoryIndex].GetStrikeMulti(),
           Player1.GetCurrendWeapon().GetHighestDmg() * Player1.Skills[inventoryIndex].GetThrustMulti(),
           Player1.GetCurrendWeapon().GetHighestDmg() * Player1.Skills[inventoryIndex].GetSlashMulti(),
@@ -867,6 +886,8 @@ begin
     if (Player1.Skills[i] <> nil) then
       Player1.Skills[i].SetTurnToWaitToZero();
 
+  Player1.itemInventory[DmgBuffIndex].SetDmgDuration(0);
+  Player1.itemInventory[DefBuffIndex].SetDefDuration(0);
   //Sets all Ignore values back to false so that the items/whatever are interactable again
   for i := 0 to length(Player1.GetCurrendRoom().ItemArr) - 1 do
     if (Player1.GetCurrendRoom().ItemArr[i] <> nil) then
@@ -922,8 +943,13 @@ begin
   else //Enemy deals damage
   begin
     //verringert den cooldoown von jedem skill
-    for i := 0 to length(Player1.Skills) - 1 do
+    for i := 0 to length(Player1.Skills) - 1 do begin
       if (Player1.Skills[i] <> nil) then Player1.Skills[i].ReduceTurnsToWait();
+    end;
+    if Player1.itemInventory[DmgBuffIndex].GetDmgDuration > 0 then
+      Player1.itemInventory[DmgBuffIndex].SetDmgDuration(Player1.itemInventory[DmgBuffIndex].GetDmgDuration-1);
+    if Player1.itemInventory[DefBuffIndex].GetDefDuration > 0 then
+      Player1.itemInventory[DefBuffIndex].SetDefDuration(Player1.itemInventory[DefBuffIndex].GetDefDuration-1);
   end;
 end;
 
@@ -932,7 +958,18 @@ procedure TForm1.EnemyTurn(); //logic situation = 2
 begin
   Player1.ChangeHealthBy(-(FightingEnemy.GetDamage()));
   Memo1.Clear();
-  Memo1.Lines.Add('The Enemy delt ' + FloatToStr(FightingEnemy.GetDamage())+' damage.'+sLineBreak+'You now have ' + FloatToStr(Player1.GetHealth()) + ' health left');
+  if Player1.getHealth > 0 then
+  Memo1.Lines.Add('The Enemy delt ' + FloatToStr(FightingEnemy.GetDamage())+' damage.'+sLineBreak+'You now have ' + FloatToStr(Player1.GetHealth()) + ' health left')
+  else begin
+    Memo1.Lines.Add('The Enemy delt ' + FloatToStr(FightingEnemy.GetDamage())+' damage.'+sLineBreak+'You now have 0 health left');
+    Form3.show();
+    //mute music if playing
+    MuteBtn_Image.Picture.LoadFromFile('Images/Buttons/MuteBtnOff.png');
+    MusicTimer.Enabled := false;
+    MusicCounter := 0;
+    PlaySound('music/mute.wav', 0, SND_ASYNC);
+    muted := true;
+  end;
 end;
 {------------------------------------------------------------------------------}
 

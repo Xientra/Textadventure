@@ -1,7 +1,7 @@
 object Form2: TForm2
-  Left = 1230
+  Left = 1411
   Height = 418
-  Top = 310
+  Top = 284
   Width = 571
   Caption = 'Main Menu'
   ClientHeight = 418
@@ -14,7 +14,7 @@ object Form2: TForm2
   Font.Quality = fqDraft
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.8.4.0'
+  LCLVersion = '1.6.2.0'
   object Image1: TImage
     Cursor = crHandPoint
     Left = 208

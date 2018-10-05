@@ -23,6 +23,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure Image1Click(Sender: TObject);
     procedure Image2Click(Sender: TObject);
+    procedure Image3Click(Sender: TObject);
   private
     { private declarations }
   public
@@ -47,6 +48,11 @@ end;
 procedure TForm2.Image2Click(Sender: TObject);
 begin
   ShowMessage('Es konnte kein Speicherstand gefunden werden');
+end;
+
+procedure TForm2.Image3Click(Sender: TObject);
+begin
+
 end;
 
 procedure TForm2.FormCreate(Sender: TObject);

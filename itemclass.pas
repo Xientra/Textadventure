@@ -18,6 +18,10 @@ type
     function GetName(): string;
     function GetDescription(): string;
     function GetImagePath(): string;
+    function GetDefDuration():integer;
+    function GetDmgDuration():integer;
+    function GetDefenseUp: real;
+    function GetDamageUp: real;
     //Get/Set Ignore
     function GetIgnore(): boolean;
     procedure SetIgnore(_setTo: boolean);
@@ -28,6 +32,8 @@ type
     procedure SetDefenseUp(_factor: real);
     procedure SetKey(_keyIndex: real);
     procedure SetBomb(_damage: real);
+    procedure SetDefDuration(_duration: integer);
+    procedure SetDmgDuration(_duration: integer);
 
     function GetKeyIndex: real;
 
@@ -53,6 +59,7 @@ type
     KeyIndex
     : real;
 
+    DmgBuffDuration, DefBuffDuration: integer;
     Ignore: boolean; //Diese Variable ist dafür da um das Item die im Raum liegt einmalig zu ignorieren fallst man sie nicht aufheben will
   end;
 
@@ -73,6 +80,8 @@ begin
   IsDefenseUp := false;
   IsBomb := false;
   IsKey := false;
+  DmgBuffDuration := -1; //kein buff item
+  DefBuffDuration := -1; //kein buff item
 
   Ignore := false;
 end;
@@ -152,6 +161,7 @@ begin
   IsBomb := false;
   IsKey := false;
 
+  DmgBuffDuration := 0;
   DamageUpFactor := _factor;
 end;
 procedure TItem.SetDefenseUp(_factor: real);
@@ -163,6 +173,7 @@ begin
   IsBomb := false;
   IsKey := false;
 
+  DefBuffDuration := 0;
   DefenseUpFactor := _factor;
 end;
 procedure TItem.SetBomb(_damage: real);
@@ -193,4 +204,31 @@ begin
   result := KeyIndex;
 end;
 
+function TItem.GetDmgDuration(): integer;
+begin
+  result := DmgBuffDuration;
+end;
+procedure TItem.SetDmgDuration(_duration: integer);
+begin
+  DmgBuffDuration := _duration;
+end;
+
+function TItem.GetDefDuration: integer;
+begin
+  result := DefBuffDuration;
+end;
+
+procedure TItem.SetDefDuration(_duration: integer);
+begin
+  DefBuffDuration := _duration;
+end;
+
+function TItem.GetDamageUp: real;
+begin
+  result := DamageUpFactor;
+end;
+function TItem.GetDefenseUp: real;
+begin
+  result := DamageUpFactor;
+end;
 end.
