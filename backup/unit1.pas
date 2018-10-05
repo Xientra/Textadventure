@@ -149,6 +149,9 @@ begin
   Player1.itemInventory[1].SetDamageUp(0.2);
   Player1.AddItem(TItem.Create('SomeBomb', 'Its a Bomb','Images/Items/Bomb.png'));
   Player1.itemInventory[2].SetBomb(50);
+  FreeAndNil(Player1.itemInventory[0]);
+  FreeAndNil(Player1.itemInventory[2]);
+
   Player1.AddWeapon(TWeapon.Create('Some Sword', 'It is acually sharp even thought it looks a bit blocky.', 'Images/Items/ShortSword.png', 0, 0, 15, 0));
   Player1.AddSkill(TSkill.Create('Some Skill', 'You can KILL with it.' +sLineBreak+ 'It deals Strike Damage', 'Images/Skills/someSkill.png', 2, 1.5, 0, 0, 0));
   //---
@@ -252,7 +255,7 @@ begin
   1: //Öffnet das Skill Menu
     begin
       if (Player1.HasSkills() = true) then ChangeUIState(55) //Skill Menu
-      else Memo1.Lines.Add('You have no skills yet.')
+      else PrintAndUIChange(UIState, 'You have no skills yet.')
     end;
   2: {do nothing};
   10: //lässt die Waffe im Raum liegen
@@ -299,8 +302,7 @@ begin
       ChangeUIState(currendSituation);
     end;
   99: {do nothing};
-  else
-    Memo1.Lines.Add('lol no'); //Debug
+  else ShowMessage('This Button has no effect'); //Debug
   end;
 end;
 procedure TForm1.Button_2_Action(); //                                     --> 2
@@ -310,7 +312,8 @@ begin
   case UIState of
   0: //x Minus im RoomArr
     begin
-      if (Player1.GetCurrendRoom.GetPosX-1 >= 0) and (RoomArr[Player1.GetCurrendRoom.getPosX-1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] <> nil) and (Player1.GetCurrendRoom.GetBlockedLeft = false) and (Player1.GetCurrendRoom.GetDoorLeft = false) then begin
+      if (Player1.GetCurrendRoom.GetPosX-1 >= 0) and (RoomArr[Player1.GetCurrendRoom.getPosX-1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] <> nil) and (Player1.GetCurrendRoom.GetBlockedLeft = false) and (Player1.GetCurrendRoom.GetDoorLeft = false) then
+      begin
         OnLeaveRoom();
         Player1.ChangeRoom('xNeg');
         PrintRoomData(PLayer1.GetCurrendRoom());
@@ -333,14 +336,13 @@ begin
     begin
       Player1.AddWeapon(Player1.GetCurrendRoom().WeaponArr[roomStuffIndex]);
       Player1.GetCurrendRoom().WeaponArr[roomStuffIndex] := nil;
-      ChangeUIState(currendSituation);
+      PrintAndUIChange(currendSituation, 'You take the Weapon.');
     end;
   11: //Nimmt das Item die im Raum liegt und geht weiter
     begin
       Player1.AddItem(Player1.GetCurrendRoom().ItemArr[roomStuffIndex]);
       Player1.GetCurrendRoom().ItemArr[roomStuffIndex] := nil;
-      PrintAndUIChange(currendSituation, '');
-      ChangeUIState(currendSituation);
+      PrintAndUIChange(currendSituation, 'You take the Item');
     end;
   12: //Interagiert mit der HeilStatur und heit den Spieler
     begin
@@ -378,7 +380,7 @@ begin
     end;
   54: //Benutzt das im Inventar ausgewählte Item und beendet die Runde des Spielers
     begin
-      If (Player1.itemInventory[inventoryIndex].UseItem() = false) then ShowMessage('You are not able to use this Item in combat.')
+      If (Player1.itemInventory[inventoryIndex].UseItem() = false) then PrintAndUIChange(UIState, 'You are not able to use this Item in combat.')
       else begin
         PrintAndUIChange(2, 'You used '+Player1.itemInventory[inventoryIndex].GetName()+'.');
         PlayerEndTurn();
@@ -412,11 +414,13 @@ begin
   end;
 end;
 procedure TForm1.Button_3_Action(); //                                     --> 3
+var i: integer; break: boolean;
 begin
   case UIState of
   0: //y Positiv im RoomArr
     begin
-      if (Player1.GetCurrendRoom.GetPosY+1 <= Room_y) and (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY+1,Player1.GetCurrendRoom.getPosZ] <> nil) and (Player1.GetCurrendRoom.GetBlockedTop = false) and (Player1.GetCurrendRoom.GetDoorTop = false) then begin
+      if (Player1.GetCurrendRoom.GetPosY+1 <= Room_y) and (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY+1,Player1.GetCurrendRoom.getPosZ] <> nil) and (Player1.GetCurrendRoom.GetBlockedTop = false) and (Player1.GetCurrendRoom.GetDoorTop = false) then
+      begin
         OnLeaveRoom();
         Player1.ChangeRoom('yPos');
         PrintRoomData(Player1.GetCurrendRoom());
@@ -426,7 +430,7 @@ begin
   1: //Öffnet das Waffen Menü
     begin
       if (Player1.HasWeaponsInInventory() = true) then  ChangeUIState(53) //Weapon Menu
-      else Memo1.Lines.Add('You have no weapons in your arsenal.')
+      else PrintAndUIChange(UIState, 'You have no weapons in your arsenal yet.')
     end;
   2: {do nothing};
   10: {do nothing};
@@ -450,17 +454,25 @@ begin
       if (inventoryIndex - 1 >= 0) then
         if (Player1.weaponInventory[inventoryIndex - 1] <> nil) then
           inventoryIndex := inventoryIndex - 1
-        else ShowMessage('There is no weapon down there')
-      else ShowMessage('can now go futher down (index of Weapons)');
+        else PrintAndUIChange(UIState, 'Can not go futher up.') //next is nil
+      else PrintAndUIChange(UIState, 'Can not go futher up.'); //out of array (negative)
       PrintWeaponData(Player1.weaponInventory[inventoryIndex]);
     end;
-  54: //geht im Item Menü nach oben
+  54: //geht im Item Menü nach oben. kann nil überspringen falls man ein Item eingesetzt hat
     begin
       if (inventoryIndex - 1 >= 0) then
-        if (Player1.itemInventory[inventoryIndex - 1] <> nil) then
-          inventoryIndex := inventoryIndex - 1
-        else ShowMessage('There is no item down there')
-      else ShowMessage('can now go futher down (index of Weapons)');
+      begin
+        break := false;
+        i := inventoryIndex;
+        while (break = false) and (i > 0) do
+        begin
+          i := i - 1;
+          if (Player1.itemInventory[i] <> nil) then
+            break := true;
+        end;
+        if (break = false) then PrintAndUIChange(UIState, 'Can not go futher up. all nil') //there are no more items this way in the array
+        else inventoryIndex := i;
+      end else PrintAndUIChange(UIState, 'Can not go futher up.'); //out of array (negative)
       PrintItemData(Player1.itemInventory[inventoryIndex]);
     end;
   55: //geht im Skill Menü nach oben
@@ -468,8 +480,8 @@ begin
       if (inventoryIndex - 1 >= 0) then
         if (Player1.Skills[inventoryIndex - 1] <> nil) then
           inventoryIndex := inventoryIndex - 1
-        else ShowMessage('There is no skill down there')
-      else ShowMessage('can now go futher down');
+        else PrintAndUIChange(UIState, 'Can not go futher up.') //next is nil
+      else PrintAndUIChange(UIState, 'Can not go futher up.'); //out of array (negative)
       PrintSkillData(Player1.Skills[inventoryIndex]);
     end;
   99: {Do Nothing};
@@ -477,6 +489,7 @@ begin
   end;
 end;
 procedure TForm1.Button_4_Action(); //                                     --> 4
+var i: integer; break: boolean;
 begin
   case UIState of
   0: //y Minus im RoomArray
@@ -490,8 +503,9 @@ begin
     end;
   1: //Öffnet das Item Menü
     begin
-      if (Player1.HasItemsInInventory() = true) then ChangeUIState(54) //Item Menu
-      else Memo1.Lines.Add('You have no items in your inventory.')
+      if (Player1.HasItemsInInventory() <> -1) then
+        ChangeUIState(54) //Item Menu
+      else PrintAndUIChange(UIState, 'You have no items in your inventory yet.')
     end;
   2: {do nothing};
   10: {do nothing};
@@ -505,17 +519,27 @@ begin
       if (inventoryIndex + 1 <= length(Player1.weaponInventory) - 1) then
         if (Player1.weaponInventory[inventoryIndex + 1] <> nil) then
           inventoryIndex := inventoryIndex + 1
-        else ShowMessage('There is no weapon up there')
-      else ShowMessage('can now go futher up (index of Items)');
+        else PrintAndUIChange(UIState, 'Can not go futher down.') //next is nil
+      else PrintAndUIChange(UIState, 'Can not go futher down.'); //out of Array (positive)
       PrintWeaponData(Player1.weaponInventory[inventoryIndex]);
     end;
-  54: //geht im Item Menü nach unten
+  54: //geht im Item Menü nach unten. kann nil überspringen falls man ein Item eingesetzt hat
     begin
       if (inventoryIndex + 1 <= length(Player1.itemInventory) - 1) then
-        if (Player1.itemInventory[inventoryIndex + 1] <> nil) then
-          inventoryIndex := inventoryIndex + 1
-        else ShowMessage('There is no item up there')
-      else ShowMessage('can now go futher up (index of Items)');
+      begin
+        break := false;
+        i := inventoryIndex;
+        while (break = false) and (i < length(Player1.itemInventory) - 1) do
+        begin
+          i := i + 1;
+          if (Player1.itemInventory[i] <> nil) then
+            break := true;
+        end;
+        if (break = false) then PrintAndUIChange(UIState, 'Can not go futher down. all nil') //there are no more items this way in the array
+        else inventoryIndex := i;
+      end
+      else PrintAndUIChange(UIState, 'Can not go futher down.'); //out of array (positive)
+
       PrintItemData(Player1.itemInventory[inventoryIndex]);
     end;
   55: //geht im Skill Menü nach unten
@@ -523,8 +547,8 @@ begin
       if (inventoryIndex + 1 <= length(Player1.Skills) - 1) then
         if (Player1.Skills[inventoryIndex + 1] <> nil) then
           inventoryIndex := inventoryIndex + 1
-        else ShowMessage('There is no skill up there')
-      else ShowMessage('can now go futher up (index of Skills)');
+        else PrintAndUIChange(UIState, 'Can not go futher down.') //next is nil
+      else PrintAndUIChange(UIState, 'Can not go futher down.'); //out of Array (positive)
       PrintSkillData(Player1.Skills[inventoryIndex]);
     end;
   99: {Do Nothing};
@@ -547,9 +571,6 @@ end;
 
 procedure TForm1.PrintAndUIChange(_changeUITo: integer; _toPrint: string); //änderd UIState und zeigt vorher noch eine Nachricht
 begin
-  if (_changeUITo = 0) then ChangeSituation(0);
-  if (_changeUITo = 1) then ChangeSituation(1);
-
   Memo1.Clear();
   Memo1.Lines.Add(_toPrint);
   UIStateCopy := _changeUITo;
@@ -561,10 +582,6 @@ procedure TForm1.ChangeUIState(_state: integer); //ändert UIState und Updatet d
 var i: integer;
 begin
   UIState := _state;
-
-  //Debug
-  Edit1.Text := IntToStr(UIState);
-  Edit3.Text := IntToStr(currendSituation);
 
   //Activate all Buttons at first
   SetButton(Btn1_Image, Btn1_Label, true);
@@ -718,11 +735,13 @@ begin
       Btn3_Label.caption := 'Up';
       Btn4_Label.caption := 'Down';
 
-      inventoryIndex := 0;
+      inventoryIndex := Player1.HasItemsInInventory(); //die erste stelle wo ein item ist
+
       Memo1.Clear();
       for i := 0 to length(Player1.itemInventory) - 1 do
         if (Player1.itemInventory[i] <> nil) then
           Memo1.Lines.Add('-'+Player1.itemInventory[i].GetName());
+
       PrintItemData(Player1.itemInventory[inventoryIndex]);
     end;
   55: //Das Skill Menu
@@ -759,6 +778,10 @@ begin
   end;
 
   PrintPlayerData(Player1); //Schreibt die stats des Spielers
+
+  //Debug
+  Edit1.Text := IntToStr(UIState);
+  Edit3.Text := IntToStr(currendSituation);
 end;
 {------------------------------------------------------------------------------}
 
@@ -1016,9 +1039,9 @@ begin
   begin
     CreateARoom('Your in your cell ...'+sLineBreak+'But you have a Bonfire!'+sLineBreak+sLineBreak+'Praise The Sun!', 'Images/Rooms/BonFireCellRoom.png', 1, 0, 0);
     CreateARoom('Erste Kreuzung.', 'Images/Rooms/Höle.png', 2, 0, 0);
-    RoomArr[2, 0, 0].AddRoomObject(TRoomObject.Create('Definitly a chest', 'Why dont you open it?', 'Images/Enemies/BestMimicEver.jpg'));
-    RoomArr[2, 0, 0].RoomObjectArr[0].SetHealing();
-    RoomArr[2, 0, 0].RoomObjectArr[0].SetChest(TItem.Create('ITEM', 'ITEM!!!!!!!!!!','Images/Items/ITEM.png'));
+    //RoomArr[2, 0, 0].AddRoomObject(TRoomObject.Create('Definitly a chest', 'Why dont you open it?', 'Images/Enemies/BestMimicEver.jpg'));
+    //RoomArr[2, 0, 0].RoomObjectArr[0].SetHealing();
+    //RoomArr[2, 0, 0].RoomObjectArr[0].SetChest(TItem.Create('ITEM', 'ITEM!!!!!!!!!!','Images/Items/ITEM.png'));
     //RoomArr[2, 0, 0].RoomObjectArr[0].SetMimic(TItem.Create('ITEM', 'ITEM!!!!!!!!!!','Images/Items/ITEM.png'), TEnemy.Create('Best Mimic Ever', 15, 15, 'Images/Enemies/BestMimicEver.jpg'));
     //RoomArr[2, 0, 0].RoomObjectArr[0].SetSkillStatue(TSkill.Create('Some other Skill', 'This one is just useless...'+sLineBreak+ 'It deals Slash Damage', 'Images/Skills/someOtherSkill.png', 5, 0, 0, 1.2, 0));
 

@@ -33,7 +33,7 @@ type
     procedure AddSkill(_skill: TSkill); //erhöht die größe des Skill Inventar und fügt einen Skill hinzu
 
     function HasWeaponsInInventory(): boolean; //Schaut ob der Spieler überhaupt Waffen hat
-    function HasItemsInInventory(): boolean; //Schaut ob der Spieler überhaupt Items hat
+    function HasItemsInInventory(): integer; //Schaut ob der Spieler überhaupt Items hat und returnt die erste position. -1 = false
     function HasSkills(): boolean; //Schaut ob der Spieler überhaupt Skills hat
 
     //für die Beiden Buff Items zur verbessern des Agrifffes/ der Verteidigung
@@ -144,13 +144,20 @@ begin
     for i := 0 to length(self.weaponInventory) - 1 do
       if (self.weaponInventory[i] <> nil) then result := true;
 end;
-function TPlayer.HasItemsInInventory(): boolean;
-var i: integer;
+function TPlayer.HasItemsInInventory(): integer;
+var i: integer; stop: boolean;
 begin
-  if (length(itemInventory) = 0) then result := false
+  break := false;
+  result := -1;
+  if (length(itemInventory) = 0) then result := -1
   else
     for i := 0 to length(self.itemInventory) - 1 do
-      if (self.itemInventory[i] <> nil) then result := true;
+      if (self.itemInventory[i] <> nil) then
+        if (stop = false) then
+        begin
+          result := i;
+          break := true;
+        end;
 end;
 function TPlayer.HasSkills(): boolean;
 var i: integer;
@@ -161,8 +168,7 @@ begin
       if (self.Skills[i] <> nil) then result := true;
 end;
 
-
-
+//Stuff for the Buff Items
 procedure TPlayer.SetDamageMultiplyer(_multi: real);
 begin
   DamageMultiplyer := _multi;

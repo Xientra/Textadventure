@@ -89,6 +89,10 @@ function TSkill.GetImagePath(): string;
 begin
   result := ImagePath;
 end;
+function TSkill.GetTurnsToWait(): integer;
+begin
+  result := turnsToWait;
+end;
 
 //Get Damage Multipliers
 function TSkill.GetStrikeMulti(): real;
