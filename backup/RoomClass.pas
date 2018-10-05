@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Dialogs{für ShowMessage},
-  EnemyClass{für TEnemy}, ItemClass{für TItem}, WeaponClass{für TWeapon},  RoomObjectClass{für TRoomObject};
+  EnemyClass{für TEnemy}, ItemClass{für TItem}, WeaponClass{für TWeapon}, RoomObjectClass{für TRoomObject};
 
 type
   TRoom = class

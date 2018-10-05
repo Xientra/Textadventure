@@ -29,7 +29,7 @@ type
     function GetPosY: Integer;
     function GetPosZ: Integer;
 
-    //Get/Set stuff über Türen in alle Richtungen
+    //Get/Set stuff über Ausgänge in alle Richtungen
     procedure SetBlockedRight(b: boolean);
     procedure SetBlockedLeft(b: boolean);
     procedure SetBlockedTop(b: boolean);

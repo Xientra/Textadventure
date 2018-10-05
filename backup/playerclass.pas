@@ -147,7 +147,7 @@ end;
 function TPlayer.HasItemsInInventory(): integer;
 var i: integer; stop: boolean;
 begin
-  break := false;
+  stop := false;
   result := -1;
   if (length(itemInventory) = 0) then result := -1
   else
@@ -156,7 +156,7 @@ begin
         if (stop = false) then
         begin
           result := i;
-          break := true;
+          stop := true;
         end;
 end;
 function TPlayer.HasSkills(): boolean;

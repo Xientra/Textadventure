@@ -56,7 +56,7 @@ type
     procedure SetButton(_background: TImage; _text: TLabel; toSetTo: boolean); //aktiviert oder deaktiviert den Butten mit dem TImage _bg und dem TLbl _text
 
     //Verwaltung der Situation und UIState
-    procedure ChangeSituation(_situation: integer); //ändert die grundlegende Situation und ruft danach auch ChangeUIState(); auf um die UI zu updaten
+    //procedure ChangeSituation(_situation: integer); //ändert die grundlegende Situation und ruft danach auch ChangeUIState(); auf um die UI zu updaten
     procedure ChangeUIState(_state: integer); //Updatet die UI kann das Inventar öffnen
     procedure PrintAndUIChange(_changeUITo: integer; _toPrint: string); //zeigt zusätzlich zum ändern der UI noch eine einmalige Nachicht. Sollte man es mit UIState aufrufen zeigt sie einfach nur eine Nachricht und geht dan zurück zu wo es war
 
@@ -86,7 +86,7 @@ var
   //Music Vars
   MusicCounter: integer; //Der Musik counter, der die Zeit zählt bis die Musik wiederholt werden muss
   songPath: PChar; //PChar ist irgentwie string aber PlayerSound braucht genau das
-  songlength: integer; //wie lange MusicTimer warten muss bis er den song wiederholt. In secunden, da alles darunter irgentwie nicht mehr richtig die Zeit wiederspiegelt
+  songlength: integer; //wie lange MusicTimer warten muss bis er den song wiederholt. In sekunden, da alles darunter irgendwie nicht mehr richtig die Zeit wiederspiegelt
   muted: boolean; //wenn false wird musik gespielt
 
   RoomArr: Array of Array of Array of TRoom; //Das Array aller Räume
@@ -117,6 +117,7 @@ var
   i, ii: integer;
 begin
   inventoryIndex := 0;
+  roomStuffIndex := 0;
 
   songPath := 'music\overworldTheme_loop.wav';
   songlength := 27; //27s ist die exakte länge von overworldTheme_loop
@@ -151,11 +152,11 @@ begin
   Player1.itemInventory[2].SetBomb(50);
 
   Player1.AddWeapon(TWeapon.Create('Some Sword', 'It is acually sharp even thought it looks a bit blocky.', 'Images/Items/ShortSword.png', 0, 0, 15, 0));
-  Player1.AddSkill(TSkill.Create('Some Skill', 'You can KILL with it.' +sLineBreak+ 'It deals Strike Damage', 'Images/Skills/someSkill.png', 2, 1.5, 0, 0, 0));
+  Player1.AddSkill(TSkill.Create('Some Skill', 'You can KILL with it.' +sLineBreak+ 'It deals Strike Damage', 'Images/Skills/someSkill.png', 5, 1.5, 0, 0, 0));
   //---
 
   //Ändert die Situation zum erstem mal
-  ChangeSituation(0); //also updates UI
+  ChangeUIState(0); //also updates UI
   Memo_Description.Clear();
 end;
 
@@ -167,7 +168,7 @@ procedure TForm1.Btn2Click(Sender: TObject); begin Button_2_Action(); end;
 procedure TForm1.Btn3Click(Sender: TObject); begin Button_3_Action(); end;
 procedure TForm1.Btn4Click(Sender: TObject); begin Button_4_Action(); end;
 
-procedure TForm1.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+procedure TForm1.FormClose(Sender: TObject; var CloseAction: TCloseAction); //Wenn man Form1 schließ dann schließt sich Form2 nicht automatisch da Form2 die Main Form ist
 begin
   Form2.close();
 end;
@@ -176,10 +177,10 @@ procedure TForm1.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState)
 begin
   if (Key = VK_ESCAPE) then Application.Terminate();
 
-  if (Key = VK_1) then Button_1_Action();
-  if (Key = VK_2) then Button_2_Action();
-  if (Key = VK_3) then Button_3_Action();
-  if (Key = VK_4) then Button_4_Action();
+  if (Key = VK_1) or (Key = VK_RIGHT) or (Key = VK_D) then Button_1_Action();
+  if (Key = VK_2) or (Key = VK_LEFT) or (Key = VK_A) then Button_2_Action();
+  if (Key = VK_3) or (Key = VK_UP) or (Key = VK_W) then Button_3_Action();
+  if (Key = VK_4) or (Key = VK_DOWN) or (Key = VK_S) then Button_4_Action();
 end;
 
 procedure TForm1.Label_LeaveClick(Sender: TObject); //Exit Button
@@ -344,7 +345,7 @@ begin
     end;
   12: //Interagiert mit der HeilStatur und heit den Spieler
     begin
-      Player1.ChangeHealthBy(100); //<------------------------------------------I DONT KNOW ABOUT THIS HEALTH
+      Player1.ChangeHealthBy(100);
       PrintAndUIChange(currendSituation, 'You pray to the godess you dont know and ask for her assistance.'+sLineBreak+'You health has been restored.');
       FreeAndNil(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex]);
     end;
@@ -468,7 +469,7 @@ begin
           if (Player1.itemInventory[i] <> nil) then
             break := true;
         end;
-        if (break = false) then PrintAndUIChange(UIState, 'Can not go futher up. all nil') //there are no more items this way in the array
+        if (break = false) then PrintAndUIChange(UIState, 'Can not go futher up.') //there are no more items this way in the array
         else inventoryIndex := i;
       end else PrintAndUIChange(UIState, 'Can not go futher up.'); //out of array (negative)
       PrintItemData(Player1.itemInventory[inventoryIndex]);
@@ -533,7 +534,7 @@ begin
           if (Player1.itemInventory[i] <> nil) then
             break := true;
         end;
-        if (break = false) then PrintAndUIChange(UIState, 'Can not go futher down. all nil') //there are no more items this way in the array
+        if (break = false) then PrintAndUIChange(UIState, 'Can not go futher down.') //there are no more items this way in the array
         else inventoryIndex := i;
       end
       else PrintAndUIChange(UIState, 'Can not go futher down.'); //out of array (positive)
@@ -558,14 +559,6 @@ end;
 
 {------------------------------------------------------------------------------}
 {---------------------------Ändern-der-Situation-------------------------------}
-
-procedure TForm1.ChangeSituation(_situation: integer); //ändert currendSituation
-begin
-  currendSituation := _situation;
-  ChangeUIState(currendSituation);
-
-  Edit2.Text := IntToStr(currendSituation);
-end;
 
 procedure TForm1.PrintAndUIChange(_changeUITo: integer; _toPrint: string); //änderd UIState und zeigt vorher noch eine Nachricht
 begin
@@ -800,8 +793,7 @@ begin
         FightingEnemy := Player1.GetCurrendRoom().EnemyArr[i];
         PrintAndUIChange(1, 'You are now fighting!');
       end;
-  end;
-
+  end else
   //2. check nach Waffen
   if (length(Player1.GetCurrendRoom().WeaponArr) > 0) then
   begin
@@ -1037,10 +1029,10 @@ begin
   begin
     CreateARoom('Your in your cell ...'+sLineBreak+'But you have a Bonfire!'+sLineBreak+sLineBreak+'Praise The Sun!', 'Images/Rooms/BonFireCellRoom.png', 1, 0, 0);
     CreateARoom('Erste Kreuzung.', 'Images/Rooms/Höle.png', 2, 0, 0);
-    //RoomArr[2, 0, 0].AddRoomObject(TRoomObject.Create('Definitly a chest', 'Why dont you open it?', 'Images/Enemies/BestMimicEver.jpg'));
+    RoomArr[2, 0, 0].AddRoomObject(TRoomObject.Create('Definitly a chest', 'Why dont you open it?', 'Images/Enemies/BestMimicEver.jpg'));
     //RoomArr[2, 0, 0].RoomObjectArr[0].SetHealing();
     //RoomArr[2, 0, 0].RoomObjectArr[0].SetChest(TItem.Create('ITEM', 'ITEM!!!!!!!!!!','Images/Items/ITEM.png'));
-    //RoomArr[2, 0, 0].RoomObjectArr[0].SetMimic(TItem.Create('ITEM', 'ITEM!!!!!!!!!!','Images/Items/ITEM.png'), TEnemy.Create('Best Mimic Ever', 15, 15, 'Images/Enemies/BestMimicEver.jpg'));
+    RoomArr[2, 0, 0].RoomObjectArr[0].SetMimic(TItem.Create('ITEM', 'ITEM!!!!!!!!!!','Images/Items/ITEM.png'), TEnemy.Create('Best Mimic Ever', 15, 15, 'Images/Enemies/BestMimicEver.jpg'));
     //RoomArr[2, 0, 0].RoomObjectArr[0].SetSkillStatue(TSkill.Create('Some other Skill', 'This one is just useless...'+sLineBreak+ 'It deals Slash Damage', 'Images/Skills/someOtherSkill.png', 5, 0, 0, 1.2, 0));
 
     CreateARoom('Der Raum mit der Ratte.', 'Images/Rooms/Höle.png', 2, 1, 0);

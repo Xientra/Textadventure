@@ -8,7 +8,7 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms, Unit1, RoomClass, PlayerClass, ItemClass, EnemyClass, WeaponClass,
-  SkillClass, unit3
+  SkillClass, RoomObjectClass, menue
   { you can add units after this };
 
 {$R *.res}
@@ -16,6 +16,7 @@ uses
 begin
   RequireDerivedFormResource:=True;
   Application.Initialize;
+  Application.CreateForm(TForm2, Form2);
   Application.CreateForm(TForm1, Form1);
   Application.Run;
 end.
