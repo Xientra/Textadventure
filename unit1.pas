@@ -1120,10 +1120,10 @@ begin
   begin
     CreateARoom('Your in your cell ...'+sLineBreak+'But you have a Bonfire!'+sLineBreak+sLineBreak+'Praise The Sun!', 'Images/Rooms/BonFireCellRoom.png', 1, 0, 0);
     CreateARoom('Erste Kreuzung.', 'Images/Rooms/Höle.png', 2, 0, 0);
-    RoomArr[2, 0, 0].AddRoomObject(TRoomObject.Create('Definitly a chest', 'Why dont you open it?', 'Images/Enemies/BestMimicEver.jpg'));
-    //RoomArr[2, 0, 0].RoomObjectArr[0].SetHealing();
+    RoomArr[2, 0, 0].AddRoomObject(TRoomObject.Create('A Stature of an unknown Godess', '', 'Images/RoomObjects/StatureOfAnUnknownGod.png'));
+    RoomArr[2, 0, 0].RoomObjectArr[0].SetHealing();
     //RoomArr[2, 0, 0].RoomObjectArr[0].SetChest(TItem.Create('ITEM', 'ITEM!!!!!!!!!!','Images/Items/ITEM.png'));
-    RoomArr[2, 0, 0].RoomObjectArr[0].SetMimic(TItem.Create('ITEM', 'ITEM!!!!!!!!!!','Images/Items/ITEM.png'), TEnemy.Create('Best Mimic Ever', 15, 15, 'Images/Enemies/BestMimicEver.jpg'));
+    //RoomArr[2, 0, 0].RoomObjectArr[0].SetMimic(TItem.Create('ITEM', 'ITEM!!!!!!!!!!','Images/Items/ITEM.png'), TEnemy.Create('Best Mimic Ever', 15, 15, 'Images/Enemies/BestMimicEver.jpg'));
     //RoomArr[2, 0, 0].RoomObjectArr[0].SetSkillStatue(TSkill.Create('Some other Skill', 'This one is just useless...'+sLineBreak+ 'It deals Slash Damage', 'Images/Skills/someOtherSkill.png', 5, 0, 0, 1.2, 0));
 
     CreateARoom('Der Raum mit der Ratte.', 'Images/Rooms/Höle.png', 2, 1, 0);
