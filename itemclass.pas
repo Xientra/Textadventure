@@ -30,12 +30,12 @@ type
     procedure SetHealing(_factor: real);
     procedure SetDamageUp(_factor: real);
     procedure SetDefenseUp(_factor: real);
-    procedure SetKey(_keyIndex: real);
+    procedure SetKey(_keyIndex: integer);
     procedure SetBomb(_damage: real);
     procedure SetDefDuration(_duration: integer);
     procedure SetDmgDuration(_duration: integer);
 
-    function GetKeyIndex: real;
+    function GetKeyIndex: integer;
 
   private
     ItemName: string;
@@ -55,11 +55,11 @@ type
     HealingFactor,
     DamageUpFactor,
     DefenseUpFactor,
-    BombDamage,
-    KeyIndex
+    BombDamage
+
     : real;
 
-    DmgBuffDuration, DefBuffDuration: integer;
+    DmgBuffDuration, DefBuffDuration, KeyIndex: integer;
     Ignore: boolean; //Diese Variable ist dafür da um das Item die im Raum liegt einmalig zu ignorieren fallst man sie nicht aufheben will
   end;
 
@@ -82,6 +82,7 @@ begin
   IsKey := false;
   DmgBuffDuration := -1; //kein buff item
   DefBuffDuration := -1; //kein buff item
+  KeyIndex := 99; //
 
   Ignore := false;
 end;
@@ -187,7 +188,7 @@ begin
 
   BombDamage := _damage;
 end;
-procedure TItem.SetKey(_keyIndex: real);
+procedure TItem.SetKey(_keyIndex: integer);
 begin
   IsUseless := false;
   IsHealing := false;
@@ -199,7 +200,7 @@ begin
   KeyIndex := _keyIndex;
 end;
 
-function TItem.GetKeyIndex(): real;
+function TItem.GetKeyIndex(): integer;
 begin
   result := KeyIndex;
 end;

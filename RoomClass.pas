@@ -49,6 +49,16 @@ type
     function GetDoorLeft: boolean;
     function GetDoorTop: boolean;
     function GetDoorBottom: boolean;
+    //Schlüsselloch Prinzip
+    procedure SetDoorIndexRight(b: integer);
+    procedure SetDoorIndexLeft(b: integer);
+    procedure SetDoorIndexTop(b: integer);
+    procedure SetDoorIndexBottom(b: integer);
+
+    function GetDoorIndexRight: integer;
+    function GetDoorIndexLeft: integer;
+    function GetDoorIndexTop: integer;
+    function GetDoorIndexBottom: integer;
 
     procedure AddEnemy(_enemy: TEnemy);
     procedure AddWeapon(_weapon: TWeapon);
@@ -65,6 +75,7 @@ type
     //Tür Variablen
     blocked_right, blocked_left, blocked_top, blocked_bottom : boolean;
     door_right, door_left, door_top, door_bottom: boolean;
+    doorIndex_right, doorIndex_left, doorIndex_top, doorIndex_bottom: integer;
   end;
 
 implementation
@@ -207,4 +218,39 @@ begin
   result := door_bottom;
 end;
 
+//Schlüsselloch Prinzip
+procedure TRoom.SetDoorIndexRight(b: integer);
+begin
+  doorIndex_right := b;
+end;
+procedure TRoom.SetDoorIndexLeft(b: integer);
+begin
+  doorIndex_left := b;
+end;
+procedure TRoom.SetDoorIndexTop(b: integer);
+begin
+  doorIndex_top := b;
+end;
+procedure TRoom.SetDoorIndexBottom(b: integer);
+begin
+  doorIndex_bottom := b;
+end;
+
+
+function TRoom.GetDoorIndexRight: integer;
+begin
+  result := doorIndex_right;
+end;
+function TRoom.GetDoorIndexLeft: integer;
+begin
+  result := doorIndex_left;
+end;
+function TRoom.GetDoorIndexTop: integer;
+begin
+  result := doorIndex_top;
+end;
+function TRoom.GetDoorIndexBottom: integer;
+begin
+  result := doorIndex_bottom;
+end;
 end.
