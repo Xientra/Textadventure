@@ -1118,42 +1118,56 @@ procedure TForm1.CreateRooms(); //Erstellt den Inhalt des Spieles
 begin
   //Ebene 1
   begin
-    CreateARoom('Your in your cell ...'+sLineBreak+'But you have a Bonfire!'+sLineBreak+sLineBreak+'Praise The Sun!', 'Images/Rooms/BonFireCellRoom.png', 1, 0, 0);
-    CreateARoom('Erste Kreuzung.', 'Images/Rooms/Höle.png', 2, 0, 0);
-    RoomArr[2, 0, 0].AddRoomObject(TRoomObject.Create('A Stature of an unknown Godess', '', 'Images/RoomObjects/StatureOfAnUnknownGod.png'));
-    RoomArr[2, 0, 0].RoomObjectArr[0].SetHealing();
+    CreateARoom('Your in your cell ...'+sLineBreak+'But you have a Bonfire!'+sLineBreak+sLineBreak+'Praise The Sun!', 'Images/Rooms_lvl1/Cell1.png', 1, 0, 0);
+    CreateARoom('Erste Kreuzung.', 'Images/Rooms_lvl1/MiddleCorridorClosedCells.png', 2, 0, 0);
     //RoomArr[2, 0, 0].RoomObjectArr[0].SetChest(TItem.Create('ITEM', 'ITEM!!!!!!!!!!','Images/Items/ITEM.png'));
     //RoomArr[2, 0, 0].RoomObjectArr[0].SetMimic(TItem.Create('ITEM', 'ITEM!!!!!!!!!!','Images/Items/ITEM.png'), TEnemy.Create('Best Mimic Ever', 15, 15, 'Images/Enemies/BestMimicEver.jpg'));
     //RoomArr[2, 0, 0].RoomObjectArr[0].SetSkillStatue(TSkill.Create('Some other Skill', 'This one is just useless...'+sLineBreak+ 'It deals Slash Damage', 'Images/Skills/someOtherSkill.png', 5, 0, 0, 1.2, 0));
 
     CreateARoom('Der Raum mit der Ratte.', 'Images/Rooms/Höle.png', 2, 1, 0);
-    RoomArr[2, 1, 0].AddEnemy(TEnemy.Create('AAAAA', 20, 500, 'Images/Enemies/AAAAA.png'));
+    RoomArr[2, 1, 0].AddEnemy(TEnemy.Create('Rat', 20, 5, 'Images/Enemies/AAAAA.png'));
     RoomArr[2, 1, 0].EnemyArr[0].SetResistants(1, 1, 1);
     RoomArr[2, 1, 0].EnemyArr[0].SetItemDrop(TItem.Create('Literely just Trash', 'Like acually.', 'Images/Items/ITEM.png'));
     //RoomArr[2, 0, 0].EnemyArr[0].SetWeaponDrop(TWeapon.Create('Test Wep', 'Hi, i am a test wep.', 'Images/Items/ITEM.png', 1, 2, 3, 4));
-    RoomArr[2, 1, 0].AddEnemy(TEnemy.Create('AAAAA2', 20, 5, 'Images/Enemies/AAAAA.png'));
+    RoomArr[2, 1, 0].AddEnemy(TEnemy.Create('Rat', 20, 5, 'Images/Enemies/AAAAA.png'));
 
-    CreateARoom('Hier Liegt eine Eisenstange', 'Images/Rooms/Höle.png', 3, 0, 0);
+    CreateARoom('Hier Liegt eine Eisenstange', 'Images/Rooms_lvl1/Cell2.png', 3, 0, 0);
     RoomArr[3, 0, 0].AddWeapon(TWeapon.Create('Iron Bar', 'A brocken piece of a former cell.'+sLineBreak+'It is a bit rosty but can still function as a simple weapon.', 'Images/Items/IronBar.png', 15, 0, 0, 0));
-    CreateARoom('Vier Wege von hier aus', 'Images/Rooms/Höle.png', 2, 2, 0);
-    CreateARoom('Du siehst eine Waffe im nächsten Raum', 'Images/Rooms/Höle.png', 1, 2, 0);
-    CreateARoom('WOW hier liegt tatsächlich ein Dolch', 'Images/Rooms/Höle.png', 0, 2, 0);
-    CreateARoom('F*cking Goblins', 'Images/Rooms/Höle.png', 2, 3, 0);
+    CreateARoom('Vier Wege von hier aus', 'Images/Rooms_lvl1/MiddleCorridorCross.png', 2, 2, 0);
+    CreateARoom('Du siehst eine Waffe im nächsten Raum', 'Images/Rooms_lvl1/RoomBeforeDagger.png', 1, 2, 0);
+    CreateARoom('WOW hier liegt tatsächlich ein Dolch', 'Images/Rooms_lvl1/RoomWithDagger.png', 0, 2, 0);
+    RoomArr[0,2,0].AddWeapon(TWeapon.Create('Dagger', 'A small Dagger lack power or reach,'+sLineBreak+'but can deal quick consecutive hits due to their light weight', 'Images/Items/Dagger.png', 0, 8, 0, 0));
+    CreateARoom('F*cking Goblins', 'Images/Rooms_lvl1/RoomWithGoblin.png', 2, 3, 0);
     RoomArr[2,3,0].SetDoorTop(true);
     RoomArr[2,3,0].SetDoorIndexTop(0);
-    CreateARoom('I see trouble', 'Images/Rooms/Höle.png', 3, 2, 0);
-    CreateARoom('And we make it tripple', 'Images/Rooms/Höle.png', 4, 2, 0);
-    CreateARoom('Gäb es doch nur Bonfire', 'Images/Rooms/Höle.png', 5, 2, 0);
-    CreateARoom('Praise the Bonfire', 'Images/Rooms/Höle.png', 5, 3, 0);
-    RoomArr[5,3,0].SetBlockedLeft(true);
-    CreateARoom('Leerer Raum oder so', 'Images/Rooms/Höle.png', 4, 3, 0);
-    RoomArr[4,3,0].SetBlockedRight(true);
+    RoomArr[2, 1, 0].AddEnemy(TEnemy.Create('Goblin', 30, 10, 'Images/Enemies/AAAAA.png'));
+    RoomArr[2, 1, 0].EnemyArr[0].SetResistants(0.7,1.3,1);
+    RoomArr[2, 1, 0].EnemyArr[0].SetWeaponDrop(TWeapon.Create('A fancy Sword', 'With this Sword you can slash through hords of enemies.', 'Images/Items/Sword.png', 0, 0, 18, 0));
+    CreateARoom('I see trouble', 'Images/Rooms_lvl1/RoomBeforeRats.png', 3, 2, 0);
+    CreateARoom('And we make it tripple', 'Images/Rooms_lvl1/RoomWithRats.png', 4, 2, 0);
+    RoomArr[4, 2, 0].AddEnemy(TEnemy.Create('Rat', 20, 5, 'Images/Enemies/AAAAA.png'));
+    RoomArr[4, 2, 0].EnemyArr[0].SetResistants(1, 0.8, 1.2);
+    RoomArr[4, 2, 0].AddEnemy(TEnemy.Create('Rat', 20, 5, 'Images/Enemies/AAAAA.png'));
+    RoomArr[4, 2, 0].EnemyArr[1].SetResistants(1, 0.8, 1.2);
+    RoomArr[4, 2, 0].AddEnemy(TEnemy.Create('Rat', 20, 5, 'Images/Enemies/AAAAA.png'));
+    RoomArr[4, 2, 0].EnemyArr[2].SetResistants(1, 0.8, 1.2);
+    CreateARoom('Praise the Goddess!', 'Images/Rooms_lvl1/RoomWithHealStature.png', 5, 2, 0);
+    RoomArr[5, 2, 0].AddRoomObject(TRoomObject.Create('A Stature of an unknown Godess', '', 'Images/RoomObjects/StatureOfAnUnknownGod.png'));
+    RoomArr[5, 2, 0].RoomObjectArr[0].SetHealing();
+    //CreateARoom('Praise the Bonfire', 'Images/Rooms/Höle.png', 5, 3, 0);
+    //RoomArr[5,3,0].SetBlockedLeft(true);
+    CreateARoom('Leerer Raum oder so', 'Images/Rooms_lvl1/RoomAfterRatsAndBeforeGoblin.png', 4, 3, 0);
+    //RoomArr[4,3,0].SetBlockedRight(true);
     CreateARoom('Drop den Schlüssel Goblin', 'Images/Rooms/Höle.png', 4, 4, 0);
+    RoomArr[4, 4, 0].AddEnemy(TEnemy.Create('AAAAA', 30, 10, 'Images/Enemies/AAAAA.png'));
+    RoomArr[4, 4, 0].EnemyArr[0].SetResistants(0.7, 1.3, 1);
+    RoomArr[4, 4, 0].EnemyArr[0].SetItemDrop(TItem.Create('alter Schlüssel', 'Dieser Schlüssel scheint zu einer alte Tür irgendwo in diesem Höhlensystem zu gehören', 'Images/Items/Key1.png'));
     CreateARoom('Useless ahead', 'Images/Rooms/Höle.png', 3, 4, 0);
-    CreateARoom('Zum Glück hatte ich den schlüssel', 'Images/Rooms/Höle.png', 2, 4, 0);
+    CreateARoom('Zum Glück hatte ich den schlüssel', 'Images/Rooms_lvl1/RoomBeforeBoss.png', 2, 4, 0);
     RoomArr[2,4,0].SetDoorBottom(true);
     RoomArr[2,4,0].SetDoorIndexBottom(0);
-    CreateARoom('Estus vorraus', 'Images/Rooms/Höle.png', 1, 4, 0);
+    CreateARoom('Estus vorraus', 'Images/Rooms_lvl1/RoomWithHealItem.png', 1, 4, 0);
+    RoomArr[1,4,0].AddItem(TItem.Create('Heiltrank', 'Dieses Elexier stellt deine Lebenskraft wieder her', 'Images/Items/HealingItem'));
     CreateARoom('This is so sad. Alexa, play Gwyns theme', 'Images/Rooms/Höle.png', 2, 5, 0);
   end;
 
