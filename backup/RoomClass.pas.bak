@@ -20,6 +20,8 @@ type
     constructor Create(_description: string; _imagePath: string; _pos_x, _pos_y, _pos_z: integer);
 
     function GetDescription: string;
+    function GetDescriptionVisited: string;
+    procedure SetDescriptionVisited(d: string);
     function GetImagePath(): string;
 
     function GetVisited: boolean;
@@ -50,15 +52,15 @@ type
     function GetDoorTop: boolean;
     function GetDoorBottom: boolean;
     //Schlüsselloch Prinzip
-    procedure SetDoorRight(b: boolean);
-    procedure SetDoorLeft(b: boolean);
-    procedure SetDoorTop(b: boolean);
-    procedure SetDoorBottom(b: boolean);
+    procedure SetDoorIndexRight(b: integer);
+    procedure SetDoorIndexLeft(b: integer);
+    procedure SetDoorIndexTop(b: integer);
+    procedure SetDoorIndexBottom(b: integer);
 
-    function GetDoorRight: boolean;
-    function GetDoorLeft: boolean;
-    function GetDoorTop: boolean;
-    function GetDoorBottom: boolean;
+    function GetDoorIndexRight: integer;
+    function GetDoorIndexLeft: integer;
+    function GetDoorIndexTop: integer;
+    function GetDoorIndexBottom: integer;
 
     procedure AddEnemy(_enemy: TEnemy);
     procedure AddWeapon(_weapon: TWeapon);
@@ -68,6 +70,7 @@ type
   private
 
     description: string;
+    description_visited:string;
     ImagePath: string;
     visited: boolean; //wurde bereits besucht oder nicht
     //Position des Raumes
@@ -75,6 +78,7 @@ type
     //Tür Variablen
     blocked_right, blocked_left, blocked_top, blocked_bottom : boolean;
     door_right, door_left, door_top, door_bottom: boolean;
+    doorIndex_right, doorIndex_left, doorIndex_top, doorIndex_bottom: integer;
   end;
 
 implementation
@@ -85,6 +89,7 @@ constructor TRoom.Create(_description: string; _imagePath: string; _pos_x, _pos_
 begin
   inherited Create;
   description := _description;
+  description_visited := description;
   ImagePath := _imagePath;
   visited := false;
   pos_x := _pos_x;
@@ -112,6 +117,11 @@ function TRoom.GetDescription: string;
 begin
   result := description; //wenn hier ein error erscheint ist es sehr warscheinlich, dass der Raum gar nicht existiert
 end;
+function TRoom.GetDescriptionVisited:string;
+begin
+  result := description_visited;
+end;
+
 function TRoom.GetImagePath(): string;
 begin
   result := ImagePath;

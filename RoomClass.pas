@@ -20,6 +20,8 @@ type
     constructor Create(_description: string; _imagePath: string; _pos_x, _pos_y, _pos_z: integer);
 
     function GetDescription: string;
+    function GetDescriptionVisited: string;
+    procedure SetDescriptionVisited(d: string);
     function GetImagePath(): string;
 
     function GetVisited: boolean;
@@ -68,6 +70,7 @@ type
   private
 
     description: string;
+    description_visited:string;
     ImagePath: string;
     visited: boolean; //wurde bereits besucht oder nicht
     //Position des Raumes
@@ -86,6 +89,7 @@ constructor TRoom.Create(_description: string; _imagePath: string; _pos_x, _pos_
 begin
   inherited Create;
   description := _description;
+  description_visited := description;
   ImagePath := _imagePath;
   visited := false;
   pos_x := _pos_x;
@@ -113,6 +117,11 @@ function TRoom.GetDescription: string;
 begin
   result := description; //wenn hier ein error erscheint ist es sehr warscheinlich, dass der Raum gar nicht existiert
 end;
+function TRoom.GetDescriptionVisited:string;
+begin
+  result := description_visited;
+end;
+
 function TRoom.GetImagePath(): string;
 begin
   result := ImagePath;
@@ -125,6 +134,10 @@ end;
 procedure TRoom.SetVisited(v: boolean);
 begin
   visited := v;
+end;
+procedure TRoom.SetDescriptionVisited(d: string);
+begin
+  description_visited := d;
 end;
 
 //Add Stuff

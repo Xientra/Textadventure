@@ -1080,9 +1080,12 @@ end;
 procedure TForm1.PrintRoomData(_room: TRoom); //print situation = 0
 begin
   Memo1.Clear();
-  Memo1.Lines.Add(_room.GetDescription());
+  if Player1.getcurrendroom.getvisited = false then
+  Memo1.Lines.Add(_room.GetDescription())
+  else Memo1.Lines.Add(_room.GetDescription());
   Image1.Picture.LoadFromFile(_room.GetImagePath());
   Memo_Description.Clear();
+  Player1.getcurrendroom.setvisited(true);
 end;
 
 procedure TForm1.PrintEnemyData(_enemy: TEnemy); //print situation 1 and 2

@@ -1036,9 +1036,9 @@ end;
 //wird am ende/in der Runde des Gegners aufgerufen und macht dem Spieler Schaden
 procedure TForm1.EnemyTurn(); //logic situation = 2
 begin
-  if Player1.itemInventory[DefBuffIndex].GetDefDuration > 0 then
+{  if Player1.itemInventory[DefBuffIndex].GetDefDuration > 0 then
   Player1.ChangeHealthBy(-(FightingEnemy.GetDamage())*Player1.itemInventory[DefBuffIndex].GetDefenseUp)
-  else Player1.ChangeHealthBy(-(FightingEnemy.GetDamage()));
+  else} Player1.ChangeHealthBy(-(FightingEnemy.GetDamage()));
   Memo1.Clear();
   if Player1.getHealth > 0 then
   Memo1.Lines.Add('The Enemy delt ' + FloatToStr(FightingEnemy.GetDamage())+' damage.'+sLineBreak+'You now have ' + FloatToStr(Player1.GetHealth()) + ' health left')
@@ -1080,9 +1080,12 @@ end;
 procedure TForm1.PrintRoomData(_room: TRoom); //print situation = 0
 begin
   Memo1.Clear();
+  if Player1.getcurrendroom.getvisited = false then
   Memo1.Lines.Add(_room.GetDescription());
+  else Memo1.Lines.Add(_room.GetDescription());
   Image1.Picture.LoadFromFile(_room.GetImagePath());
   Memo_Description.Clear();
+  Player1.getcurrendroom.setvisited(true);
 end;
 
 procedure TForm1.PrintEnemyData(_enemy: TEnemy); //print situation 1 and 2
