@@ -129,9 +129,9 @@ begin
     MuteBtn_Image.Picture.LoadFromFile('Images/Buttons/MuteBtnOn.png');
 
   //Set RoomArray size
-  Room_x := 8-1;
-  Room_y := 8-1;
-  Room_z := 7-1;
+  Room_x := 8;
+  Room_y := 7;
+  Room_z := 7;
 
   //Setzt die Länge des RoomArray erst in x dann y und dann z Richtung
   SetLength(RoomArr, Room_x);

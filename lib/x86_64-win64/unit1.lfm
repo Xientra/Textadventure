@@ -10,7 +10,7 @@ object Form1: TForm1
   ClientWidth = 800
   Color = clBlack
   Font.CharSet = ANSI_CHARSET
-  Font.Color = clBlack
+  Font.Color = clWhite
   Font.Height = -16
   Font.Name = 'Georgia'
   Font.Pitch = fpVariable
@@ -58,7 +58,7 @@ object Form1: TForm1
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   Position = poScreenCenter
-  LCLVersion = '1.8.4.0'
+  LCLVersion = '1.6.2.0'
   object Btn1_Image: TImage
     Cursor = crHandPoint
     Left = 448

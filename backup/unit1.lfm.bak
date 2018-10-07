@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 1154
+  Left = 1093
   Height = 642
-  Top = 172
+  Top = 176
   Width = 800
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
@@ -10,7 +10,7 @@ object Form1: TForm1
   ClientWidth = 800
   Color = clBlack
   Font.CharSet = ANSI_CHARSET
-  Font.Color = clBlack
+  Font.Color = clWhite
   Font.Height = -16
   Font.Name = 'Georgia'
   Font.Pitch = fpVariable
