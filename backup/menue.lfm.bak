@@ -1,7 +1,7 @@
 object Form2: TForm2
-  Left = 1411
+  Left = 1295
   Height = 418
-  Top = 284
+  Top = 285
   Width = 571
   Caption = 'Main Menu'
   ClientHeight = 418
@@ -97,14 +97,14 @@ object Form2: TForm2
     }
   end
   object Label1: TLabel
-    Left = 96
-    Height = 74
+    Left = 88
+    Height = 82
     Top = 48
-    Width = 334
+    Width = 412
     Caption = 'Textadventure (WOW)'#13#10'              \[T]/'
     Font.CharSet = ANSI_CHARSET
-    Font.Height = -32
-    Font.Name = 'Arial'
+    Font.Height = -37
+    Font.Name = 'OptimusPrinceps'
     Font.Pitch = fpVariable
     Font.Quality = fqDraft
     Font.Style = [fsBold]

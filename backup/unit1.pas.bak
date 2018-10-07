@@ -130,7 +130,7 @@ begin
 
   //Set RoomArray size
   Room_x := 8;
-  Room_y := 8;
+  Room_y := 7;
   Room_z := 7;
 
   //Setzt die Länge des RoomArray erst in x dann y und dann z Richtung
@@ -1127,7 +1127,7 @@ begin
     //RoomArr[2, 0, 0].RoomObjectArr[0].SetSkillStatue(TSkill.Create('Some other Skill', 'This one is just useless...'+sLineBreak+ 'It deals Slash Damage', 'Images/Skills/someOtherSkill.png', 5, 0, 0, 1.2, 0));
 
     CreateARoom('Der Raum mit der Ratte.', 'Images/Rooms/Höle.png', 2, 1, 0);
-    RoomArr[2, 1, 0].AddEnemy(TEnemy.Create('AAAAA', 20, 5, 'Images/Enemies/AAAAA.png'));
+    RoomArr[2, 1, 0].AddEnemy(TEnemy.Create('AAAAA', 20, 500, 'Images/Enemies/AAAAA.png'));
     RoomArr[2, 1, 0].EnemyArr[0].SetResistants(1, 1, 1);
     RoomArr[2, 1, 0].EnemyArr[0].SetItemDrop(TItem.Create('Literely just Trash', 'Like acually.', 'Images/Items/ITEM.png'));
     //RoomArr[2, 0, 0].EnemyArr[0].SetWeaponDrop(TWeapon.Create('Test Wep', 'Hi, i am a test wep.', 'Images/Items/ITEM.png', 1, 2, 3, 4));
