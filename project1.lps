@@ -21,9 +21,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Unit1"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="1123"/>
-        <CursorPos X="17" Y="1145"/>
-        <FoldState Value=" T3lF03311Q"/>
+        <TopLine Value="347"/>
+        <CursorPos X="111" Y="376"/>
+        <FoldState Value=" T3lG03411V"/>
         <UsageCount Value="111"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -44,7 +44,7 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="PlayerClass"/>
         <EditorIndex Value="3"/>
-        <TopLine Value="30"/>
+        <TopLine Value="4"/>
         <CursorPos X="20" Y="64"/>
         <UsageCount Value="106"/>
         <Loaded Value="True"/>
@@ -82,7 +82,6 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="WeaponClass"/>
         <EditorIndex Value="6"/>
-        <TopLine Value="17"/>
         <CursorPos X="24" Y="36"/>
         <UsageCount Value="96"/>
         <Loaded Value="True"/>
