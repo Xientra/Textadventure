@@ -120,6 +120,8 @@ var
 begin
   inventoryIndex := 0;
   roomStuffIndex := 0;
+  DmgBuffIndex := 0;
+  DefBuffIndex := 0;
 
   songPath := 'music\overworldTheme_loop.wav';
   songlength := 27; //27s ist die exakte länge von overworldTheme_loop
@@ -353,21 +355,21 @@ begin
         begin
         randomize;
         multyattack := Random(4)+1;
-      if Player1.itemInventory[DmgBuffIndex].GetDmgDuration > 0 then
+      {if Player1.itemInventory[DmgBuffIndex].GetDmgDuration > 0 then
       _dmg := FightingEnemy.DoDamage(Player1.GetCurrendWeapon().GetStrikeDmg()*Player1.itemInventory[DmgBuffIndex].GetDamageUp*multyattack,
                                      Player1.GetCurrendWeapon().GetThrustDmg()*Player1.itemInventory[DmgBuffIndex].GetDamageUp*multyattack,
                                      Player1.GetCurrendWeapon().GetSlashDmg()*Player1.itemInventory[DmgBuffIndex].GetDamageUp*multyattack,
                                      Player1.GetCurrendWeapon().GetMagicDmg()*Player1.itemInventory[DmgBuffIndex].GetDamageUp*multyattack)
-      else _dmg := FightingEnemy.DoDamage(Player1.GetCurrendWeapon().GetStrikeDmg()*multyattack,
+      else} _dmg := FightingEnemy.DoDamage(Player1.GetCurrendWeapon().GetStrikeDmg()*multyattack,
                                           Player1.GetCurrendWeapon().GetThrustDmg()*multyattack,
                                           Player1.GetCurrendWeapon().GetSlashDmg()*multyattack,
                                           Player1.GetCurrendWeapon().GetMagicDmg()*multyattack);
-      end else if Player1.itemInventory[DmgBuffIndex].GetDmgDuration > 0 then
+      end else {if Player1.itemInventory[DmgBuffIndex].GetDmgDuration > 0 then
       _dmg := FightingEnemy.DoDamage(Player1.GetCurrendWeapon().GetStrikeDmg()*Player1.itemInventory[DmgBuffIndex].GetDamageUp,
                                      Player1.GetCurrendWeapon().GetThrustDmg()*Player1.itemInventory[DmgBuffIndex].GetDamageUp,
                                      Player1.GetCurrendWeapon().GetSlashDmg()*Player1.itemInventory[DmgBuffIndex].GetDamageUp,
                                      Player1.GetCurrendWeapon().GetMagicDmg()*Player1.itemInventory[DmgBuffIndex].GetDamageUp)
-      else _dmg := FightingEnemy.DoDamage(Player1.GetCurrendWeapon().GetStrikeDmg(),
+      else} _dmg := FightingEnemy.DoDamage(Player1.GetCurrendWeapon().GetStrikeDmg(),
                                           Player1.GetCurrendWeapon().GetThrustDmg(),
                                           Player1.GetCurrendWeapon().GetSlashDmg(),
                                           Player1.GetCurrendWeapon().GetMagicDmg());
@@ -959,9 +961,13 @@ begin
   for i := 0 to length(Player1.Skills) - 1 do
     if (Player1.Skills[i] <> nil) then
       Player1.Skills[i].SetTurnToWaitToZero();
-
-  Player1.itemInventory[DmgBuffIndex].SetDmgDuration(0);
-  Player1.itemInventory[DefBuffIndex].SetDefDuration(0);
+  for i := 0 to length(Player1.ItemInventory) - 1 do
+  begin
+  if Player1.itemInventory[i].GetDmgDuration > 0 then
+  Player1.itemInventory[i].SetDmgDuration(0);
+  if Player1.itemInventory[i].GetDefDuration > 0 then
+  Player1.itemInventory[i].SetDefDuration(0);
+  end;
   //Sets all Ignore values back to false so that the items/whatever are interactable again
   for i := 0 to length(Player1.GetCurrendRoom().ItemArr) - 1 do
     if (Player1.GetCurrendRoom().ItemArr[i] <> nil) then
@@ -1020,19 +1026,19 @@ begin
     for i := 0 to length(Player1.Skills) - 1 do begin
       if (Player1.Skills[i] <> nil) then Player1.Skills[i].ReduceTurnsToWait();
     end;
-    if Player1.itemInventory[DmgBuffIndex].GetDmgDuration > 0 then
+    {if Player1.itemInventory[DmgBuffIndex].GetDmgDuration > 0 then
       Player1.itemInventory[DmgBuffIndex].SetDmgDuration(Player1.itemInventory[DmgBuffIndex].GetDmgDuration-1);
     if Player1.itemInventory[DefBuffIndex].GetDefDuration > 0 then
-      Player1.itemInventory[DefBuffIndex].SetDefDuration(Player1.itemInventory[DefBuffIndex].GetDefDuration-1);
+      Player1.itemInventory[DefBuffIndex].SetDefDuration(Player1.itemInventory[DefBuffIndex].GetDefDuration-1);}
   end;
 end;
 
 //wird am ende/in der Runde des Gegners aufgerufen und macht dem Spieler Schaden
 procedure TForm1.EnemyTurn(); //logic situation = 2
 begin
-  if Player1.itemInventory[DefBuffIndex].GetDefDuration > 0 then
+{  if Player1.itemInventory[DefBuffIndex].GetDefDuration > 0 then
   Player1.ChangeHealthBy(-(FightingEnemy.GetDamage())*Player1.itemInventory[DefBuffIndex].GetDefenseUp)
-  else Player1.ChangeHealthBy(-(FightingEnemy.GetDamage()));
+  else} Player1.ChangeHealthBy(-(FightingEnemy.GetDamage()));
   Memo1.Clear();
   if Player1.getHealth > 0 then
   Memo1.Lines.Add('The Enemy delt ' + FloatToStr(FightingEnemy.GetDamage())+' damage.'+sLineBreak+'You now have ' + FloatToStr(Player1.GetHealth()) + ' health left')
