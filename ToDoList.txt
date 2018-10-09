@@ -51,9 +51,9 @@ _______________________________________
 			-Goblin
 			-RattenMensche (Boss 1)
 		-Ebene 2
-			-Schwarzer/Korumpierter Ritter (?) (Boss 2)
+			-Schwarzer/Korumpierter Ritter/Artorias (?) (Boss 2)
 		-Ebene 3
-			-Gurdian
+			-Guardian
 			-Prediger
 			-Pfarrer (?) (Boss 3)
 

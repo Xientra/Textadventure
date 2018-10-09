@@ -153,7 +153,7 @@ begin
 
   CreateRooms(); //Erstellt das Spiel
   //Erschafft den Spieler in einem Raum
-  Player1 := TPlayer.Create(RoomArr[1, 0, 0], TWeapon.Create('Fists', 'Just your good old hands.', 'Images/Items/ShortSword.png', 10, 0, 0, 0), 1);
+  Player1 := TPlayer.Create(RoomArr[1, 0, 0], TWeapon.Create('Fists', 'Just your good old hands.', 'Images/Items/ShortSword.png', 100, 0, 0, 0), 1);
 
   //Stuff just for testing the inventory
   //Player1.AddItem(TItem.Create('some Key', 'it not usefull for any door...','Images/Items/Key1.png'));
@@ -570,7 +570,14 @@ begin
       else PrintAndUIChange(UIState, 'You have no weapons in your arsenal yet.')
     end;
   4: {do nothing};
-  10: {do nothing};
+  10: {directly equip found weapon}
+    begin
+      Player1.SetCurrendWeapon(Player1.GetCurrendRoom().WeaponArr[roomStuffIndex]);
+      Player1.AddWeapon(Player1.GetCurrendRoom().WeaponArr[roomStuffIndex]);
+      Player1.GetCurrendRoom().WeaponArr[roomStuffIndex] := nil;
+      Player1.GetCurrendRoom().SetItemPickedUp(true);
+      PrintAndUIChange(currendSituation, 'You directly equip the Weapon.');
+    end;
   11: {do nothing};
   12: {do nothing};
   13: //greift die Truhe an und zerstört sie
@@ -811,8 +818,8 @@ begin
       SetButton(Btn1_Image, Btn1_Label, true);
       Btn2_Label.caption := 'Take it';
       SetButton(Btn2_Image, Btn2_Label, true);
-      Btn3_Label.caption := '';
-      SetButton(Btn3_Image, Btn3_Label, false);
+      Btn3_Label.caption := 'Equip it';
+      SetButton(Btn3_Image, Btn3_Label, true);
       Btn4_Label.caption := '';
       SetButton(Btn4_Image, Btn4_Label, false);
 
