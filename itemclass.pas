@@ -10,7 +10,7 @@ uses
 type
   TItem = class
   public
-    constructor Create(_name, _description, _imagePath: string);
+    constructor Create(_name, _description, _imagePath: string; _keyindex: integer = -1);
 
     function UseItem(): boolean; //Macht sachen basierent auf der Art des Items; returns false wenn man das Item nicht benutzen kann (sowas wie Schlüssel)
 
@@ -67,7 +67,7 @@ implementation
 
 uses Unit1;
 
-constructor TItem.Create(_name, _description, _imagePath: string);
+constructor TItem.Create(_name, _description, _imagePath: string; _keyindex: integer = -1);
 begin
   inherited Create;
   itemName := _name;
@@ -82,7 +82,7 @@ begin
   IsKey := false;
   DmgBuffDuration := -1; //kein buff item
   DefBuffDuration := -1; //kein buff item
-  KeyIndex := 99; //
+  KeyIndex := _keyindex; //
 
   Ignore := false;
 end;

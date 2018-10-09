@@ -20,12 +20,14 @@ type
     constructor Create(_description: string; _imagePath: string; _pos_x, _pos_y, _pos_z: integer);
 
     function GetDescription: string;
-    function GetDescriptionVisited: string;
     procedure SetDescriptionVisited(d: string);
     function GetImagePath(): string;
+    procedure SetImagePathVisited(d: string);
 
     function GetVisited: boolean;
     procedure SetVisited(v: boolean);
+    function GetItemPickedUp: boolean;
+    procedure SetItemPickedUp(v: boolean);
 
     function GetPosX: Integer;
     function GetPosY: Integer;
@@ -72,7 +74,9 @@ type
     description: string;
     description_visited:string;
     ImagePath: string;
+    ImagePathVisited: string;
     visited: boolean; //wurde bereits besucht oder nicht
+    ItemPickedUp: booleaN;
     //Position des Raumes
     pos_x, pos_y, pos_z: integer;
     //Tür Variablen
@@ -91,7 +95,9 @@ begin
   description := _description;
   description_visited := description;
   ImagePath := _imagePath;
+  ImagePathVisited := ImagePath;
   visited := false;
+  ItemPickedUp:= false;
   pos_x := _pos_x;
   pos_y := _pos_y;
   pos_z := _pos_z;
@@ -115,16 +121,16 @@ function TRoom.GetPosZ:Integer; begin result := pos_z; end;
 //Get Room Data
 function TRoom.GetDescription: string;
 begin
-  result := description; //wenn hier ein error erscheint ist es sehr warscheinlich, dass der Raum gar nicht existiert
-end;
-function TRoom.GetDescriptionVisited:string;
-begin
-  result := description_visited;
+  if visited = false then
+  result := description //wenn hier ein error erscheint ist es sehr warscheinlich, dass der Raum gar nicht existiert
+  else result := description_visited;
 end;
 
 function TRoom.GetImagePath(): string;
 begin
-  result := ImagePath;
+  if ItemPickedUp = false
+  result := ImagePath
+  else result := ImagePathVisited;
 end;
 
 function TRoom.GetVisited(): boolean;
@@ -134,6 +140,22 @@ end;
 procedure TRoom.SetVisited(v: boolean);
 begin
   visited := v;
+end;
+function TRoom.GetItemPickedUp(): boolean;
+begin
+  result := ItemPickedUp;
+end;
+procedure TRoom.SetItemPickedUp(v: boolean);
+begin
+  ItemPickedUp := v;
+end;
+procedure TRoom.SetDescriptionVisited(d: string);
+begin
+  description_visited := d;
+end;
+procedure TRoom.SetImagePathVisited(d: string);
+begin
+  ImagePathVisited := d;
 end;
 
 //Add Stuff

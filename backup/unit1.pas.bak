@@ -146,7 +146,7 @@ begin
 
   CreateRooms(); //Erstellt das Spiel
   //Erschafft den Spieler in einem Raum
-  Player1 := TPlayer.Create(RoomArr[1, 0, 0], TWeapon.Create('Fists', 'Just your good old hands.', 'Images/Items/ShortSword.png', 10, 0, 0, 0), 100);
+  Player1 := TPlayer.Create(RoomArr[1, 0, 0], TWeapon.Create('Fists', 'Just your good old hands.', 'Images/Items/ShortSword.png', 100, 0, 0, 0), 100);
 
   //Stuff just for testing the inventory
   //Player1.AddItem(TItem.Create('some Key', 'it not usefull for any door...','Images/Items/Key1.png'));
@@ -307,6 +307,11 @@ begin
       Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].SetIgnore(true);
       PrintAndUIChange(currendSituation, 'You leave the Stature be.');
     end;
+  16: //lässt das RoomObject im Raum
+    begin
+      Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].SetIgnore(true);
+      PrintAndUIChange(currendSituation, 'You leave the Ladder.');
+    end;
   53: //Geht aus dem Waffen Menu zurück in das Kampf Menu
     begin
       ChangeUIState(currendSituation);
@@ -388,12 +393,14 @@ begin
     begin
       Player1.AddWeapon(Player1.GetCurrendRoom().WeaponArr[roomStuffIndex]);
       Player1.GetCurrendRoom().WeaponArr[roomStuffIndex] := nil;
+      Player1.GetCurrendRoom().SetItemPickedUp(true);
       PrintAndUIChange(currendSituation, 'You take the Weapon.');
     end;
   11: //Nimmt das Item die im Raum liegt und geht weiter
     begin
       Player1.AddItem(Player1.GetCurrendRoom().ItemArr[roomStuffIndex]);
       Player1.GetCurrendRoom().ItemArr[roomStuffIndex] := nil;
+      Player1.GetCurrendRoom().SetItemPickedUp(true);
       PrintAndUIChange(currendSituation, 'You take the Item');
     end;
   12: //Interagiert mit der HeilStatur und heit den Spieler
@@ -407,6 +414,7 @@ begin
       Player1.AddItem(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetChestItem());
       PrintAndUIChange(currendSituation, 'You open the chest.'+sLineBreak+'You found '+Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetChestItem().GetName()+'. '+sLineBreak+Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetChestItem().GetDescription());
       FreeAndNil(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex]);
+      //Player1.GetCurrendRoom().SetItemPickedUp(true);
     end;
   14: //Versucht die Mimic zu öffnen; Startet einen Kampf den der Gegner beginnt
     begin
@@ -422,6 +430,13 @@ begin
       PrintAndUIChange(currendSituation, 'As you touch the stature you feel great power and knowlegde flow throght your body.'+sLineBreak+
                                          'You have learned '+Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetSkillToTeach().GetName()+sLineBreak+
                                          Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetSkillToTeach().GetDescription());
+      FreeAndNil(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex]);
+    end;
+  16: //Interagiet mit der Leiter
+    begin
+      Player1.ChangeRoom('zPos');
+      PrintAndUIChange(0, 'As you touch the Ladder you feel great power and knowlegde flow throght your body.'+sLineBreak+
+                                         'You have learned... how to climb');
       FreeAndNil(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex]);
     end;
   53: //Rüstet die im Inventar ausgewählte waffe aus und beendet die Runde des Spielers
@@ -792,6 +807,19 @@ begin
 
       PrintRoomObjectData(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex]);
     end;
+  16: //Interagiert mit einer Skill Statur in einem Raum
+    begin
+      Btn1_Label.caption := 'Leave';
+      SetButton(Btn1_Image, Btn1_Label, true);
+      Btn2_Label.caption := 'Climb';
+      SetButton(Btn2_Image, Btn2_Label, true);
+      Btn3_Label.caption := '';
+      SetButton(Btn3_Image, Btn3_Label, false);
+      Btn4_Label.caption := '';
+      SetButton(Btn4_Image, Btn4_Label, false);
+
+      PrintRoomObjectData(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex]);
+    end;
   53: //Das Waffen Menu
     begin
       Btn1_Label.caption := 'Back';
@@ -919,6 +947,8 @@ begin
             PrintAndUIChange(14, 'You notice a chest and get closer to it.');
           if (Player1.GetCurrendRoom().RoomObjectArr[i].GetIsSkillStatue()) then
             PrintAndUIChange(15, 'You notice a stature and get closer to it.');
+          if (Player1.GetCurrendRoom().RoomObjectArr[i].GetIsLadder()) then
+            PrintAndUIChange(16, 'You notice a Ladder and get closer to it.');
         end;
   end;
 
@@ -1080,9 +1110,7 @@ end;
 procedure TForm1.PrintRoomData(_room: TRoom); //print situation = 0
 begin
   Memo1.Clear();
-  if Player1.getcurrendroom.getvisited = false then
   Memo1.Lines.Add(_room.GetDescription());
-  else Memo1.Lines.Add(_room.GetDescription());
   Image1.Picture.LoadFromFile(_room.GetImagePath());
   Memo_Description.Clear();
   Player1.getcurrendroom.setvisited(true);
@@ -1192,14 +1220,16 @@ begin
     CreateARoom('Drop den Schlüssel Goblin', 'Images/Rooms_lvl1/RoomWithGoblinWithKey.png', 4, 4, 0);
     RoomArr[4, 4, 0].AddEnemy(TEnemy.Create('AAAAA', 30, 10, 'Images/Enemies/AAAAA.png'));
     RoomArr[4, 4, 0].EnemyArr[0].SetResistants(0.7, 1.3, 1);
-    RoomArr[4, 4, 0].EnemyArr[0].SetItemDrop(TItem.Create('alter Schlüssel', 'Dieser Schlüssel scheint zu einer alte Tür irgendwo in diesem Höhlensystem zu gehören', 'Images/Items/Key1.png'));
+    RoomArr[4, 4, 0].EnemyArr[0].SetItemDrop(TItem.Create('alter Schlüssel', 'Dieser Schlüssel scheint zu einer alte Tür irgendwo in diesem Höhlensystem zu gehören', 'Images/Items/Key1.png', 0));
     CreateARoom('Useless ahead', 'Images/Rooms_lvl1/RoomAfterGoblinWithKey.png', 3, 4, 0);
     CreateARoom('Zum Glück hatte ich den schlüssel', 'Images/Rooms_lvl1/RoomBeforeBoss.png', 2, 4, 0);
     RoomArr[2,4,0].SetDoorBottom(true);
     RoomArr[2,4,0].SetDoorIndexBottom(0);
-    CreateARoom('Estus vorraus', 'Images/Rooms_lvl1/RoomWithHealingItem.png', 1, 4, 0);
+    CreateARoom('Estus vorraus', 'Images/Rooms_lvl1/RoomWithHealItem.png', 1, 4, 0);
     RoomArr[1,4,0].AddItem(TItem.Create('Heiltrank', 'Dieses Elexier stellt deine Lebenskraft wieder her', 'Images/Items/HealingItem'));
     CreateARoom('This is so sad. Alexa, play Gwyns theme', 'Images/Rooms/Höle.png', 2, 5, 0);
+    RoomArr[2,5,0].AddRoomObject(TRoomObject.Create('Ladder','The height of this ladder is beyond comprehension','Images/Rooms_lvl1/BossRoomWithLadder.png'));
+    RoomArr[2,5,0].RoomObjectArr[0].SetLadder();
   end;
 
   //Ebene 2

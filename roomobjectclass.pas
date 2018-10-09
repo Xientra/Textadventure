@@ -26,6 +26,7 @@ type
     procedure SetChest(_item: TItem);
     procedure SetMimic(_item: TItem; _enemy: TEnemy);
     procedure SetSkillStatue(_skill: TSkill);
+    procedure SetLadder();
 
     //Get Effect
     function GetIsUseless(): boolean;
@@ -33,6 +34,7 @@ type
     function GetIsChest(): boolean;
     function GetIsMimic(): boolean;
     function GetIsSkillStatue(): boolean;
+    function GetIsLadder(): boolean;
     //Get Effect Values
     function GetChestItem(): TItem;
     function GetMimicEnemy(): TEnemy;
@@ -138,6 +140,11 @@ begin
 
   SkillToTeach := _skill;
 end;
+Procedure TRoomObject.SetLadder();
+begin
+  isLadder := true;
+  isUseless := false;
+end;
 
 //Get Effect
 function TRoomObject.GetIsUseless(): boolean;
@@ -159,6 +166,10 @@ end;
 function TRoomObject.GetIsSkillStatue(): boolean;
 begin
   result := IsSkillStatue;
+end;
+function TRoomObject.GetIsLadder(): boolean;
+begin
+  result := IsLadder;
 end;
 
 //Get Effect Values
