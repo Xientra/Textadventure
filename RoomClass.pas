@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Dialogs{für ShowMessage},
-  EnemyClass{für TEnemy}, ItemClass{für TItem}, WeaponClass{für TWeapon}, RoomObjectClass{für TRoomObject};
+  EnemyClass{für TEnemy}, BossClass{für TBoss}, ItemClass{für TItem}, WeaponClass{für TWeapon}, RoomObjectClass{für TRoomObject};
 
 type
   TRoom = class
@@ -16,6 +16,7 @@ type
     WeaponArr: Array of TWeapon; //Waffen im Raum
     ItemArr: Array of TItem; //Items im Raum
     RoomObjectArr: Array of TRoomObject; //RoomObjects im Raum
+    Boss: TBoss; //der Vollständigkeit halber
 
     constructor Create(_description: string; _imagePath: string; _pos_x, _pos_y, _pos_z: integer);
 
@@ -65,6 +66,7 @@ type
     function GetDoorIndexBottom: integer;
 
     procedure AddEnemy(_enemy: TEnemy);
+    procedure AddBoss(_boss: TBoss);
     procedure AddWeapon(_weapon: TWeapon);
     procedure AddItem(_item: TItem);
     procedure AddRoomObject(_roomObject: TRoomObject);
@@ -163,6 +165,11 @@ procedure TRoom.AddEnemy(_enemy: TEnemy);
 begin
   SetLength(EnemyArr, Length(EnemyArr) + 1);
   EnemyArr[Length(EnemyArr) - 1] := _enemy;
+end;
+procedure TRoom.AddBoss(_boss: TBoss);
+begin
+  if (Boss <> nil) then Showmessage('The Boss of this Room was not nil before.');
+  Boss := _boss;
 end;
 procedure TRoom.AddWeapon(_weapon: TWeapon);
 begin

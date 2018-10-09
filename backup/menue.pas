@@ -41,6 +41,7 @@ uses unit1;
 
 procedure TForm2.Image1Click(Sender: TObject);
 begin
+  Application.CreateForm(TForm1, Form1);
   Form1.Show();
   Form2.visible := false;
 end;

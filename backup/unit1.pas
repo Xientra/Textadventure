@@ -7,7 +7,8 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
   StdCtrls, LCLType, ActnList, MMSystem{für die Musik},
-  RoomClass{für TRoom}, PlayerClass{für TPlayer}, EnemyClass{für TEnemy}, WeaponClass{für TWeapon}, ItemClass{für TItem}, SkillClass{I think you know by now...}, RoomObjectClass{could it be? is this really for TRoomClass?!}, menue, youdied;
+  menue, youdied, //Die Anderen Formen
+  RoomClass{für TRoom}, PlayerClass{für TPlayer}, EnemyClass{für TEnemy}, WeaponClass{für TWeapon}, ItemClass{für TItem}, SkillClass{I think you know by now...}, RoomObjectClass{could it be? is this really for TRoomClass?!}, BossClass{...};
 
 type
 
@@ -64,12 +65,17 @@ type
     procedure OnEnterRoom(); //situation = 0;  schaut ob dinge/Enemyies im Raum sind usw.
     procedure OnLeaveRoom(); //Resetet cooldowns und alle Ignore Variablen von Sahcen die im Raum sind
     procedure PlayerEndTurn(); //situation = 1;  schaut ob der Enemy besiegt ist und verigert die cooldowns
-    procedure EnemyTurn(); //situation = 2;  Runde des Gegners
+    procedure EnemyTurn(); //situation = 2;  macht dem Player schaden und schaut ob dieser Tod ist
+    procedure PlayerEndTurnBoss(); ////situation = 3;  schaut ob der Boss besiegt wurde und verigert die cooldowns
+    procedure BossTurn(); //logic situation = 4 macht dem Player schaden und schaut ob dieser Tod ist
+
+    procedure PlayerDeath();
 
     //Schreibt die jeweiligen Infos auf dei jeweiligen memos und so
     procedure PrintPlayerData(_player: TPlayer); //print situation all
     procedure PrintRoomData(_room: TRoom); //print situation = 0
     procedure PrintEnemyData(_enemy: TEnemy); //print situation = 1 and 2
+    procedure PrintBossData(_boss: TBoss); //print situation 3 and 4
     procedure PrintWeaponData(_weapon: TWeapon); //print situation = 53 and 10
     procedure PrintItemData(_item: TItem); //print situation = 54 and 11
     procedure PrintSkillData(_skill: TSkill); //print situation = 55
@@ -93,6 +99,7 @@ var
   Room_x, Room_y, Room_z: integer; //Die Länge des RoomArray in alle drei Richtungen
   Player1: TPlayer; //Das Spieler Object welches leben und Inventar speichert
   FightingEnemy: TEnemy; //Der gegner gegen den man Kämpft wenn man in Situation 1 oder 2 ist
+  FightingBoss: TBoss; //Der Boss gegen den man Kämpft wenn man in Situation 3 oder 4 ist
 
   //Diese Variablen sind dafür da die Spielsituationen zu ändern
   currendSituation: integer; //diese variable merkt sich die grundlegende Spielsituation unabhängig von dem möglicherweise offenen Menü //0 = laufen; 1 = Kampf(Runde des Spielers) 2 = Kampf(Runde des Gegners)
@@ -103,6 +110,7 @@ var
   inventoryIndex: integer;
   roomStuffIndex: integer;
   DmgBuffIndex, DefBuffIndex: integer;
+  multyAttack: integer; //gimick for daggers
 
 implementation
 
@@ -119,6 +127,8 @@ var
 begin
   inventoryIndex := 0;
   roomStuffIndex := 0;
+  DmgBuffIndex := 0;
+  DefBuffIndex := 0;
 
   songPath := 'music\overworldTheme_loop.wav';
   songlength := 27; //27s ist die exakte länge von overworldTheme_loop
@@ -129,9 +139,9 @@ begin
     MuteBtn_Image.Picture.LoadFromFile('Images/Buttons/MuteBtnOn.png');
 
   //Set RoomArray size
-  Room_x := 8-1;
-  Room_y := 8-1;
-  Room_z := 7-1;
+  Room_x := 8;
+  Room_y := 7;
+  Room_z := 7;
 
   //Setzt die Länge des RoomArray erst in x dann y und dann z Richtung
   SetLength(RoomArr, Room_x);
@@ -143,17 +153,17 @@ begin
 
   CreateRooms(); //Erstellt das Spiel
   //Erschafft den Spieler in einem Raum
-  Player1 := TPlayer.Create(RoomArr[1, 0, 0], TWeapon.Create('Fists', 'Just your good old hands.', 'Images/Items/ShortSword.png', 10, 0, 0, 0), 100);
+  Player1 := TPlayer.Create(RoomArr[1, 0, 0], TWeapon.Create('Fists', 'Just your good old hands.', 'Images/Items/ShortSword.png', 10, 0, 0, 0), 1);
 
   //Stuff just for testing the inventory
-  Player1.AddItem(TItem.Create('some Key', 'it not usefull for any door...','Images/Items/Key1.png'));
-  Player1.ItemInventory[0].setKey(0);
-  Player1.AddItem(TItem.Create('DamageUpItemThingy', 'It boosts your Damage by 20%','Images/Items/DamageUp.png'));
-  Player1.itemInventory[1].SetDamageUp(1.2);
-  Player1.AddItem(TItem.Create('SomeBomb', 'Its a Bomb','Images/Items/Bomb.png'));
-  Player1.itemInventory[2].SetBomb(50);
+  //Player1.AddItem(TItem.Create('some Key', 'it not usefull for any door...','Images/Items/Key1.png'));
+  //Player1.ItemInventory[0].setKey(0);
+  //Player1.AddItem(TItem.Create('DamageUpItemThingy', 'It boosts your Damage by 20%','Images/Items/DmgUp.png'));
+  //Player1.itemInventory[1].SetDamageUp(1.2);
+  //Player1.AddItem(TItem.Create('SomeBomb', 'Its a Bomb','Images/Items/Bomb.png'));
+  //Player1.itemInventory[2].SetBomb(50);
 
-  Player1.AddWeapon(TWeapon.Create('Some Sword', 'It is acually sharp even thought it looks a bit blocky.', 'Images/Items/ShortSword.png', 0, 0, 15, 0));
+  //Player1.AddWeapon(TWeapon.Create('Some Sword', 'It is acually sharp even thought it looks a bit blocky.', 'Images/Items/Sword.png', 0, 0, 15, 0));
   Player1.AddSkill(TSkill.Create('Some Skill', 'You can KILL with it.' +sLineBreak+ 'It deals Strike Damage', 'Images/Skills/someSkill.png', 5, 1.5, 0, 0, 0));
   //---
 
@@ -274,6 +284,12 @@ begin
       else PrintAndUIChange(UIState, 'You have no skills yet.')
     end;
   2: {do nothing};
+  3: //Öffnet das Skill Menu
+    begin
+      if (Player1.HasSkills() = true) then ChangeUIState(55) //Skill Menu
+      else PrintAndUIChange(UIState, 'You have no skills yet.')
+    end;
+  4: {do nothing};
   10: //lässt die Waffe im Raum liegen
     begin
       Player1.GetCurrendRoom().WeaponArr[roomStuffIndex].SetIgnore(true);
@@ -303,6 +319,11 @@ begin
     begin
       Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].SetIgnore(true);
       PrintAndUIChange(currendSituation, 'You leave the Stature be.');
+    end;
+  16: //lässt das RoomObject im Raum
+    begin
+      Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].SetIgnore(true);
+      PrintAndUIChange(currendSituation, 'You leave the Ladder.');
     end;
   53: //Geht aus dem Waffen Menu zurück in das Kampf Menu
     begin
@@ -348,11 +369,32 @@ begin
     end;
   1: //Greift den Gegner an und macht ihm Schaden; Beendet die Runde des Spielers
     begin
-      if Player1.itemInventory[DmgBuffIndex].GetDmgDuration > 0 then
-      _dmg := FightingEnemy.DoDamage(Player1.GetCurrendWeapon().GetStrikeDmg()*Player1.itemInventory[DmgBuffIndex].GetDamageUp, Player1.GetCurrendWeapon().GetThrustDmg()*Player1.itemInventory[DmgBuffIndex].GetDamageUp, Player1.GetCurrendWeapon().GetSlashDmg()*Player1.itemInventory[DmgBuffIndex].GetDamageUp, Player1.GetCurrendWeapon().GetMagicDmg()*Player1.itemInventory[DmgBuffIndex].GetDamageUp)
-      else _dmg := FightingEnemy.DoDamage(Player1.GetCurrendWeapon().GetStrikeDmg(), Player1.GetCurrendWeapon().GetThrustDmg(), Player1.GetCurrendWeapon().GetSlashDmg(), Player1.GetCurrendWeapon().GetMagicDmg());
+      if (Player1.GetCurrendWeapon.GetName = 'Dagger') or (Player1.GetCurrendWeapon.GetName = 'MagicDagger') then
+      begin
+        randomize;
+        multyattack := Random(4)+1;
+      {if Player1.itemInventory[DmgBuffIndex].GetDmgDuration > 0 then
+      _dmg := FightingEnemy.DoDamage(Player1.GetCurrendWeapon().GetStrikeDmg()*Player1.itemInventory[DmgBuffIndex].GetDamageUp*multyattack,
+                                     Player1.GetCurrendWeapon().GetThrustDmg()*Player1.itemInventory[DmgBuffIndex].GetDamageUp*multyattack,
+                                     Player1.GetCurrendWeapon().GetSlashDmg()*Player1.itemInventory[DmgBuffIndex].GetDamageUp*multyattack,
+                                     Player1.GetCurrendWeapon().GetMagicDmg()*Player1.itemInventory[DmgBuffIndex].GetDamageUp*multyattack)
+      else} _dmg := FightingEnemy.DoDamage(Player1.GetCurrendWeapon().GetStrikeDmg()*multyattack,
+                                          Player1.GetCurrendWeapon().GetThrustDmg()*multyattack,
+                                          Player1.GetCurrendWeapon().GetSlashDmg()*multyattack,
+                                          Player1.GetCurrendWeapon().GetMagicDmg()*multyattack);
+      end else {if Player1.itemInventory[DmgBuffIndex].GetDmgDuration > 0 then
+        _dmg := FightingEnemy.DoDamage(Player1.GetCurrendWeapon().GetStrikeDmg()*Player1.itemInventory[DmgBuffIndex].GetDamageUp,
+                                     Player1.GetCurrendWeapon().GetThrustDmg()*Player1.itemInventory[DmgBuffIndex].GetDamageUp,
+                                     Player1.GetCurrendWeapon().GetSlashDmg()*Player1.itemInventory[DmgBuffIndex].GetDamageUp,
+                                     Player1.GetCurrendWeapon().GetMagicDmg()*Player1.itemInventory[DmgBuffIndex].GetDamageUp)
+        else} _dmg := FightingEnemy.DoDamage(Player1.GetCurrendWeapon().GetStrikeDmg(),
+                                          Player1.GetCurrendWeapon().GetThrustDmg(),
+                                          Player1.GetCurrendWeapon().GetSlashDmg(),
+                                          Player1.GetCurrendWeapon().GetMagicDmg());
 
-      PrintAndUIChange(2, 'You delt ' + FloatToStr(Round(_dmg)) + ' damage.'+sLineBreak+'The Enemy now has ' + FloatToStr(Round(FightingEnemy.GetHealth())) + ' health left');
+      if (Player1.GetCurrendWeapon.GetName = 'Dagger') or (Player1.GetCurrendWeapon.GetName = 'MagicDagger') then
+      PrintAndUIChange(2, 'You quickly attacked '+ IntToStr(multyattack)+' times with your Dagger'+sLineBreak+'You delt ' + FloatToStr(Round(_dmg)) + ' damage.'+sLineBreak+'The Enemy now has ' + FloatToStr(Round(FightingEnemy.GetHealth())) + ' health left')
+      else PrintAndUIChange(2, 'You delt ' + FloatToStr(Round(_dmg)) + ' damage.'+sLineBreak+'The Enemy now has ' + FloatToStr(Round(FightingEnemy.GetHealth())) + ' health left');
 
       PlayerEndTurn();
     end;
@@ -360,21 +402,49 @@ begin
     begin
       ChangeUIState(1);
     end;
+  3:
+    begin
+      if (Player1.GetCurrendWeapon.GetName = 'Dagger') or (Player1.GetCurrendWeapon.GetName = 'MagicDagger') then
+      begin
+        randomize;
+        multyattack := Random(4)+1;
+        _dmg := FightingBoss.DoDamage(Player1.GetCurrendWeapon().GetStrikeDmg()*multyattack,
+                                          Player1.GetCurrendWeapon().GetThrustDmg()*multyattack,
+                                          Player1.GetCurrendWeapon().GetSlashDmg()*multyattack,
+                                          Player1.GetCurrendWeapon().GetMagicDmg()*multyattack);
+      end else
+        _dmg := FightingBoss.DoDamage(Player1.GetCurrendWeapon().GetStrikeDmg(),
+                                          Player1.GetCurrendWeapon().GetThrustDmg(),
+                                          Player1.GetCurrendWeapon().GetSlashDmg(),
+                                          Player1.GetCurrendWeapon().GetMagicDmg());
+
+      if (Player1.GetCurrendWeapon.GetName = 'Dagger') or (Player1.GetCurrendWeapon.GetName = 'MagicDagger') then
+      PrintAndUIChange(4, 'You quickly attacked '+ IntToStr(multyattack)+' times with your Dagger'+sLineBreak+'You delt ' + FloatToStr(Round(_dmg)) + ' damage.'+sLineBreak+'The Enemy now has ' + FloatToStr(Round(FightingBoss.GetHealth())) + ' health left')
+      else PrintAndUIChange(4, 'You delt ' + FloatToStr(Round(_dmg)) + ' damage.'+sLineBreak+'The Boss now has ' + FloatToStr(Round(FightingBoss.GetHealth())) + ' health left');
+
+      PlayerEndTurnBoss();
+    end;
+  4: //Beendet die Runde des Bosses
+    begin
+      ChangeUIState(3);
+    end;
   10: //Nimmt die Waffe die im Raum liegt und geht weiter
     begin
       Player1.AddWeapon(Player1.GetCurrendRoom().WeaponArr[roomStuffIndex]);
       Player1.GetCurrendRoom().WeaponArr[roomStuffIndex] := nil;
+      Player1.GetCurrendRoom().SetItemPickedUp(true);
       PrintAndUIChange(currendSituation, 'You take the Weapon.');
     end;
   11: //Nimmt das Item die im Raum liegt und geht weiter
     begin
       Player1.AddItem(Player1.GetCurrendRoom().ItemArr[roomStuffIndex]);
       Player1.GetCurrendRoom().ItemArr[roomStuffIndex] := nil;
+      Player1.GetCurrendRoom().SetItemPickedUp(true);
       PrintAndUIChange(currendSituation, 'You take the Item');
     end;
   12: //Interagiert mit der HeilStatur und heit den Spieler
     begin
-      Player1.ChangeHealthBy(100);
+      Player1.SetFullHealth();
       PrintAndUIChange(currendSituation, 'You pray to the godess you dont know and ask for her assistance.'+sLineBreak+'You health has been restored.');
       FreeAndNil(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex]);
     end;
@@ -383,6 +453,7 @@ begin
       Player1.AddItem(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetChestItem());
       PrintAndUIChange(currendSituation, 'You open the chest.'+sLineBreak+'You found '+Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetChestItem().GetName()+'. '+sLineBreak+Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetChestItem().GetDescription());
       FreeAndNil(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex]);
+      //Player1.GetCurrendRoom().SetItemPickedUp(true);
     end;
   14: //Versucht die Mimic zu öffnen; Startet einen Kampf den der Gegner beginnt
     begin
@@ -398,6 +469,13 @@ begin
       PrintAndUIChange(currendSituation, 'As you touch the stature you feel great power and knowlegde flow throght your body.'+sLineBreak+
                                          'You have learned '+Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetSkillToTeach().GetName()+sLineBreak+
                                          Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetSkillToTeach().GetDescription());
+      FreeAndNil(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex]);
+    end;
+  16: //Interagiet mit der Leiter
+    begin
+      Player1.ChangeRoom('zPos');
+      PrintAndUIChange(0, 'As you touch the Ladder you feel great power and knowlegde flow throght your body.'+sLineBreak+
+                                         'You have learned... how to climb');
       FreeAndNil(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex]);
     end;
   53: //Rüstet die im Inventar ausgewählte waffe aus und beendet die Runde des Spielers
@@ -486,6 +564,12 @@ begin
       else PrintAndUIChange(UIState, 'You have no weapons in your arsenal yet.')
     end;
   2: {do nothing};
+  3: //Öffnet das Waffen Menü
+    begin
+      if (Player1.HasWeaponsInInventory() = true) then  ChangeUIState(53) //Weapon Menu
+      else PrintAndUIChange(UIState, 'You have no weapons in your arsenal yet.')
+    end;
+  4: {do nothing};
   10: {do nothing};
   11: {do nothing};
   12: {do nothing};
@@ -570,6 +654,13 @@ begin
       else PrintAndUIChange(UIState, 'You have no items in your inventory yet.')
     end;
   2: {do nothing};
+  3: //Öffnet das Item Menü
+    begin
+      if (Player1.HasItemsInInventory() <> -1) then
+        ChangeUIState(54) //Item Menu
+      else PrintAndUIChange(UIState, 'You have no items in your inventory yet.')
+    end;
+  4: {do nothing};
   10: {do nothing};
   11: {do nothing};
   12: {do nothing};
@@ -684,6 +775,36 @@ begin
 
       PrintEnemyData(FightingEnemy);
     end;
+  3:
+    begin
+      currendSituation := 3;
+      Btn1_Label.caption := 'Skills';
+      Btn2_Label.caption := 'Attack';
+      Btn3_Label.caption := 'Weapons';
+      Btn4_Label.caption := 'Items';
+
+      Memo1.Clear();
+      Memo1.Lines.Add('Before you stands the '+FightingBoss.GetAdjective()+' '+FightingBoss.GetName()+'.'+sLineBreak+'What are you going to do?');
+
+
+      PrintBossData(FightingBoss);
+    end;
+  4: //Kämpfen mit normalen Gegnern (Runde des Gegners)
+    begin
+      currendSituation := 4;
+      Btn1_Label.caption := '';
+      SetButton(Btn1_Image, Btn1_Label, false);
+      Btn2_Label.caption := 'Ok';
+      SetButton(Btn2_Image, Btn2_Label, true);
+      Btn3_Label.caption := '';
+      SetButton(Btn3_Image, Btn3_Label, false);
+      Btn4_Label.caption := '';
+      SetButton(Btn4_Image, Btn4_Label, false);
+
+      BossTurn(); //The Enemy deals Damage
+
+      PrintBossData(FightingBoss);
+    end;
   10: //Interagiert mit einer Waffe in einem Raum
     begin
       Btn1_Label.caption := 'Leave it';
@@ -760,6 +881,19 @@ begin
       Btn1_Label.caption := 'Leave';
       SetButton(Btn1_Image, Btn1_Label, true);
       Btn2_Label.caption := 'Touch';
+      SetButton(Btn2_Image, Btn2_Label, true);
+      Btn3_Label.caption := '';
+      SetButton(Btn3_Image, Btn3_Label, false);
+      Btn4_Label.caption := '';
+      SetButton(Btn4_Image, Btn4_Label, false);
+
+      PrintRoomObjectData(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex]);
+    end;
+  16: //Interagiert mit einer Skill Statur in einem Raum
+    begin
+      Btn1_Label.caption := 'Leave';
+      SetButton(Btn1_Image, Btn1_Label, true);
+      Btn2_Label.caption := 'Climb';
       SetButton(Btn2_Image, Btn2_Label, true);
       Btn3_Label.caption := '';
       SetButton(Btn3_Image, Btn3_Label, false);
@@ -847,7 +981,7 @@ procedure TForm1.OnEnterRoom(); //logic situation = 0
 var
   i: integer;
 begin
-  //1. check nach Gegnern
+  //check nach Gegnern
   if (length(Player1.GetCurrendRoom().EnemyArr) > 0) then
   begin
     for i := 0 to length(Player1.GetCurrendRoom().EnemyArr) - 1 do
@@ -857,7 +991,13 @@ begin
         PrintAndUIChange(1, 'You are now fighting!');
       end;
   end else
-  //2. check nach Waffen
+  //1. check nach Bossen
+  if (Player1.GetCurrendRoom().Boss <> nil) then
+  begin  //start BossFight
+    FightingBoss := Player1.GetCurrendRoom().Boss;
+    PrintAndUIChange(3, 'You are now fighting!');
+  end else
+  //check nach Waffen
   if (length(Player1.GetCurrendRoom().WeaponArr) > 0) then
   begin
     for i := 0 to length(Player1.GetCurrendRoom().WeaponArr) - 1 do
@@ -868,7 +1008,7 @@ begin
           ChangeUIState(10);
         end;
   end else
-  //3. check nach Items
+  //check nach Items
   if (length(Player1.GetCurrendRoom().ItemArr) > 0) then
   begin
     for i := 0 to length(Player1.GetCurrendRoom().ItemArr) - 1 do
@@ -879,7 +1019,7 @@ begin
           ChangeUIState(11);
         end;
   end else
-  //4. check nach RoomObjects
+  //check nach RoomObjects
   if (length(Player1.GetCurrendRoom().RoomObjectArr) > 0) then
   begin
     for i := 0 to length(Player1.GetCurrendRoom().RoomObjectArr) - 1 do
@@ -895,6 +1035,8 @@ begin
             PrintAndUIChange(14, 'You notice a chest and get closer to it.');
           if (Player1.GetCurrendRoom().RoomObjectArr[i].GetIsSkillStatue()) then
             PrintAndUIChange(15, 'You notice a stature and get closer to it.');
+          if (Player1.GetCurrendRoom().RoomObjectArr[i].GetIsLadder()) then
+            PrintAndUIChange(16, 'You notice a Ladder and get closer to it.');
         end;
   end;
 
@@ -937,9 +1079,13 @@ begin
   for i := 0 to length(Player1.Skills) - 1 do
     if (Player1.Skills[i] <> nil) then
       Player1.Skills[i].SetTurnToWaitToZero();
-
-  Player1.itemInventory[DmgBuffIndex].SetDmgDuration(0);
-  Player1.itemInventory[DefBuffIndex].SetDefDuration(0);
+  for i := 0 to length(Player1.ItemInventory) - 1 do
+  begin
+  if Player1.itemInventory[i].GetDmgDuration > 0 then
+  Player1.itemInventory[i].SetDmgDuration(0);
+  if Player1.itemInventory[i].GetDefDuration > 0 then
+  Player1.itemInventory[i].SetDefDuration(0);
+  end;
   //Sets all Ignore values back to false so that the items/whatever are interactable again
   for i := 0 to length(Player1.GetCurrendRoom().ItemArr) - 1 do
     if (Player1.GetCurrendRoom().ItemArr[i] <> nil) then
@@ -981,7 +1127,7 @@ begin
                           'It was added to your Inventory.');
     end
     else PrintAndUIChange(0, 'You Won!');
-    //fight was ended
+    //Der Kampf wurde dadurch beendet, dass die Situation auf von 2 (Runde des Enemy) auf 0 gesetzt wurde
 
     //Destroy den Enemy Object und setzt alle Variablen die auf ihn zeigen zu nil
     for i := 0 to length(Player1.GetCurrendRoom.EnemyArr)-1 do
@@ -992,39 +1138,95 @@ begin
     FightingEnemy := nil;  //da der gegner zerstört wurde sollte auch FightingEnemy wieder auf nil
 
   end
-  else //Enemy deals damage
+  else //Its already the Enemies turn
   begin
     //verringert den cooldoown von jedem skill
     for i := 0 to length(Player1.Skills) - 1 do begin
       if (Player1.Skills[i] <> nil) then Player1.Skills[i].ReduceTurnsToWait();
     end;
-    if Player1.itemInventory[DmgBuffIndex].GetDmgDuration > 0 then
+    {if Player1.itemInventory[DmgBuffIndex].GetDmgDuration > 0 then
       Player1.itemInventory[DmgBuffIndex].SetDmgDuration(Player1.itemInventory[DmgBuffIndex].GetDmgDuration-1);
     if Player1.itemInventory[DefBuffIndex].GetDefDuration > 0 then
-      Player1.itemInventory[DefBuffIndex].SetDefDuration(Player1.itemInventory[DefBuffIndex].GetDefDuration-1);
+      Player1.itemInventory[DefBuffIndex].SetDefDuration(Player1.itemInventory[DefBuffIndex].GetDefDuration-1);}
   end;
 end;
 
 //wird am ende/in der Runde des Gegners aufgerufen und macht dem Spieler Schaden
 procedure TForm1.EnemyTurn(); //logic situation = 2
 begin
-  if Player1.itemInventory[DefBuffIndex].GetDefDuration > 0 then
+{  if Player1.itemInventory[DefBuffIndex].GetDefDuration > 0 then
   Player1.ChangeHealthBy(-(FightingEnemy.GetDamage())*Player1.itemInventory[DefBuffIndex].GetDefenseUp)
-  else Player1.ChangeHealthBy(-(FightingEnemy.GetDamage()));
+  else} Player1.ChangeHealthBy(-(FightingEnemy.GetDamage()));
   Memo1.Clear();
-  if Player1.getHealth > 0 then
+  if (Player1.getHealth > 0) then
   Memo1.Lines.Add('The Enemy delt ' + FloatToStr(FightingEnemy.GetDamage())+' damage.'+sLineBreak+'You now have ' + FloatToStr(Player1.GetHealth()) + ' health left')
   else begin
     Memo1.Lines.Add('The Enemy delt ' + FloatToStr(FightingEnemy.GetDamage())+' damage.'+sLineBreak+'You now have 0 health left');
-    Form3.show();
-    //mute music if playing
-    MuteBtn_Image.Picture.LoadFromFile('Images/Buttons/MuteBtnOff.png');
-    MusicTimer.Enabled := false;
-    MusicCounter := 0;
-    PlaySound('music/mute.wav', 0, SND_ASYNC);
-    muted := true;
+
+    PlayerDeath();
   end;
 end;
+
+procedure TForm1.PlayerEndTurnBoss();
+var
+  i: integer;
+begin
+  //check if enemy is defeated
+  if (FightingBoss.GetHealth() <= 0) then
+  begin
+    Memo1.Clear();
+    Memo1.Lines.Add('You defeated the Enemy');
+    Player1.SetFullHealth(); //Der Spieler wird wieder geheilt
+    if (FightingBoss.GetSkillDrop() <> nil) then
+    begin
+      PLayer1.AddSkill((FightingBoss.GetSkillDrop()));
+      PrintAndUIChange(0, 'You defeated you Opponent!'+sLineBreak+
+                          'You feel how some of his Powers transfer to you.'+
+                          'You Health has been restored and you learned the Skill '+FightingBoss.GetSkillDrop().GetName()+'. '+sLineBreak+
+                          FightingBoss.GetSkillDrop().GetDescription());
+    end else PrintAndUIChange(0, 'You defeated you Opponent!'+sLineBreak+'You Health has been restored.');
+    //Der Kampf wurde dadurch beendet, dass die Situation auf von 4 (Runde des Bosses) auf 0 gesetzt wurde
+
+    //Destroy das Boss Object und setzt alle Variablen die auf ihn zeigen zu nil
+    FreeAndNil(Player1.GetCurrendRoom().Boss); //FreeAndNil Destroyd ein Object und setz die pointer var (die in den Klammern) auf nil
+    FightingEnemy := nil; //da der gegner zerstört wurde sollte auch FightingEnemy wieder auf nil
+
+  end
+  else //Its already the Enemies turn
+  begin
+    //verringert den cooldoown von jedem skill
+    for i := 0 to length(Player1.Skills) - 1 do begin
+      if (Player1.Skills[i] <> nil) then Player1.Skills[i].ReduceTurnsToWait();
+    end;
+  end;
+end;
+procedure TForm1.BossTurn(); //logic situation = 4
+begin
+  Player1.ChangeHealthBy(-(FightingBoss.GetDamage()));
+  Memo1.Clear();
+  if (Player1.getHealth > 0) then
+  Memo1.Lines.Add('The Bosss delt ' + FloatToStr(FightingBoss.GetDamage())+' damage.'+sLineBreak+'You now have ' + FloatToStr(Player1.GetHealth()) + ' health left')
+  else begin
+    Memo1.Lines.Add('The Boss delt ' + FloatToStr(FightingBoss.GetDamage())+' damage.'+sLineBreak+'You now have 0 health left');
+
+    PlayerDeath();
+  end;
+end;
+
+procedure TForm1.PlayerDeath(); //death has no logic
+var i: integer;
+begin
+  Form3.Timer1.Enabled := true;
+  Form3.AlphaBlendValue := 0;
+  Form3.ShowModal();
+  //mute music
+  MuteBtn_Image.Picture.LoadFromFile('Images/Buttons/MuteBtnOff.png');
+  MusicTimer.Enabled := false;
+  MusicCounter := 0;
+  PlaySound('music/mute.wav', 0, SND_ASYNC);
+  muted := true;
+end;
+
 {------------------------------------------------------------------------------}
 
 
@@ -1034,7 +1236,7 @@ procedure TForm1.PrintPlayerData(_player: TPlayer); //print situation all
 begin
   Memo_Stats.Clear();
   Memo_Stats.Lines.AddText('Health: '+sLineBreak+
-                           FloatToStr(_player.GetHealth())+sLineBreak+
+                           FloatToStr(_player.GetHealth())+'/'+FloatToStr(_player.GetMaxHealth())+sLineBreak+
                            sLineBreak+
                            'Currend Weapon: '+sLineBreak+
                            _player.GetCurrendWeapon().GetName()+sLineBreak+
@@ -1055,6 +1257,7 @@ begin
   Memo1.Lines.Add(_room.GetDescription());
   Image1.Picture.LoadFromFile(_room.GetImagePath());
   Memo_Description.Clear();
+  Player1.getcurrendroom.setvisited(true);
 end;
 
 procedure TForm1.PrintEnemyData(_enemy: TEnemy); //print situation 1 and 2
@@ -1063,10 +1266,22 @@ begin
   Memo_Description.Lines.AddText(_enemy.GetName());
   Memo_Description.Lines.Add('');
   if Round(_enemy.GetHealth()) > 0 then
-    Memo_Description.Lines.AddText('The '+_enemy.GetName()+' has '+FloatToStr(Round(FightingEnemy.GetHealth()))+' health left.')
+    Memo_Description.Lines.AddText('The '+_enemy.GetName()+' has '+FloatToStr(Round(_enemy.GetHealth()))+' health left.')
   else
     Memo_Description.Lines.AddText('The '+_enemy.GetName()+' has '+' 0 health left.');
   Image1.Picture.LoadFromFile(_enemy.GetImagePath());
+end;
+
+procedure TForm1.PrintBossData(_boss: TBoss); //print situation 3 and 4
+begin
+  Memo_Description.Clear();
+  Memo_Description.Lines.AddText(_boss.GetName());
+  Memo_Description.Lines.Add('');
+  if Round(_boss.GetHealth()) > 0 then
+    Memo_Description.Lines.AddText('The '+_boss.GetName()+' has '+FloatToStr(Round(_boss.GetHealth()))+' health left.')
+  else
+    Memo_Description.Lines.AddText('The '+_boss.GetName()+' has '+' 0 health left.');
+  Image1.Picture.LoadFromFile(_boss.GetImagePath());
 end;
 
 procedure TForm1.PrintWeaponData(_weapon: TWeapon); //print situation = 53 and 10
@@ -1118,43 +1333,60 @@ procedure TForm1.CreateRooms(); //Erstellt den Inhalt des Spieles
 begin
   //Ebene 1
   begin
-    CreateARoom('Your in your cell ...'+sLineBreak+'But you have a Bonfire!'+sLineBreak+sLineBreak+'Praise The Sun!', 'Images/Rooms/BonFireCellRoom.png', 1, 0, 0);
-    CreateARoom('Erste Kreuzung.', 'Images/Rooms/Höle.png', 2, 0, 0);
-    RoomArr[2, 0, 0].AddRoomObject(TRoomObject.Create('A Stature of an unknown Godess', '', 'Images/RoomObjects/StatureOfAnUnknownGod.png'));
-    RoomArr[2, 0, 0].RoomObjectArr[0].SetHealing();
+    CreateARoom('Your in your cell ...'+sLineBreak+'But you have a Bonfire!'+sLineBreak+sLineBreak+'Praise The Sun!', 'Images/Rooms_lvl1/Cell1.png', 1, 0, 0);
+    CreateARoom('Erste Kreuzung.', 'Images/Rooms_lvl1/RoomAfterStartCell.png', 2, 0, 0);
     //RoomArr[2, 0, 0].RoomObjectArr[0].SetChest(TItem.Create('ITEM', 'ITEM!!!!!!!!!!','Images/Items/ITEM.png'));
     //RoomArr[2, 0, 0].RoomObjectArr[0].SetMimic(TItem.Create('ITEM', 'ITEM!!!!!!!!!!','Images/Items/ITEM.png'), TEnemy.Create('Best Mimic Ever', 15, 15, 'Images/Enemies/BestMimicEver.jpg'));
     //RoomArr[2, 0, 0].RoomObjectArr[0].SetSkillStatue(TSkill.Create('Some other Skill', 'This one is just useless...'+sLineBreak+ 'It deals Slash Damage', 'Images/Skills/someOtherSkill.png', 5, 0, 0, 1.2, 0));
+    RoomArr[2, 0, 0].AddBoss(TBoss.Create('Test Boss', 'undefeated', 'Images/RoomObjects/Dealer.png', 1, 50, 50));
 
-    CreateARoom('Der Raum mit der Ratte.', 'Images/Rooms/Höle.png', 2, 1, 0);
-    RoomArr[2, 1, 0].AddEnemy(TEnemy.Create('AAAAA', 20, 5, 'Images/Enemies/AAAAA.png'));
+    CreateARoom('Der Raum mit der Ratte.', 'Images/Rooms_lvl1/MiddleCorridorClosedCells.png', 2, 1, 0);
+    RoomArr[2, 1, 0].AddEnemy(TEnemy.Create('Rat', 20, 5, 'Images/Enemies/AAAAA.png'));
     RoomArr[2, 1, 0].EnemyArr[0].SetResistants(1, 1, 1);
     RoomArr[2, 1, 0].EnemyArr[0].SetItemDrop(TItem.Create('Literely just Trash', 'Like acually.', 'Images/Items/ITEM.png'));
     //RoomArr[2, 0, 0].EnemyArr[0].SetWeaponDrop(TWeapon.Create('Test Wep', 'Hi, i am a test wep.', 'Images/Items/ITEM.png', 1, 2, 3, 4));
-    RoomArr[2, 1, 0].AddEnemy(TEnemy.Create('AAAAA2', 20, 5, 'Images/Enemies/AAAAA.png'));
+    RoomArr[2, 1, 0].AddEnemy(TEnemy.Create('Rat', 20, 5, 'Images/Enemies/AAAAA.png'));
 
-    CreateARoom('Hier Liegt eine Eisenstange', 'Images/Rooms/Höle.png', 3, 0, 0);
+    CreateARoom('Hier Liegt eine Eisenstange', 'Images/Rooms_lvl1/Cell2.png', 3, 0, 0);
     RoomArr[3, 0, 0].AddWeapon(TWeapon.Create('Iron Bar', 'A brocken piece of a former cell.'+sLineBreak+'It is a bit rosty but can still function as a simple weapon.', 'Images/Items/IronBar.png', 15, 0, 0, 0));
-    CreateARoom('Vier Wege von hier aus', 'Images/Rooms/Höle.png', 2, 2, 0);
-    CreateARoom('Du siehst eine Waffe im nächsten Raum', 'Images/Rooms/Höle.png', 1, 2, 0);
-    CreateARoom('WOW hier liegt tatsächlich ein Dolch', 'Images/Rooms/Höle.png', 0, 2, 0);
-    CreateARoom('F*cking Goblins', 'Images/Rooms/Höle.png', 2, 3, 0);
+    CreateARoom('Vier Wege von hier aus', 'Images/Rooms_lvl1/MiddleCorridorCross.png', 2, 2, 0);
+    CreateARoom('Du siehst eine Waffe im nächsten Raum', 'Images/Rooms_lvl1/RoomBeforeDagger.png', 1, 2, 0);
+    CreateARoom('WOW hier liegt tatsächlich ein Dolch', 'Images/Rooms_lvl1/RoomWithDagger.png', 0, 2, 0);
+    RoomArr[0,2,0].AddWeapon(TWeapon.Create('Dagger', 'A small Dagger lack power or reach,'+sLineBreak+'but can deal quick consecutive hits due to their light weight', 'Images/Items/Dagger.png', 0, 8, 0, 0));
+    CreateARoom('F*cking Goblins', 'Images/Rooms_lvl1/RoomWithGoblin.png', 2, 3, 0);
     RoomArr[2,3,0].SetDoorTop(true);
     RoomArr[2,3,0].SetDoorIndexTop(0);
-    CreateARoom('I see trouble', 'Images/Rooms/Höle.png', 3, 2, 0);
-    CreateARoom('And we make it tripple', 'Images/Rooms/Höle.png', 4, 2, 0);
-    CreateARoom('Gäb es doch nur Bonfire', 'Images/Rooms/Höle.png', 5, 2, 0);
-    CreateARoom('Praise the Bonfire', 'Images/Rooms/Höle.png', 5, 3, 0);
-    RoomArr[5,3,0].SetBlockedLeft(true);
-    CreateARoom('Leerer Raum oder so', 'Images/Rooms/Höle.png', 4, 3, 0);
-    RoomArr[4,3,0].SetBlockedRight(true);
-    CreateARoom('Drop den Schlüssel Goblin', 'Images/Rooms/Höle.png', 4, 4, 0);
-    CreateARoom('Useless ahead', 'Images/Rooms/Höle.png', 3, 4, 0);
-    CreateARoom('Zum Glück hatte ich den schlüssel', 'Images/Rooms/Höle.png', 2, 4, 0);
+    RoomArr[2, 3, 0].AddEnemy(TEnemy.Create('Goblin', 30, 10, 'Images/Enemies/AAAAA.png'));
+    RoomArr[2, 3, 0].EnemyArr[0].SetResistants(0.7,1.3,1);
+    RoomArr[2, 3, 0].EnemyArr[0].SetWeaponDrop(TWeapon.Create('A fancy Sword', 'With this Sword you can slash through hords of enemies.', 'Images/Items/Sword.png', 0, 0, 18, 0));
+    CreateARoom('I see trouble', 'Images/Rooms_lvl1/RoomBeforeRats.png', 3, 2, 0);
+    CreateARoom('And we make it tripple', 'Images/Rooms_lvl1/RoomWithRats.png', 4, 2, 0);
+    RoomArr[4, 2, 0].AddEnemy(TEnemy.Create('Rat', 20, 5, 'Images/Enemies/AAAAA.png'));
+    RoomArr[4, 2, 0].EnemyArr[0].SetResistants(1, 0.8, 1.2);
+    RoomArr[4, 2, 0].AddEnemy(TEnemy.Create('Rat', 20, 5, 'Images/Enemies/AAAAA.png'));
+    RoomArr[4, 2, 0].EnemyArr[1].SetResistants(1, 0.8, 1.2);
+    RoomArr[4, 2, 0].AddEnemy(TEnemy.Create('Rat', 20, 5, 'Images/Enemies/AAAAA.png'));
+    RoomArr[4, 2, 0].EnemyArr[2].SetResistants(1, 0.8, 1.2);
+    CreateARoom('Praise the Goddess!', 'Images/Rooms_lvl1/RoomWithHealStature.png', 5, 2, 0);
+    RoomArr[5, 2, 0].AddRoomObject(TRoomObject.Create('A Stature of an unknown Godess', '', 'Images/RoomObjects/StatureOfAnUnknownGod.png'));
+    RoomArr[5, 2, 0].RoomObjectArr[0].SetHealing();
+    //CreateARoom('Praise the Bonfire', 'Images/Rooms/Höle.png', 5, 3, 0);
+    //RoomArr[5,3,0].SetBlockedLeft(true);
+    CreateARoom('Leerer Raum oder so', 'Images/Rooms_lvl1/RoomAfterRatsAndBeforeGoblin.png', 4, 3, 0);
+    //RoomArr[4,3,0].SetBlockedRight(true);
+    CreateARoom('Drop den Schlüssel Goblin', 'Images/Rooms_lvl1/RoomWithGoblinWithKey.png', 4, 4, 0);
+    RoomArr[4, 4, 0].AddEnemy(TEnemy.Create('AAAAA', 30, 10, 'Images/Enemies/AAAAA.png'));
+    RoomArr[4, 4, 0].EnemyArr[0].SetResistants(0.7, 1.3, 1);
+    RoomArr[4, 4, 0].EnemyArr[0].SetItemDrop(TItem.Create('alter Schlüssel', 'Dieser Schlüssel scheint zu einer alte Tür irgendwo in diesem Höhlensystem zu gehören', 'Images/Items/Key1.png', 0));
+    CreateARoom('Useless ahead', 'Images/Rooms_lvl1/RoomAfterGoblinWithKey.png', 3, 4, 0);
+    CreateARoom('Zum Glück hatte ich den schlüssel', 'Images/Rooms_lvl1/RoomBeforeBoss.png', 2, 4, 0);
     RoomArr[2,4,0].SetDoorBottom(true);
     RoomArr[2,4,0].SetDoorIndexBottom(0);
-    CreateARoom('Estus vorraus', 'Images/Rooms/Höle.png', 1, 4, 0);
+    CreateARoom('Estus vorraus', 'Images/Rooms_lvl1/RoomWithHealItem.png', 1, 4, 0);
+    RoomArr[1,4,0].AddItem(TItem.Create('Heiltrank', 'Dieses Elexier stellt deine Lebenskraft wieder her', 'Images/Items/HealingItem.png'));
     CreateARoom('This is so sad. Alexa, play Gwyns theme', 'Images/Rooms/Höle.png', 2, 5, 0);
+    RoomArr[2,5,0].AddRoomObject(TRoomObject.Create('Ladder','The height of this ladder is beyond comprehension','Images/Rooms_lvl1/BossRoomWithLadder.png'));
+    RoomArr[2,5,0].RoomObjectArr[0].SetLadder();
   end;
 
   //Ebene 2

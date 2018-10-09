@@ -1,8 +1,9 @@
 object Form2: TForm2
-  Left = 1295
+  Left = 1222
   Height = 418
-  Top = 285
+  Top = 35
   Width = 571
+  BorderStyle = bsSingle
   Caption = 'Main Menu'
   ClientHeight = 418
   ClientWidth = 571
@@ -14,7 +15,7 @@ object Form2: TForm2
   Font.Quality = fqDraft
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.6.2.0'
+  LCLVersion = '1.8.4.0'
   object Image1: TImage
     Cursor = crHandPoint
     Left = 208
@@ -98,9 +99,9 @@ object Form2: TForm2
   end
   object Label1: TLabel
     Left = 88
-    Height = 82
+    Height = 88
     Top = 48
-    Width = 412
+    Width = 386
     Caption = 'Textadventure (WOW)'#13#10'              \[T]/'
     Font.CharSet = ANSI_CHARSET
     Font.Height = -37

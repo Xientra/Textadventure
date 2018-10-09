@@ -8,7 +8,7 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms, Unit1, RoomClass, PlayerClass, ItemClass, EnemyClass, WeaponClass,
-  SkillClass, RoomObjectClass, menue, youdied
+  SkillClass, RoomObjectClass, BossClass, menue, youdied
   { you can add units after this };
 
 {$R *.res}

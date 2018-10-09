@@ -21,7 +21,9 @@ type
     procedure ChangeRoom(_direction: string); //ändert den Raum in der gegebenen Richtung
 
     function GetHealth(): real;
+    function TPlayer.GetMaxHealth(): real;
     procedure ChangeHealthBy(_amount: real);
+    procedure SetFullHealth();
     function GetCurrendRoom(): TRoom;
     function GetCurrendWeapon(): TWeapon;
     procedure SetCurrendWeapon(_weapon: TWeapon);
@@ -42,6 +44,7 @@ type
 
   private
     health: real;
+    maxHealth: real;
 
     currendRoom: TRoom;
     currendWeapon: TWeapon;
@@ -65,7 +68,8 @@ begin
   currendRoom := startRoom;
   standartWeapon := startWeapon;
   currendWeapon := standartWeapon;
-  health := _health;
+  maxHealth := _health;
+  health := maxHealth;
 
   MaxAmountOfSkills := 4;
   AmountOfSkills := MaxAmountOfSkills;
@@ -92,6 +96,14 @@ end;
 procedure TPlayer.ChangeHealthBy(_amount: real);
 begin
   health := health + _amount;
+end;
+procedure TPlayer.SetFullHealth();
+begin
+  health := maxHealth;
+end;
+function TPlayer.GetMaxHealth(): real;
+begin
+  result := maxHealth;
 end;
 function TPlayer.GetCurrendRoom(): TRoom;
 begin
@@ -179,4 +191,3 @@ begin
 end;
 
 end.
-

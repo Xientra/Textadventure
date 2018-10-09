@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Dialogs{für ShowMessage},
-  EnemyClass{für TEnemy}, ItemClass{für TItem}, WeaponClass{für TWeapon}, RoomObjectClass{für TRoomObject};
+  EnemyClass{für TEnemy}, BossClass{für TBoss} ItemClass{für TItem}, WeaponClass{für TWeapon}, RoomObjectClass{für TRoomObject};
 
 type
   TRoom = class
@@ -16,20 +16,25 @@ type
     WeaponArr: Array of TWeapon; //Waffen im Raum
     ItemArr: Array of TItem; //Items im Raum
     RoomObjectArr: Array of TRoomObject; //RoomObjects im Raum
+    Boss: TBoss; //der Vollständigkeit halber
 
     constructor Create(_description: string; _imagePath: string; _pos_x, _pos_y, _pos_z: integer);
 
     function GetDescription: string;
+    procedure SetDescriptionVisited(d: string);
     function GetImagePath(): string;
+    procedure SetImagePathVisited(d: string);
 
     function GetVisited: boolean;
     procedure SetVisited(v: boolean);
+    function GetItemPickedUp: boolean;
+    procedure SetItemPickedUp(v: boolean);
 
     function GetPosX: Integer;
     function GetPosY: Integer;
     function GetPosZ: Integer;
 
-    //Get/Set stuff über Türen in alle Richtungen
+    //Get/Set stuff über Ausgänge in alle Richtungen
     procedure SetBlockedRight(b: boolean);
     procedure SetBlockedLeft(b: boolean);
     procedure SetBlockedTop(b: boolean);
@@ -49,8 +54,19 @@ type
     function GetDoorLeft: boolean;
     function GetDoorTop: boolean;
     function GetDoorBottom: boolean;
+    //Schlüsselloch Prinzip
+    procedure SetDoorIndexRight(b: integer);
+    procedure SetDoorIndexLeft(b: integer);
+    procedure SetDoorIndexTop(b: integer);
+    procedure SetDoorIndexBottom(b: integer);
+
+    function GetDoorIndexRight: integer;
+    function GetDoorIndexLeft: integer;
+    function GetDoorIndexTop: integer;
+    function GetDoorIndexBottom: integer;
 
     procedure AddEnemy(_enemy: TEnemy);
+    procedure AddBoss(_boss: TBoss);
     procedure AddWeapon(_weapon: TWeapon);
     procedure AddItem(_item: TItem);
     procedure AddRoomObject(_roomObject: TRoomObject);
@@ -58,13 +74,17 @@ type
   private
 
     description: string;
+    description_visited:string;
     ImagePath: string;
+    ImagePathVisited: string;
     visited: boolean; //wurde bereits besucht oder nicht
+    ItemPickedUp: booleaN;
     //Position des Raumes
     pos_x, pos_y, pos_z: integer;
     //Tür Variablen
     blocked_right, blocked_left, blocked_top, blocked_bottom : boolean;
     door_right, door_left, door_top, door_bottom: boolean;
+    doorIndex_right, doorIndex_left, doorIndex_top, doorIndex_bottom: integer;
   end;
 
 implementation
@@ -75,8 +95,11 @@ constructor TRoom.Create(_description: string; _imagePath: string; _pos_x, _pos_
 begin
   inherited Create;
   description := _description;
+  description_visited := description;
   ImagePath := _imagePath;
+  ImagePathVisited := ImagePath;
   visited := false;
+  ItemPickedUp:= false;
   pos_x := _pos_x;
   pos_y := _pos_y;
   pos_z := _pos_z;
@@ -100,11 +123,16 @@ function TRoom.GetPosZ:Integer; begin result := pos_z; end;
 //Get Room Data
 function TRoom.GetDescription: string;
 begin
-  result := description; //wenn hier ein error erscheint ist es sehr warscheinlich, dass der Raum gar nicht existiert
+  if visited = false then
+  result := description //wenn hier ein error erscheint ist es sehr warscheinlich, dass der Raum gar nicht existiert
+  else result := description_visited;
 end;
+
 function TRoom.GetImagePath(): string;
 begin
-  result := ImagePath;
+  if ItemPickedUp = false then
+  result := ImagePath
+  else result := ImagePathVisited;
 end;
 
 function TRoom.GetVisited(): boolean;
@@ -115,12 +143,33 @@ procedure TRoom.SetVisited(v: boolean);
 begin
   visited := v;
 end;
+function TRoom.GetItemPickedUp(): boolean;
+begin
+  result := ItemPickedUp;
+end;
+procedure TRoom.SetItemPickedUp(v: boolean);
+begin
+  ItemPickedUp := v;
+end;
+procedure TRoom.SetDescriptionVisited(d: string);
+begin
+  description_visited := d;
+end;
+procedure TRoom.SetImagePathVisited(d: string);
+begin
+  ImagePathVisited := d;
+end;
 
 //Add Stuff
 procedure TRoom.AddEnemy(_enemy: TEnemy);
 begin
   SetLength(EnemyArr, Length(EnemyArr) + 1);
   EnemyArr[Length(EnemyArr) - 1] := _enemy;
+end;
+procedure TRoom.AddBoss(_boss: TBoss);
+begin
+  if (Boss <> nil) then Showmessage('The Boss of this Room was not nil before.');
+  Boss := _boss;
 end;
 procedure TRoom.AddWeapon(_weapon: TWeapon);
 begin
@@ -207,4 +256,39 @@ begin
   result := door_bottom;
 end;
 
+//Schlüsselloch Prinzip
+procedure TRoom.SetDoorIndexRight(b: integer);
+begin
+  doorIndex_right := b;
+end;
+procedure TRoom.SetDoorIndexLeft(b: integer);
+begin
+  doorIndex_left := b;
+end;
+procedure TRoom.SetDoorIndexTop(b: integer);
+begin
+  doorIndex_top := b;
+end;
+procedure TRoom.SetDoorIndexBottom(b: integer);
+begin
+  doorIndex_bottom := b;
+end;
+
+
+function TRoom.GetDoorIndexRight: integer;
+begin
+  result := doorIndex_right;
+end;
+function TRoom.GetDoorIndexLeft: integer;
+begin
+  result := doorIndex_left;
+end;
+function TRoom.GetDoorIndexTop: integer;
+begin
+  result := doorIndex_top;
+end;
+function TRoom.GetDoorIndexBottom: integer;
+begin
+  result := doorIndex_bottom;
+end;
 end.

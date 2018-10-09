@@ -8,7 +8,7 @@ uses
   Classes, SysUtils;
 
 type
-  TWeapon = class
+  TWeapon = class                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   //Wir wollte uns inheritance nicht selber beibringen deshalt eine eigene Classe hierfür
   public
     constructor Create(_name, _description, _imagePath: string; _StrikeDmg, _ThrustDmg, _SlashDmg, _MagicDmg: real);
 

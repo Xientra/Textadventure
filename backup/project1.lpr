@@ -8,7 +8,7 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms, Unit1, RoomClass, PlayerClass, ItemClass, EnemyClass, WeaponClass,
-  SkillClass, RoomObjectClass, menue
+  SkillClass, RoomObjectClass, menue, youdied
   { you can add units after this };
 
 {$R *.res}
@@ -18,6 +18,7 @@ begin
   Application.Initialize;
   Application.CreateForm(TForm2, Form2);
   Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TForm3, Form3);
   Application.Run;
 end.
 
