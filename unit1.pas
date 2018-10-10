@@ -111,6 +111,7 @@ var
   roomStuffIndex: integer;
   DmgBuffIndex, DefBuffIndex: integer;
   multyAttack: integer; //gimick for daggers
+  isplaying: boolean;
 
 implementation
 
@@ -744,6 +745,13 @@ begin
   case UIState of
     0: //das Bewegen in den Räumen
     begin
+      isplaing := false;
+      songlength := 27;
+      songpath := 'music\overworldTheme_loop.wav';
+      if isplaying = false then begin
+      PlaySound(songPath,0,SND_ASYNC);
+      isplaying := true;
+      end;
       currendSituation := 0;
       Btn1_Label.caption := 'x Plus';
       Btn2_Label.caption := 'x Minus';
@@ -755,6 +763,13 @@ begin
     end;
   1: //Kämpfen mit normalen Gegnern (Runde des Spielers)
     begin
+      isplaing := false;
+      songlength := 32;
+      songpath := 'music\FightinTrackAlternative.wav';
+      if isplaying = false then begin
+      PlaySound(songPath,0,SND_ASYNC);
+      isplaying := true;
+      end;
       currendSituation := 1;
       Btn1_Label.caption := 'Skills';
       Btn2_Label.caption := 'Attack';
