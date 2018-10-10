@@ -14,13 +14,18 @@ type
   public
     constructor Create(_name: string; _health, _damage: real; _imagePath: string);
     function DoDamage(_strikeDmg, _thrustDmg, _slashDmg: real; _magicDmg: real): real; //macht dem Gegner Schaden multipliziert mit den Stärken und Schwächen des Gegners
-    procedure SetResistants(_strikeResist, _thrustResist, _slashResist: real); //Gibt dem Gegner stärken oder Schwächen gegen bestimme Angriffe
+    procedure SetResistances(_strikeResist, _thrustResist, _slashResist: real); //Gibt dem Gegner stärken oder Schwächen gegen bestimme Angriffe
 
     //GetStuff
     function GetName(): string;
     function GetImagePath(): string;
     function GetHealth(): real;
+    function GetMaxHealth(): real;
     function GetDamage(): real;
+
+    function GetStrikeResist(): real;
+    function GetThrustResist(): real;
+    function GetSlashResist(): real;
 
     //Get/Set Stuff
     procedure SetWeaponDrop(_weapon: TWeapon);
@@ -33,6 +38,7 @@ type
     ImagePath: string;
 
     health: real;
+    maxHealth: real;
     damage: real;
 
     //Stärken/Schwächen Multiplier
@@ -52,7 +58,8 @@ constructor TEnemy.Create(_name: string; _health, _damage: real; _imagePath: str
 begin
   inherited Create;
   name := _name;
-  health := _health;
+  maxHealth := _health;
+  health := maxHealth;
   damage := _damage;
   ImagePath := _imagePath;
 
@@ -65,7 +72,7 @@ begin
 end;
 
 //Setzt die Resistenzen
-procedure TEnemy.SetResistants(_strikeResist, _thrustResist, _slashResist: real);
+procedure TEnemy.SetResistances(_strikeResist, _thrustResist, _slashResist: real);
 begin
   strikeResist := _strikeResist;
   thrustResist := _thrustResist;
@@ -82,6 +89,7 @@ begin
   health := health - (_thrustDmg * thrustResist);
   health := health - (_slashDmg * slashResist);
   health := health - (_magicDmg);
+  if (health < 0) then health := 0;
   result := tempHealth - Health;
   //Round(Health);
 end;
@@ -99,9 +107,26 @@ function TEnemy.GetHealth(): real;
 begin
   result := health;
 end;
+function TPlayer.GetMaxHealth(): real;
+begin
+  result := maxHealth;
+end;
 function TEnemy.GetDamage(): real;
 begin
   result := damage;
+end;
+
+function TEnemy.GetStrikeResist(): real;
+begin
+  result := strikeResist;
+end;
+function TEnemy.GetThrustResist(): real;
+begin
+  result := thrustResist;
+end;
+function TEnemy.GetSlashResist(): real;
+begin
+  result := slashResist;
 end;
 
 //Get/Set Drop
@@ -132,6 +157,4 @@ begin
   result := itemDrop;
 end;
 
-
 end.
-

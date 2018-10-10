@@ -1,7 +1,7 @@
 object Form3: TForm3
-  Left = 1054
+  Left = 1090
   Height = 137
-  Top = 467
+  Top = 807
   Width = 800
   AlphaBlend = True
   BorderIcons = []
@@ -11,12 +11,12 @@ object Form3: TForm3
   ClientWidth = 800
   Color = clBlack
   Position = poScreenCenter
-  LCLVersion = '1.6.2.0'
+  LCLVersion = '1.8.4.0'
   object Label1: TLabel
     Left = 272
-    Height = 53
+    Height = 56
     Top = 16
-    Width = 245
+    Width = 233
     Caption = 'YOU DIED'
     Font.CharSet = ANSI_CHARSET
     Font.Color = clRed

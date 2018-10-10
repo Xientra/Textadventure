@@ -23,7 +23,14 @@ type
     function GetAdjective(): string;
     function GetImagePath(): string;
     function GetHealth(): real;
+    function GetMaxHealth(): real;
     function GetDamage(): real;
+    function GetPhase(): integer;
+    function SetPhase(_phase: integer): boolean;
+
+    function GetStrikeResist(): real;
+    function GetThrustResist(): real;
+    function GetSlashResist(): real;
 
     //Get/Set Stuff
     procedure SetSkillDrop(_skill: TSkill);
@@ -38,7 +45,10 @@ type
     level: integer;
 
     health: real;
+    maxHealth: real;
     damage: real;
+
+    phase: integer;
 
     //Stärken/Schwächen Multiplier der verschiedenen Haltungen
     strikeResist,
@@ -62,6 +72,7 @@ type
     hasStance2,
     hasStance3
     : boolean;
+    changeStaceNow: boolean;
 
     //Sachen die der Boss fallen läst/macht wenn er besiegt wurde
     SkillDrop: TSkill;
@@ -79,8 +90,10 @@ begin
   name := _name;
   adjective := _adjective;
   level := _level;
-  health := _health;
+  maxHealth := _health;
+  health := maxHealth;
   damage := _damage;
+  phase := 0;
   ImagePath := _imagePath;
 
   strikeResist := 1;
@@ -127,6 +140,7 @@ begin
   health := health - (_thrustDmg * thrustResist);
   health := health - (_slashDmg * slashResist);
   health := health - (_magicDmg);
+  if (health < 0) then health := 0;
   result := tempHealth - Health;
   //Round(Health);
 end;
@@ -148,9 +162,74 @@ function TBoss.GetHealth(): real;
 begin
   result := health;
 end;
+function TBoss.GetMaxHealth(): real;
+begin
+  result := maxHealth;
+end;
 function TBoss.GetDamage(): real;
 begin
   result := damage;
+end;
+function TBoss.GetPhase(): integer;
+begin
+  result := phase;
+end;
+function TBoss.SetPhase(_phase: integer): boolean;
+begin
+  result := false;
+
+  if (level = 1) then changeStaceNow := false
+  else changeStaceNow := true;
+
+  if (phase <= 3) then
+  begin
+  phase := _phase;
+    case phase of
+    1:
+      begin
+        if (hasStance1 = true) then
+        begin
+          strikeResist := strikeResistS1;
+          thrustResist := thrustResistS1;
+          slashResist := slashResistS1;
+          result := true
+        end;
+      end;
+    2:
+      begin
+        if (hasStance2 = true) then
+        begin
+          strikeResist := strikeResistS2;
+          thrustResist := thrustResistS2;
+          slashResist := slashResistS2;
+          result := true;
+        end;
+      end;
+    3:
+      begin
+        if (hasStance2 = true) then
+        begin
+          strikeResist := strikeResistS3;
+          thrustResist := thrustResistS3;
+          slashResist := slashResistS3;
+          result := true;
+        end;
+      end;
+    end;
+  end else ShowMessage('Bosses only have 3 phases (0 is default resistances)');
+end;
+
+function TBoss.GetStrikeResist(): real;
+begin
+  result := strikeResist;
+end;
+function TBoss.GetThrustResist(): real;
+begin
+  result := thrustResist;
+end;
+function TBoss.GetSlashResist(): real;
+begin
+  result := slashResist;
 end;
 
 //Get/Set Skill Drop

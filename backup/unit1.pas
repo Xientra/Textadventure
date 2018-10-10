@@ -111,6 +111,7 @@ var
   roomStuffIndex: integer;
   DmgBuffIndex, DefBuffIndex: integer;
   multyAttack: integer; //gimick for daggers
+  isplaying: boolean;
 
 implementation
 
@@ -153,7 +154,7 @@ begin
 
   CreateRooms(); //Erstellt das Spiel
   //Erschafft den Spieler in einem Raum
-  Player1 := TPlayer.Create(RoomArr[1, 0, 0], TWeapon.Create('Fists', 'Just your good old hands.', 'Images/Items/ShortSword.png', 10, 0, 0, 0), 1);
+  Player1 := TPlayer.Create(RoomArr[1, 0, 0], TWeapon.Create('Fists', 'Just your good old hands.', 'Images/Items/ShortSword.png', 10, 0, 0, 0), 10000);
 
   //Stuff just for testing the inventory
   //Player1.AddItem(TItem.Create('some Key', 'it not usefull for any door...','Images/Items/Key1.png'));
@@ -164,7 +165,7 @@ begin
   //Player1.itemInventory[2].SetBomb(50);
 
   //Player1.AddWeapon(TWeapon.Create('Some Sword', 'It is acually sharp even thought it looks a bit blocky.', 'Images/Items/Sword.png', 0, 0, 15, 0));
-  Player1.AddSkill(TSkill.Create('Some Skill', 'You can KILL with it.' +sLineBreak+ 'It deals Strike Damage', 'Images/Skills/someSkill.png', 5, 1.5, 0, 0, 0));
+  //Player1.AddSkill(TSkill.Create('Some Skill', 'You can KILL with it.' +sLineBreak+ 'It deals Strike Damage', 'Images/Skills/someSkill.png', 5, 1.5, 0, 0, 0));
   //---
 
   //Ändert die Situation zum erstem mal
@@ -570,7 +571,14 @@ begin
       else PrintAndUIChange(UIState, 'You have no weapons in your arsenal yet.')
     end;
   4: {do nothing};
-  10: {do nothing};
+  10: {directly equip found weapon}
+    begin
+      Player1.SetCurrendWeapon(Player1.GetCurrendRoom().WeaponArr[roomStuffIndex]);
+      Player1.AddWeapon(Player1.GetCurrendRoom().WeaponArr[roomStuffIndex]);
+      Player1.GetCurrendRoom().WeaponArr[roomStuffIndex] := nil;
+      Player1.GetCurrendRoom().SetItemPickedUp(true);
+      PrintAndUIChange(currendSituation, 'You directly equip the Weapon.');
+    end;
   11: {do nothing};
   12: {do nothing};
   13: //greift die Truhe an und zerstört sie
@@ -735,8 +743,20 @@ begin
   SetButton(Btn4_Image, Btn4_Label, true);
 
   case UIState of
-    0: //das Bewegen in den Räumen
+  0: //das Bewegen in den Räumen
     begin
+      if (muted = false) then
+      begin
+        isplaying := false;
+        songlength := 27;
+        songpath := 'music\overworldTheme_loop.wav';
+        if isplaying = false then
+        begin
+          PlaySound(songPath,0,SND_ASYNC);
+          isplaying := true;
+        end;
+      end;
+
       currendSituation := 0;
       Btn1_Label.caption := 'x Plus';
       Btn2_Label.caption := 'x Minus';
@@ -744,10 +764,22 @@ begin
       Btn4_Label.caption := 'y Minus';
       PrintRoomData(Player1.GetCurrendRoom());
 
-      OnEnterRoom(); //whenever you can walk again it checks if there is (still) stuff in the Room
+      OnEnterRoom(); //whenever you can walk again (after fights and stuff) it checks if there is (still) stuff in the Room
     end;
   1: //Kämpfen mit normalen Gegnern (Runde des Spielers)
     begin
+      if (muted = false)  then
+      begin
+        isplaying := false;
+        songlength := 32;
+        songpath := 'music\FightinTrackAlternative.wav';
+        if isplaying = false then
+        begin
+          PlaySound(songPath,0,SND_ASYNC);
+          isplaying := true;
+        end;
+      end;
+
       currendSituation := 1;
       Btn1_Label.caption := 'Skills';
       Btn2_Label.caption := 'Attack';
@@ -811,8 +843,8 @@ begin
       SetButton(Btn1_Image, Btn1_Label, true);
       Btn2_Label.caption := 'Take it';
       SetButton(Btn2_Image, Btn2_Label, true);
-      Btn3_Label.caption := '';
-      SetButton(Btn3_Image, Btn3_Label, false);
+      Btn3_Label.caption := 'Equip it';
+      SetButton(Btn3_Image, Btn3_Label, true);
       Btn4_Label.caption := '';
       SetButton(Btn4_Image, Btn4_Label, false);
 
@@ -996,6 +1028,7 @@ begin
   begin  //start BossFight
     FightingBoss := Player1.GetCurrendRoom().Boss;
     PrintAndUIChange(3, 'You are now fighting!');
+    if (FightingBoss.SetPhase(1) = false) then ShowMessage(FightingBoss.GetName()+' has no first phase Assinged');
   end else
   //check nach Waffen
   if (length(Player1.GetCurrendRoom().WeaponArr) > 0) then
@@ -1202,19 +1235,36 @@ begin
 end;
 procedure TForm1.BossTurn(); //logic situation = 4
 begin
-  Player1.ChangeHealthBy(-(FightingBoss.GetDamage()));
   Memo1.Clear();
-  if (Player1.getHealth > 0) then
-  Memo1.Lines.Add('The Bosss delt ' + FloatToStr(FightingBoss.GetDamage())+' damage.'+sLineBreak+'You now have ' + FloatToStr(Player1.GetHealth()) + ' health left')
-  else begin
-    Memo1.Lines.Add('The Boss delt ' + FloatToStr(FightingBoss.GetDamage())+' damage.'+sLineBreak+'You now have 0 health left');
+  if (((FightingBoss.GetHealth() / FightingBoss.GetMaxHealth()) * 100) <= 66) and (FightingBoss.GetPhase() = 1) then
+  begin
+    if (FightingBoss.SetPhase(2) = true) then //SetPhase wurde soeben gecalled
+    begin
 
-    PlayerDeath();
+      Memo1.Lines.AddText(FightingBoss.GetName()+' changed his stance.'+sLineBreak+'It has now different Resistences');
+
+    end else ShowMessage(FightingBoss.GetName()+' has no second phase Assinged');
+  end else if (((FightingBoss.GetHealth() / FightingBoss.GetMaxHealth()) * 100) <= 33) and (FightingBoss.GetPhase() = 2) then
+  begin
+    if (FightingBoss.SetPhase(3) = true) then
+    begin
+
+      Memo1.Lines.AddText(FightingBoss.GetName()+' changed his stance.'+sLineBreak+'It has now different Resistences');
+
+    end else ShowMessage(FightingBoss.GetName()+' has no third phase Assinged');
+  end else
+  begin
+    Player1.ChangeHealthBy(-(FightingBoss.GetDamage()));
+
+    if (Player1.getHealth > 0) then
+    Memo1.Lines.Add('The Bosss delt ' + FloatToStr(FightingBoss.GetDamage())+' damage.'+sLineBreak+'You now have ' + FloatToStr(Player1.GetHealth()) + ' health left')
+    else begin
+      Memo1.Lines.Add('The Boss delt ' + FloatToStr(FightingBoss.GetDamage())+' damage.'+sLineBreak+'You now have 0 health left');
+      PlayerDeath();
+    end;
   end;
 end;
-
 procedure TForm1.PlayerDeath(); //death has no logic
-var i: integer;
 begin
   Form3.Timer1.Enabled := true;
   Form3.AlphaBlendValue := 0;
@@ -1263,24 +1313,34 @@ end;
 procedure TForm1.PrintEnemyData(_enemy: TEnemy); //print situation 1 and 2
 begin
   Memo_Description.Clear();
-  Memo_Description.Lines.AddText(_enemy.GetName());
-  Memo_Description.Lines.Add('');
-  if Round(_enemy.GetHealth()) > 0 then
-    Memo_Description.Lines.AddText('The '+_enemy.GetName()+' has '+FloatToStr(Round(_enemy.GetHealth()))+' health left.')
-  else
-    Memo_Description.Lines.AddText('The '+_enemy.GetName()+' has '+' 0 health left.');
+  Memo_Description.Lines.AddText(_enemy.GetName()+sLineBreak+
+                                 sLineBreak+
+                                 'Health: '+sLineBreak+
+                                 FloatToStr(_enemy.GetHealth())+'/'+FloatToStr(_enemy.GetMaxHealth())+sLineBreak
+                                 +sLineBreak);
+  if (_enemy.GetStrikeResist() < 1) then Memo_Description.Lines.Add('Strong against strike damage.')
+  else if (_enemy.GetStrikeResist() > 1) then Memo_Description.Lines.Add('Weak against strike damage.');
+  if (_enemy.GetThrustResist() < 1) then Memo_Description.Lines.Add('Strong against thrust damage.')
+  else if (_enemy.GetThrustResist() > 1) then Memo_Description.Lines.Add('Weak against thrust damage.');
+  if (_enemy.GetSlashResist() < 1) then Memo_Description.Lines.Add('Strong against slash damage.')
+  else if (_enemy.GetSlashResist() > 1) then Memo_Description.Lines.Add('Weak against slash damage.');
   Image1.Picture.LoadFromFile(_enemy.GetImagePath());
 end;
 
 procedure TForm1.PrintBossData(_boss: TBoss); //print situation 3 and 4
 begin
   Memo_Description.Clear();
-  Memo_Description.Lines.AddText(_boss.GetName());
-  Memo_Description.Lines.Add('');
-  if Round(_boss.GetHealth()) > 0 then
-    Memo_Description.Lines.AddText('The '+_boss.GetName()+' has '+FloatToStr(Round(_boss.GetHealth()))+' health left.')
-  else
-    Memo_Description.Lines.AddText('The '+_boss.GetName()+' has '+' 0 health left.');
+  Memo_Description.Lines.AddText(_boss.GetName()+sLineBreak+
+                                 sLineBreak+
+                                 'Health: '+sLineBreak+
+                                 FloatToStr(_boss.GetHealth())+'/'FloatToStr(_boss.GetMaxHealth())+sLineBreak
+                                 +sLineBreak);
+  if (_boss.GetStrikeResist() < 1) then Memo_Description.Lines.Add('Strong against strike damage.')
+  else if (_boss.GetStrikeResist() > 1) then Memo_Description.Lines.Add('Weak against strike damage.');
+  if (_boss.GetThrustResist() < 1) then Memo_Description.Lines.Add('Strong against thrust damage.')
+  else if (_boss.GetThrustResist() > 1) then Memo_Description.Lines.Add('Weak against thrust damage.');
+  if (_boss.GetSlashResist() < 1) then Memo_Description.Lines.Add('Strong against slash damage.')
+  else if (_boss.GetSlashResist() > 1) then Memo_Description.Lines.Add('Weak against slash damage.');
   Image1.Picture.LoadFromFile(_boss.GetImagePath());
 end;
 
@@ -1338,14 +1398,18 @@ begin
     //RoomArr[2, 0, 0].RoomObjectArr[0].SetChest(TItem.Create('ITEM', 'ITEM!!!!!!!!!!','Images/Items/ITEM.png'));
     //RoomArr[2, 0, 0].RoomObjectArr[0].SetMimic(TItem.Create('ITEM', 'ITEM!!!!!!!!!!','Images/Items/ITEM.png'), TEnemy.Create('Best Mimic Ever', 15, 15, 'Images/Enemies/BestMimicEver.jpg'));
     //RoomArr[2, 0, 0].RoomObjectArr[0].SetSkillStatue(TSkill.Create('Some other Skill', 'This one is just useless...'+sLineBreak+ 'It deals Slash Damage', 'Images/Skills/someOtherSkill.png', 5, 0, 0, 1.2, 0));
-    RoomArr[2, 0, 0].AddBoss(TBoss.Create('Test Boss', 'undefeated', 'Images/RoomObjects/Dealer.png', 1, 50, 50));
+    RoomArr[2, 0, 0].AddBoss(TBoss.Create('Astorias', 'corrupted kinght', 'Images/Enemies_lvl2/Astorias.png', 1, 999999, 999999));
+    //RoomArr[2, 0, 0].AddBoss(TBoss.Create('Test Boss', 'undefeated', 'Images/RoomObjects/Dealer.png', 1, 50, 50));
+    RoomArr[2, 0, 0].Boss.SetStance1(0, 0, 0);
+    //RoomArr[2, 0, 0].Boss.SetStance1(0.5, 1, 1);
+    RoomArr[2, 0, 0].Boss.SetStance2(1, 0.5, 1);
+    RoomArr[2, 0, 0].Boss.SetStance3(1, 1, 0.5);
 
     CreateARoom('Der Raum mit der Ratte.', 'Images/Rooms_lvl1/MiddleCorridorClosedCells.png', 2, 1, 0);
     RoomArr[2, 1, 0].AddEnemy(TEnemy.Create('Rat', 20, 5, 'Images/Enemies/AAAAA.png'));
-    RoomArr[2, 1, 0].EnemyArr[0].SetResistants(1, 1, 1);
+    RoomArr[2, 1, 0].EnemyArr[0].SetResistances(0.5, 1.2, 1);
     RoomArr[2, 1, 0].EnemyArr[0].SetItemDrop(TItem.Create('Literely just Trash', 'Like acually.', 'Images/Items/ITEM.png'));
     //RoomArr[2, 0, 0].EnemyArr[0].SetWeaponDrop(TWeapon.Create('Test Wep', 'Hi, i am a test wep.', 'Images/Items/ITEM.png', 1, 2, 3, 4));
-    RoomArr[2, 1, 0].AddEnemy(TEnemy.Create('Rat', 20, 5, 'Images/Enemies/AAAAA.png'));
 
     CreateARoom('Hier Liegt eine Eisenstange', 'Images/Rooms_lvl1/Cell2.png', 3, 0, 0);
     RoomArr[3, 0, 0].AddWeapon(TWeapon.Create('Iron Bar', 'A brocken piece of a former cell.'+sLineBreak+'It is a bit rosty but can still function as a simple weapon.', 'Images/Items/IronBar.png', 15, 0, 0, 0));
@@ -1357,16 +1421,16 @@ begin
     RoomArr[2,3,0].SetDoorTop(true);
     RoomArr[2,3,0].SetDoorIndexTop(0);
     RoomArr[2, 3, 0].AddEnemy(TEnemy.Create('Goblin', 30, 10, 'Images/Enemies/AAAAA.png'));
-    RoomArr[2, 3, 0].EnemyArr[0].SetResistants(0.7,1.3,1);
+    RoomArr[2, 3, 0].EnemyArr[0].SetResistances(0.7,1.3,1);
     RoomArr[2, 3, 0].EnemyArr[0].SetWeaponDrop(TWeapon.Create('A fancy Sword', 'With this Sword you can slash through hords of enemies.', 'Images/Items/Sword.png', 0, 0, 18, 0));
     CreateARoom('I see trouble', 'Images/Rooms_lvl1/RoomBeforeRats.png', 3, 2, 0);
     CreateARoom('And we make it tripple', 'Images/Rooms_lvl1/RoomWithRats.png', 4, 2, 0);
     RoomArr[4, 2, 0].AddEnemy(TEnemy.Create('Rat', 20, 5, 'Images/Enemies/AAAAA.png'));
-    RoomArr[4, 2, 0].EnemyArr[0].SetResistants(1, 0.8, 1.2);
+    RoomArr[4, 2, 0].EnemyArr[0].SetResistances(1, 0.8, 1.2);
     RoomArr[4, 2, 0].AddEnemy(TEnemy.Create('Rat', 20, 5, 'Images/Enemies/AAAAA.png'));
-    RoomArr[4, 2, 0].EnemyArr[1].SetResistants(1, 0.8, 1.2);
+    RoomArr[4, 2, 0].EnemyArr[1].SetResistances(1, 0.8, 1.2);
     RoomArr[4, 2, 0].AddEnemy(TEnemy.Create('Rat', 20, 5, 'Images/Enemies/AAAAA.png'));
-    RoomArr[4, 2, 0].EnemyArr[2].SetResistants(1, 0.8, 1.2);
+    RoomArr[4, 2, 0].EnemyArr[2].SetResistances(1, 0.8, 1.2);
     CreateARoom('Praise the Goddess!', 'Images/Rooms_lvl1/RoomWithHealStature.png', 5, 2, 0);
     RoomArr[5, 2, 0].AddRoomObject(TRoomObject.Create('A Stature of an unknown Godess', '', 'Images/RoomObjects/StatureOfAnUnknownGod.png'));
     RoomArr[5, 2, 0].RoomObjectArr[0].SetHealing();
@@ -1376,7 +1440,7 @@ begin
     //RoomArr[4,3,0].SetBlockedRight(true);
     CreateARoom('Drop den Schlüssel Goblin', 'Images/Rooms_lvl1/RoomWithGoblinWithKey.png', 4, 4, 0);
     RoomArr[4, 4, 0].AddEnemy(TEnemy.Create('AAAAA', 30, 10, 'Images/Enemies/AAAAA.png'));
-    RoomArr[4, 4, 0].EnemyArr[0].SetResistants(0.7, 1.3, 1);
+    RoomArr[4, 4, 0].EnemyArr[0].SetResistances(0.7, 1.3, 1);
     RoomArr[4, 4, 0].EnemyArr[0].SetItemDrop(TItem.Create('alter Schlüssel', 'Dieser Schlüssel scheint zu einer alte Tür irgendwo in diesem Höhlensystem zu gehören', 'Images/Items/Key1.png', 0));
     CreateARoom('Useless ahead', 'Images/Rooms_lvl1/RoomAfterGoblinWithKey.png', 3, 4, 0);
     CreateARoom('Zum Glück hatte ich den schlüssel', 'Images/Rooms_lvl1/RoomBeforeBoss.png', 2, 4, 0);
@@ -1455,43 +1519,43 @@ begin
     RoomArr[3,4,2].setblockedbottom(true);
     CreateARoom('erstes zusammentreffen mit einem Wächter.', 'Images/Rooms/Höle.png', 4, 4, 2);
     RoomArr[3, 4, 2].AddEnemy(TEnemy.Create('Wächter', 20, 5, 'Images/Enemies/AAAAA.png'));
-    RoomArr[3, 4, 2].EnemyArr[0].SetResistants(1, 1, 1);
+    RoomArr[3, 4, 2].EnemyArr[0].SetResistances(1, 1, 1);
     CreateARoom('Hier liegt ein Greatsword (aber nicht "Greatsword" da es ein Ultragreatsword ist).', 'Images/Rooms/Höle.png', 5, 4, 2);
     RoomArr[5,4,2].setblockedbottom(true);
     CreateARoom('Alexa JETZT spiel Gwyns Theme.', 'Images/Rooms/Höle.png', 0, 3, 2);
     CreateARoom('Ein Prediger (langweilig).', 'Images/Rooms/Höle.png', 1, 3, 2);
     RoomArr[1, 3, 2].AddEnemy(TEnemy.Create('Prediger', 20, 5, 'Images/Enemies/AAAAA.png'));
-    RoomArr[1, 3, 2].EnemyArr[0].SetResistants(1, 1, 1);
+    RoomArr[1, 3, 2].EnemyArr[0].SetResistances(1, 1, 1);
     CreateARoom('zwei Prediger (schnarch).', 'Images/Rooms/Höle.png', 2, 3, 2);
     RoomArr[2, 3, 2].AddEnemy(TEnemy.Create('Prediger', 20, 5, 'Images/Enemies/AAAAA.png'));
-    RoomArr[2, 3, 2].EnemyArr[0].SetResistants(1, 1, 1);
+    RoomArr[2, 3, 2].EnemyArr[0].SetResistances(1, 1, 1);
     RoomArr[2, 3, 2].AddEnemy(TEnemy.Create('Prediger', 20, 5, 'Images/Enemies/AAAAA.png'));
-    RoomArr[2, 3, 2].EnemyArr[0].SetResistants(1, 1, 1);
+    RoomArr[2, 3, 2].EnemyArr[0].SetResistances(1, 1, 1);
     CreateARoom('Könnte ich einen Moment mit ihnen über Gott reden?', 'Images/Rooms/Höle.png', 3, 3, 2);
     RoomArr[3,3,2].setblockedtop(true);
     RoomArr[3, 3, 2].AddEnemy(TEnemy.Create('Prediger', 20, 5, 'Images/Enemies/AAAAA.png'));
-    RoomArr[3, 3, 2].EnemyArr[0].SetResistants(1, 1, 1);
+    RoomArr[3, 3, 2].EnemyArr[0].SetResistances(1, 1, 1);
     CreateARoom('Links sind Gegner und Rechts solltest du lang gehen.', 'Images/Rooms/Höle.png', 4, 3, 2);
     CreateARoom('Achtung vor Gegner, jedoch Schatz vorraus?.', 'Images/Rooms/Höle.png', 5, 3, 2);
     RoomArr[5,3,2].setblockedtop(true);
     CreateARoom('In the name of god.', 'Images/Rooms/Höle.png', 6, 3, 2);
     RoomArr[6, 3, 2].AddEnemy(TEnemy.Create('AAAAA', 20, 5, 'Images/Enemies/AAAAA.png'));
-    RoomArr[6, 3, 2].EnemyArr[0].SetResistants(1, 1, 1);
+    RoomArr[6, 3, 2].EnemyArr[0].SetResistances(1, 1, 1);
     CreateARoom('Heal me up Scotty.', 'Images/Rooms/Höle.png', 1, 2, 2);
     CreateARoom('Its going down down (out of array).', 'Images/Rooms/Höle.png', 3, 2, 2);
     CreateARoom('Doppelte Predigt.', 'Images/Rooms/Höle.png', 5, 2, 2);
     RoomArr[5,2,2].setblockedright(true);
     RoomArr[5, 2, 2].AddEnemy(TEnemy.Create('Prediger', 20, 5, 'Images/Enemies/AAAAA.png'));
-    RoomArr[5, 2, 2].EnemyArr[0].SetResistants(1, 1, 1);
+    RoomArr[5, 2, 2].EnemyArr[0].SetResistances(1, 1, 1);
     RoomArr[5, 2, 2].AddEnemy(TEnemy.Create('Prediger', 20, 5, 'Images/Enemies/AAAAA.png'));
-    RoomArr[5, 2, 2].EnemyArr[0].SetResistants(1, 1, 1);
+    RoomArr[5, 2, 2].EnemyArr[0].SetResistances(1, 1, 1);
     CreateARoom('Warum existiert dieser Raum?', 'Images/Rooms/Höle.png', 6, 2, 2);
     RoomArr[6,2,2].setblockedleft(true);
     RoomArr[6,2,2].setdoorbottom(true);
     CreateARoom('Great Chest ahead ;).', 'Images/Rooms/Höle.png', 2, 1, 2);
     CreateARoom('Ist das Ornstein?', 'Images/Rooms/Höle.png', 3, 1, 2);
     RoomArr[3, 1, 2].AddEnemy(TEnemy.Create('AAAAA', 20, 5, 'Images/Enemies/AAAAA.png'));
-    RoomArr[3, 1, 2].EnemyArr[0].SetResistants(1, 1, 1);
+    RoomArr[3, 1, 2].EnemyArr[0].SetResistances(1, 1, 1);
     CreateARoom('Its MAGIC.', 'Images/Rooms/Höle.png', 5, 1, 2);
     RoomArr[5,1,2].setblockedright(true);
     CreateARoom('Alexa spiel Dancing in the Moonlight.', 'Images/Rooms/Höle.png', 6, 1, 2);
