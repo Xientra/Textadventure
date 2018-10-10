@@ -5,7 +5,8 @@ unit YouDied;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls;
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  ExtCtrls;
 
 type
 
@@ -15,8 +16,10 @@ type
     Button1: TButton;
     Button2: TButton;
     Label1: TLabel;
+    Timer1: TTimer;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
+    procedure Timer1Timer(Sender: TObject);
   private
     { private declarations }
   public
@@ -44,5 +47,14 @@ begin
   Form2.close;
 end;
 
-end.
+procedure TForm3.Timer1Timer(Sender: TObject);
+begin
+  if (Form3.AlphaBlendValue < 255) then
+    Form3.AlphaBlendValue := Form3.AlphaBlendValue + 1
+  else begin
+    Form3.AlphaBlendValue := 255;
+    Timer1.Enabled := false;
+  end;
+end;
 
+end.
