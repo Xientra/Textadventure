@@ -1,7 +1,7 @@
 object Form3: TForm3
-  Left = 1090
+  Left = 977
   Height = 137
-  Top = 807
+  Top = 856
   Width = 800
   AlphaBlend = True
   BorderIcons = []

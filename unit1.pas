@@ -23,9 +23,7 @@ type
     Btn2_Image: TImage;
     Btn3_Image: TImage;
     Btn4_Image: TImage;
-    Edit1: TEdit;
     Edit2: TEdit;
-    Edit3: TEdit;
     MuteBtn_Image: TImage;
     Memo_Stats: TMemo;
     Memo_Description: TMemo;
@@ -761,10 +759,10 @@ begin
       end;
 
       currendSituation := 0;
-      Btn1_Label.caption := 'x Plus';
-      Btn2_Label.caption := 'x Minus';
-      Btn3_Label.caption := 'y Plus';
-      Btn4_Label.caption := 'y Minus';
+      Btn1_Label.caption := 'Plus X';
+      Btn2_Label.caption := 'Minus X';
+      Btn3_Label.caption := 'Plus Y';
+      Btn4_Label.caption := 'Minus Y';
       PrintRoomData(Player1.GetCurrendRoom());
 
       OnEnterRoom(); //whenever you can walk again (after fights and stuff) it checks if there is (still) stuff in the Room
@@ -1003,8 +1001,6 @@ begin
   PrintPlayerData(Player1); //Schreibt die stats des Spielers
 
   //Debug
-  Edit1.Text := IntToStr(UIState);
-  Edit3.Text := IntToStr(currendSituation);
 end;
 {------------------------------------------------------------------------------}
 
@@ -1371,7 +1367,7 @@ end;
 procedure TForm1.PrintBossData(_boss: TBoss); //print situation 3 and 4
 begin
   Memo_Description.Clear();
-  Memo_Description.Lines.AddText(_boss.GetName()+sLineBreak+
+  Memo_Description.Lines.Add(_boss.GetName()+sLineBreak+
                                  sLineBreak+
                                  'Health: '+sLineBreak+
                                  FloatToStr(_boss.GetHealth())+'/'+FloatToStr(_boss.GetMaxHealth())+sLineBreak

@@ -14,7 +14,7 @@ uses
 {$R *.res}
 
 begin
-  RequireDerivedFormResource:=True;
+  RequireDerivedFormResource := True;
   Application.Initialize;
   Application.CreateForm(TForm2, Form2);
   Application.CreateForm(TForm1, Form1);

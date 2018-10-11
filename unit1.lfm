@@ -1,13 +1,13 @@
 object Form1: TForm1
-  Left = 1063
-  Height = 642
-  Top = 197
-  Width = 800
+  Left = 250
+  Height = 800
+  Top = 232
+  Width = 1400
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'Adventure'
-  ClientHeight = 642
-  ClientWidth = 800
+  ClientHeight = 800
+  ClientWidth = 1400
   Color = clBlack
   Font.CharSet = ANSI_CHARSET
   Font.Color = clWhite
@@ -61,9 +61,9 @@ object Form1: TForm1
   LCLVersion = '1.8.4.0'
   object Btn1_Image: TImage
     Cursor = crHandPoint
-    Left = 448
+    Left = 1176
     Height = 64
-    Top = 536
+    Top = 670
     Width = 128
     OnClick = Btn1Click
     Picture.Data = {
@@ -89,19 +89,29 @@ object Form1: TForm1
   end
   object Label_Leave: TLabel
     Cursor = crHandPoint
-    Left = 0
-    Height = 18
-    Top = 0
-    Width = 166
+    Left = 1142
+    Height = 23
+    Top = 8
+    Width = 194
     Caption = 'Press Escape To Leave.'
+    Font.CharSet = ANSI_CHARSET
+    Font.Color = clWhite
+    Font.Height = -19
+    Font.Name = 'Georgia'
+    Font.Pitch = fpVariable
+    Font.Quality = fqDraft
+    Font.Style = [fsUnderline]
     ParentColor = False
+    ParentFont = False
     OnClick = Label_LeaveClick
   end
   object Memo1: TMemo
-    Left = 0
-    Height = 176
-    Top = 328
-    Width = 800
+    Cursor = crArrow
+    Left = 832
+    Height = 208
+    Top = 384
+    Width = 528
+    Alignment = taCenter
     BorderStyle = bsNone
     Color = clBlack
     Font.CharSet = ANSI_CHARSET
@@ -118,13 +128,14 @@ object Form1: TForm1
     ParentFont = False
     ReadOnly = True
     TabOrder = 0
+    TabStop = False
     WantReturns = False
   end
   object Btn2_Image: TImage
     Cursor = crHandPoint
-    Left = 192
+    Left = 912
     Height = 64
-    Top = 536
+    Top = 670
     Width = 128
     OnClick = Btn2Click
     Picture.Data = {
@@ -149,9 +160,9 @@ object Form1: TForm1
   end
   object Btn3_Image: TImage
     Cursor = crHandPoint
-    Left = 320
+    Left = 1048
     Height = 64
-    Top = 504
+    Top = 606
     Width = 128
     OnClick = Btn3Click
     Picture.Data = {
@@ -176,9 +187,9 @@ object Form1: TForm1
   end
   object Btn4_Image: TImage
     Cursor = crHandPoint
-    Left = 320
+    Left = 1048
     Height = 64
-    Top = 568
+    Top = 734
     Width = 128
     OnClick = Btn4Click
     Picture.Data = {
@@ -203,11 +214,13 @@ object Form1: TForm1
   end
   object Btn1_Label: TLabel
     Cursor = crHandPoint
-    Left = 464
+    Left = 1176
     Height = 18
-    Top = 560
-    Width = 43
-    Caption = 'x Plus'
+    Top = 694
+    Width = 128
+    Alignment = taCenter
+    AutoSize = False
+    Caption = 'Plus X'
     Font.CharSet = ANSI_CHARSET
     Font.Color = clWhite
     Font.Height = -16
@@ -220,11 +233,13 @@ object Form1: TForm1
   end
   object Btn2_Label: TLabel
     Cursor = crHandPoint
-    Left = 208
+    Left = 912
     Height = 18
-    Top = 560
-    Width = 57
-    Caption = 'x Minus'
+    Top = 694
+    Width = 120
+    Alignment = taCenter
+    AutoSize = False
+    Caption = 'Minus X'
     Font.CharSet = ANSI_CHARSET
     Font.Color = clWhite
     Font.Height = -16
@@ -237,11 +252,13 @@ object Form1: TForm1
   end
   object Btn3_Label: TLabel
     Cursor = crHandPoint
-    Left = 336
+    Left = 1048
     Height = 18
-    Top = 528
-    Width = 43
-    Caption = 'y Plus'
+    Top = 630
+    Width = 120
+    Alignment = taCenter
+    AutoSize = False
+    Caption = 'Plus Y'
     Font.CharSet = ANSI_CHARSET
     Font.Color = clWhite
     Font.Height = -16
@@ -254,11 +271,13 @@ object Form1: TForm1
   end
   object Btn4_Label: TLabel
     Cursor = crHandPoint
-    Left = 336
+    Left = 1048
     Height = 18
-    Top = 592
-    Width = 57
-    Caption = 'y Minus'
+    Top = 758
+    Width = 120
+    Alignment = taCenter
+    AutoSize = False
+    Caption = 'Minus Y'
     Font.CharSet = ANSI_CHARSET
     Font.Color = clWhite
     Font.Height = -16
@@ -269,43 +288,37 @@ object Form1: TForm1
     ParentFont = False
     OnClick = Btn4Click
   end
-  object Edit1: TEdit
-    Left = 688
-    Height = 26
-    Top = 560
-    Width = 32
-    Color = clBlack
-    NumbersOnly = True
-    TabOrder = 1
-    Text = '2'
-  end
   object Edit2: TEdit
-    Left = 592
+    Left = 816
     Height = 26
-    Top = 606
+    Top = 694
     Width = 96
     Color = clBlack
     NumbersOnly = True
+    TabStop = False
     TabOrder = 2
     Text = '2'
   end
   object Image1: TImage
-    Left = 208
-    Height = 328
+    Left = 0
+    Height = 800
     Top = 0
-    Width = 336
+    Width = 800
     Center = True
     Proportional = True
     Stretch = True
   end
   object Memo_Description: TMemo
-    Left = 16
-    Height = 264
-    Top = 32
-    Width = 186
-    Color = clWhite
+    Cursor = crArrow
+    Left = 856
+    Height = 328
+    Top = 40
+    Width = 200
+    Alignment = taCenter
+    BorderStyle = bsNone
+    Color = clBlack
     Font.CharSet = ANSI_CHARSET
-    Font.Color = clBlack
+    Font.Color = clWhite
     Font.Height = -19
     Font.Name = 'Georgia'
     Font.Pitch = fpVariable
@@ -322,12 +335,14 @@ object Form1: TForm1
     ParentFont = False
     ReadOnly = True
     TabOrder = 3
+    TabStop = False
   end
   object Memo_Stats: TMemo
-    Left = 552
+    Cursor = crArrow
+    Left = 1136
     Height = 328
-    Top = 0
-    Width = 192
+    Top = 40
+    Width = 200
     Alignment = taCenter
     BorderStyle = bsNone
     Color = clBlack
@@ -356,11 +371,13 @@ object Form1: TForm1
     OnKeyDown = FormKeyDown
     ParentFont = False
     ReadOnly = True
-    TabOrder = 4
+    TabOrder = 1
+    TabStop = False
     WantReturns = False
   end
   object MuteBtn_Image: TImage
-    Left = 752
+    Cursor = crHandPoint
+    Left = 1352
     Height = 32
     Top = 8
     Width = 32
@@ -380,19 +397,10 @@ object Form1: TForm1
       10EDCDC1150000000049454E44AE426082
     }
   end
-  object Edit3: TEdit
-    Left = 688
-    Height = 26
-    Top = 531
-    Width = 80
-    Color = clBlack
-    TabOrder = 5
-    Text = 'Edit3'
-  end
   object MusicTimer: TTimer
     Enabled = False
     OnTimer = MusicTimerTimer
-    left = 624
-    top = 552
+    left = 848
+    top = 640
   end
 end
