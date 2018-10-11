@@ -58,7 +58,7 @@ object Form1: TForm1
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   Position = poScreenCenter
-  LCLVersion = '1.8.4.0'
+  LCLVersion = '1.6.2.0'
   object Btn1_Image: TImage
     Cursor = crHandPoint
     Left = 1256
@@ -506,9 +506,9 @@ object Form1: TForm1
     }
   end
   object Directions_Image: TImage
-    Left = 816
+    Left = 800
     Height = 33
-    Top = 7
+    Top = 767
     Width = 33
     Picture.Data = {
       1754506F727461626C654E6574776F726B477261706869632201000089504E47
