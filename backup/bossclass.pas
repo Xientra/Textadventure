@@ -22,11 +22,17 @@ type
     function GetName(): string;
     function GetAdjective(): string;
     function GetImagePath(): string;
+    function GetLevel(): integer;
     function GetHealth(): real;
     function GetMaxHealth(): real;
     function GetDamage(): real;
     function GetPhase(): integer;
     function SetPhase(_phase: integer): boolean;
+    procedure SetPhaseLate();
+    procedure SetChangeStateNowToTrue();
+    function GetChangeStateNow(): boolean;
+    function GetWeaknessesOfPhase(_phase: integer): string;
+    function GetStrengthsOfPhase(_phase: integer): string;
 
     function GetStrikeResist(): real;
     function GetThrustResist(): real;
@@ -105,6 +111,8 @@ begin
 
   SkillDrop := nil;
   RoomObjectToCreate := nil;
+
+  changeStaceNow  := true;
 end;
 
 //Setzt die Resistenzen
@@ -158,6 +166,10 @@ function TBoss.GetImagePath(): string;
 begin
   result := ImagePath;
 end;
+function TBoss.GetLevel(): integer;
+begin
+  result := level;
+end;
 function TBoss.GetHealth(): real;
 begin
   result := health;
@@ -178,8 +190,6 @@ function TBoss.SetPhase(_phase: integer): boolean;
 begin
   result := false;
 
-  if (level = 1) then changeStaceNow := false
-  else changeStaceNow := true;
 
   if (phase <= 3) then
   begin
@@ -217,6 +227,172 @@ begin
       end;
     end;
   end else ShowMessage('Bosses only have 3 phases (0 is default resistances)');
+end;
+
+procedure TBoss.SetPhaseLate();
+begin
+  changeStaceNow := false;
+end;
+function TBoss.GetChangeStateNow(): boolean;
+begin
+  result := changeStaceNow;
+end;
+procedure TBoss.SetChangeStateNowToTrue();
+begin
+  changeStaceNow := true;
+end;
+
+function TBoss.GetWeaknessesOfPhase(_phase: integer): string;
+var _weaknesses: string;
+begin
+  _weaknesses := 'nothing';
+
+  case _phase of
+  1:
+    begin
+    if (strikeResistS1 > 1) then _weaknesses := 'strike';
+      if (thrustResistS1 > 1) then
+      begin
+        if (_weaknesses <> 'nothing') then
+          _weaknesses := 'thrust'
+        else begin
+          _weaknesses := _weaknesses + ' and ';
+          _weaknesses := _weaknesses + 'thrust';
+        end;
+      end;
+      if (slashResistS1 > 1) then
+      begin
+        if (_weaknesses <> 'nothing') then
+          _weaknesses := 'slash'
+        else begin
+          _weaknesses := _weaknesses + ' and ';
+          _weaknesses := _weaknesses + 'slash';
+        end;
+      end;
+    end;
+  2:
+    begin
+      if (strikeResistS2 > 1) then _weaknesses := 'strike';
+      if (thrustResistS2 > 1) then
+      begin
+        if (_weaknesses <> 'nothing') then
+          _weaknesses := 'thrust'
+        else begin
+          _weaknesses := _weaknesses + ' and ';
+          _weaknesses := _weaknesses + 'thrust';
+        end;
+      end;
+      if (slashResistS2 > 1) then
+      begin
+        if (_weaknesses <> 'nothing') then
+          _weaknesses := 'slash'
+        else begin
+          _weaknesses := _weaknesses + ' and ';
+          _weaknesses := _weaknesses + 'slash';
+        end;
+      end;
+    end;
+  3:
+    begin
+    if (strikeResistS3 > 1) then _weaknesses := 'strike';
+      if (thrustResistS3 > 1) then
+      begin
+        if (_weaknesses <> 'nothing') then
+          _weaknesses := 'thrust'
+        else begin
+          _weaknesses := _weaknesses + ' and ';
+          _weaknesses := _weaknesses + 'thrust';
+        end;
+      end;
+      if (slashResistS3 > 1) then
+      begin
+        if (_weaknesses <> 'nothing') then
+          _weaknesses := 'slash'
+        else begin
+          _weaknesses := _weaknesses + ' and ';
+          _weaknesses := _weaknesses + 'slash';
+        end;
+      end;
+    end;
+  end;
+  result := _weaknesses;
+end;
+function TBoss.GetStrengthsOfPhase(_phase: integer): string;
+var _strengths: string;
+begin
+  _strengths := 'nothing';
+
+
+  case _phase of
+  1:
+    begin
+    if (strikeResistS1 < 1) then _strengths := 'strike';
+      if (thrustResistS1 < 1) then
+      begin
+        if (_strengths <> 'nothing') then
+          _strengths := 'thrust'
+        else begin
+          _strengths := _strengths + ' and ';
+          _strengths := _strengths + 'thrust';
+        end;
+      end;
+      if (slashResistS1 < 1) then
+      begin
+        if (_strengths <> 'nothing') then
+          _strengths := 'slash'
+        else begin
+          _strengths := _strengths + ' and ';
+          _strengths := _strengths + 'slash';
+        end;
+      end;
+    end;
+  2:
+    begin
+    if (strikeResistS2 < 1) then _strengths := 'strike';
+      if (thrustResistS2 < 1) then
+      begin
+        if (_strengths <> 'nothing') then
+          _strengths := 'thrust'
+        else begin
+          _strengths := _strengths + ' and ';
+          _strengths := _strengths + 'thrust';
+        end;
+      end;
+      if (slashResistS2 < 1) then
+      begin
+        if (_strengths <> 'nothing') then
+          _strengths := 'slash'
+        else begin
+          _strengths := _strengths + ' and ';
+          _strengths := _strengths + 'slash';
+        end;
+      end;
+    end;
+  3:
+    begin
+    if (strikeResistS3 < 1) then _strengths := 'strike';
+      if (thrustResistS3 < 1) then
+      begin
+        if (_strengths <> 'nothing') then
+          _strengths := 'thrust'
+        else begin
+          _strengths := _strengths + ' and ';
+          _strengths := _strengths + 'thrust';
+        end;
+      end;
+      if (slashResistS3 < 1) then
+      begin
+        if (_strengths <> 'nothing') then
+          _strengths := 'slash'
+        else begin
+          _strengths := _strengths + ' and ';
+          _strengths := _strengths + 'slash';
+        end;
+      end;
+    end;
+  end;
+
+  result := _strengths;
 end;
 
 function TBoss.GetStrikeResist(): real;

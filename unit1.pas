@@ -100,6 +100,7 @@ var
   Player1: TPlayer; //Das Spieler Object welches leben und Inventar speichert
   FightingEnemy: TEnemy; //Der gegner gegen den man Kämpft wenn man in Situation 1 oder 2 ist
   FightingBoss: TBoss; //Der Boss gegen den man Kämpft wenn man in Situation 3 oder 4 ist
+  DelayedPhaseChange: boolean; //merkt sich ob die phase des bosses verzögert wurde um das nicht wieder zu tun
 
   //Diese Variablen sind dafür da die Spielsituationen zu ändern
   currendSituation: integer; //diese variable merkt sich die grundlegende Spielsituation unabhängig von dem möglicherweise offenen Menü //0 = laufen; 1 = Kampf(Runde des Spielers) 2 = Kampf(Runde des Gegners)
@@ -130,6 +131,8 @@ begin
   roomStuffIndex := 0;
   DmgBuffIndex := 0;
   DefBuffIndex := 0;
+
+  DelayedPhaseChange := false;
 
   songPath := 'music\overworldTheme_loop.wav';
   songlength := 27; //27s ist die exakte länge von overworldTheme_loop
@@ -1236,34 +1239,72 @@ end;
 procedure TForm1.BossTurn(); //logic situation = 4
 begin
   Memo1.Clear();
+  //bei noch zwei drittel Leben
   if (((FightingBoss.GetHealth() / FightingBoss.GetMaxHealth()) * 100) <= 66) and (FightingBoss.GetPhase() = 1) then
   begin
+    //für Bosse mit Level 1
+    if (FightingBoss.GetLevel() = 1) then
+    begin
+      if (FightingBoss.GetChangeStateNow() = true) then
+      begin
+        FightingBoss.SetPhaseLate();
+        Memo1.Lines.AddText(FightingBoss.GetName()+' will change his stance.'+sLineBreak+
+                            'It will be weak against '+ FightingBoss.GetWeaknessesOfPhase(2)+sLineBreak+
+                            'and strong against '+ FightingBoss.GetStrengthsOfPhase(2)+' damage.');
+      end else if (FightingBoss.GetChangeStateNow() = false) then
+      begin
+        FightingBoss.SetPhase(2);
+        Memo1.Lines.AddText(FightingBoss.GetName()+' changed his stance.'+sLineBreak+'It now has different Resistences.');
+        FightingBoss.SetChangeStateNowToTrue();
+      end;
+    end else
+
+    //für alle Bosse auf allen leveln außer 1
     if (FightingBoss.SetPhase(2) = true) then //SetPhase wurde soeben gecalled
     begin
-
-      Memo1.Lines.AddText(FightingBoss.GetName()+' changed his stance.'+sLineBreak+'It has now different Resistences');
-
+      Memo1.Lines.AddText(FightingBoss.GetName()+' changed his stance.'+sLineBreak+'It now has different Resistences.');
     end else ShowMessage(FightingBoss.GetName()+' has no second phase Assinged');
+
+  //Bei noch ein drittel Leben
   end else if (((FightingBoss.GetHealth() / FightingBoss.GetMaxHealth()) * 100) <= 33) and (FightingBoss.GetPhase() = 2) then
   begin
+    //für Bosse mit Level 1
+    if (FightingBoss.GetLevel() = 1) then
+    begin
+      if (FightingBoss.GetChangeStateNow() = true) then
+      begin
+        FightingBoss.SetPhaseLate();
+        Memo1.Lines.AddText(FightingBoss.GetName()+' will change his stance.'+sLineBreak+
+                                    'It will be weak against '+ FightingBoss.GetWeaknessesOfPhase(3)+sLineBreak+
+                                    'and strong against '+ FightingBoss.GetStrengthsOfPhase(3)+' damage.');
+      end else if (FightingBoss.GetChangeStateNow() = false) then
+      begin
+        FightingBoss.SetPhase(3);
+        Memo1.Lines.AddText(FightingBoss.GetName()+' changed his stance.'+sLineBreak+'It now has different Resistences.');
+        FightingBoss.SetChangeStateNowToTrue();
+      end;
+    end else
+
+    //für alle Bosse auf allen leveln außer 1
     if (FightingBoss.SetPhase(3) = true) then
     begin
-
-      Memo1.Lines.AddText(FightingBoss.GetName()+' changed his stance.'+sLineBreak+'It has now different Resistences');
-
+      Memo1.Lines.AddText(FightingBoss.GetName()+' changed his stance.'+sLineBreak+'It now has different Resistences.');
     end else ShowMessage(FightingBoss.GetName()+' has no third phase Assinged');
   end else
+
+  //Macht dem Spieler Schaden
   begin
     Player1.ChangeHealthBy(-(FightingBoss.GetDamage()));
 
     if (Player1.getHealth > 0) then
-    Memo1.Lines.Add('The Bosss delt ' + FloatToStr(FightingBoss.GetDamage())+' damage.'+sLineBreak+'You now have ' + FloatToStr(Player1.GetHealth()) + ' health left')
+    Memo1.Lines.Add('The Boss delt ' + FloatToStr(FightingBoss.GetDamage())+' damage.'+sLineBreak+'You now have ' + FloatToStr(Player1.GetHealth()) + ' health left')
     else begin
       Memo1.Lines.Add('The Boss delt ' + FloatToStr(FightingBoss.GetDamage())+' damage.'+sLineBreak+'You now have 0 health left');
       PlayerDeath();
     end;
   end;
 end;
+
 procedure TForm1.PlayerDeath(); //death has no logic
 begin
   Form3.Timer1.Enabled := true;
@@ -1398,12 +1439,13 @@ begin
     //RoomArr[2, 0, 0].RoomObjectArr[0].SetChest(TItem.Create('ITEM', 'ITEM!!!!!!!!!!','Images/Items/ITEM.png'));
     //RoomArr[2, 0, 0].RoomObjectArr[0].SetMimic(TItem.Create('ITEM', 'ITEM!!!!!!!!!!','Images/Items/ITEM.png'), TEnemy.Create('Best Mimic Ever', 15, 15, 'Images/Enemies/BestMimicEver.jpg'));
     //RoomArr[2, 0, 0].RoomObjectArr[0].SetSkillStatue(TSkill.Create('Some other Skill', 'This one is just useless...'+sLineBreak+ 'It deals Slash Damage', 'Images/Skills/someOtherSkill.png', 5, 0, 0, 1.2, 0));
-    RoomArr[2, 0, 0].AddBoss(TBoss.Create('Astorias', 'corrupted kinght', 'Images/Enemies_lvl2/Astorias.png', 1, 999999, 999999));
-    //RoomArr[2, 0, 0].AddBoss(TBoss.Create('Test Boss', 'undefeated', 'Images/RoomObjects/Dealer.png', 1, 50, 50));
-    RoomArr[2, 0, 0].Boss.SetStance1(0, 0, 0);
-    //RoomArr[2, 0, 0].Boss.SetStance1(0.5, 1, 1);
-    RoomArr[2, 0, 0].Boss.SetStance2(1, 0.5, 1);
-    RoomArr[2, 0, 0].Boss.SetStance3(1, 1, 0.5);
+
+    //RoomArr[2, 0, 0].AddBoss(TBoss.Create('Astorias', 'corrupted kinght', 'Images/Enemies_lvl2/Astorias.png', 1, 999999, 999999));
+    //RoomArr[2, 0, 0].Boss.SetStance1(0, 0, 0);
+    RoomArr[2, 0, 0].AddBoss(TBoss.Create('Test Boss', 'undefeated', 'Images/RoomObjects/Dealer.png', 1, 100, 10));
+    RoomArr[2, 0, 0].Boss.SetStance1(0.5, 0.5, 0.5);
+    RoomArr[2, 0, 0].Boss.SetStance2(0.5, 0.5, 0.5);
+    RoomArr[2, 0, 0].Boss.SetStance3(0.5, 0.5, 0.5);
 
     CreateARoom('Der Raum mit der Ratte.', 'Images/Rooms_lvl1/MiddleCorridorClosedCells.png', 2, 1, 0);
     RoomArr[2, 1, 0].AddEnemy(TEnemy.Create('Rat', 20, 5, 'Images/Enemies/AAAAA.png'));

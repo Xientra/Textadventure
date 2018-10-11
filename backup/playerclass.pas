@@ -21,7 +21,7 @@ type
     procedure ChangeRoom(_direction: string); //ändert den Raum in der gegebenen Richtung
 
     function GetHealth(): real;
-    function TPlayer.GetMaxHealth(): real;
+    function GetMaxHealth(): real;
     procedure ChangeHealthBy(_amount: real);
     procedure SetFullHealth();
     function GetCurrendRoom(): TRoom;
@@ -74,6 +74,7 @@ begin
   MaxAmountOfSkills := 4;
   AmountOfSkills := MaxAmountOfSkills;
   SetLength(Skills, AmountOfSkills);
+
 end;
 
 procedure TPlayer.ChangeRoom(_direction: string); //ändert den Raum
@@ -174,6 +175,7 @@ end;
 function TPlayer.HasSkills(): boolean;
 var i: integer;
 begin
+  result :0 false;
   if (length(Skills) = 0) then result := false
   else
     for i := 0 to length(self.Skills) - 1 do

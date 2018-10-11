@@ -318,6 +318,7 @@ object Form1: TForm1
       'which is a little '
       'bit longer'
     )
+    OnKeyDown = FormKeyDown
     ParentFont = False
     ReadOnly = True
     TabOrder = 3
@@ -352,6 +353,7 @@ object Form1: TForm1
       'Amount of Skills:'
       'X'
     )
+    OnKeyDown = FormKeyDown
     ParentFont = False
     ReadOnly = True
     TabOrder = 4

@@ -5,17 +5,14 @@ _______________________________________
 -wenn jemand herrausfindest wie man etwas in das Nachrichten Fenster unten schreibt sag es mir (Paul) bitte...
 
 //Muss noch gemacht werden
--Räume brauchen noch eine zweite beschreibung wenn man sie das zweite mal besucht
+
 -Die Köpfe brauchen noch ein System das sie ändert je nach position des Cursors :D
--Die Leiter muss noch (als RoomObject) gemacht werden 
--Bosse müssen noch gemacht werden :D
 -Damage und Defense Up müssen noch einen Effekt haben und der muss auch wieder enden (muss in OnLeaveRoom deaktiviert werden)
 -Gegner müssen noch ihren Stance/Resistenzen ändern können :D
--Es muss noch der Spieler Tot integriert werden
--Wenn man Waffen aufhebt muss man sie auch ausrüsten können
+-Bosse müssen brauchen noch LateStanceChange :D
 -Alle Räume brauchen Beschreibungen :D
--man muss Waffen noch ausrüsten können wenn man sie aufhebt
--YouDied muss noch rein fadeden
+-man muss Waffen noch ausrüsten KÖNNEN wenn man sie aufhebt
+
 -wenn man stirbt werden ALLE erstellten Objekte von Räumen Gegner usw.einfach da gelassen und dann nochmal neu erstellt...
 
 //Das ist einfach so und nicht wirklich ein Bug muss aber möglicherweise dennoch geändert werden 
@@ -27,10 +24,9 @@ _______________________________________
 -Türen können Objekte sein :P
 
 //muss noch entschieden werden
--es ist nicht klar wieviel die Heistatur Heilen soll, da der Player keine max leben hat
 -es muss noch entschieden werden ob Items verschiedene Effekte haben sollen können
 -Das Spiel braucht noch ein Color Scheme :D
--können wir Main Menu bitte vernichten (außer natürlich du gibst ihm irgenteine funktion)
+-können wir Main Menu bitte vernichten (außer natürlich ihm wird irgendeine funktion gegeben...)
 
 -> 2D Assets :D
 	-Buttons Sprites
@@ -42,16 +38,18 @@ _______________________________________
 		-Magic Dagger
 		
 	-> Räume
-		-Ebene 2
-			-Part 2
 		-Ebene 3
+		-orientation 
+			-lvl 1
+			-lvl 2
+			-lvl 3
 	-> Gegner
 		-Ebene 1
 			-Ratte
 			-Goblin
-			-RattenMensche (Boss 1)
+			-RattenMensch (Boss 1)
 		-Ebene 2
-			-Schwarzer/Korumpierter Ritter/Artorias (?) (Boss 2)
+
 		-Ebene 3
 			-Guardian
 			-Prediger
@@ -60,5 +58,13 @@ _______________________________________
 -> Musik
 	-Ebene 2
 	-Ebene 3
-	-Kampf normal
 	-Kampf final boss?
+
+
+_____________________
+Fertig
+-Räume brauchen noch eine zweite beschreibung wenn man sie das zweite mal besucht 
+-Bosse müssen noch gemacht werden
+-Es muss noch der Spieler Tot integriert werden
+-YouDied muss noch rein fadeden
+-Die Leiter muss noch (als RoomObject) gemacht werden
