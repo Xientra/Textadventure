@@ -15,15 +15,8 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
-    Btn1_Label: TLabel;
-    Btn2_Label: TLabel;
-    Btn3_Label: TLabel;
-    Btn4_Label: TLabel;
-    Btn1_Image: TImage;
-    Btn2_Image: TImage;
-    Btn3_Image: TImage;
-    Btn4_Image: TImage;
     Edit2: TEdit;
+    Directions_Image: TImage;
     MuteBtn_Image: TImage;
     Memo_Stats: TMemo;
     Memo_Description: TMemo;
@@ -32,10 +25,36 @@ type
     Label_Leave: TLabel;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      //Its a secret!
     Memo1: TMemo;
     MusicTimer: TTimer;
+    //Alles zu Buttons
+    Btn1_Label: TLabel;
+    Btn2_Label: TLabel;
+    Btn3_Label: TLabel;
+    Btn4_Label: TLabel;
+    Btn1_Image: TImage;
+    Btn2_Image: TImage;
+    Btn3_Image: TImage;
+    Btn4_Image: TImage;
     procedure Btn1Click(Sender: TObject);
     procedure Btn2Click(Sender: TObject);
     procedure Btn3Click(Sender: TObject);
     procedure Btn4Click(Sender: TObject);
+    procedure Btn1MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure Btn1MouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure Btn2MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure Btn2MouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure Btn3MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure Btn3MouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure Btn4MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure Btn4MouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure Btn1MouseEnter(Sender: TObject);
+    procedure Btn1MouseLeave(Sender: TObject);
+    procedure Btn2MouseEnter(Sender: TObject);
+    procedure Btn2MouseLeave(Sender: TObject);
+    procedure Btn3MouseEnter(Sender: TObject);
+    procedure Btn3MouseLeave(Sender: TObject);
+    procedure Btn4MouseEnter(Sender: TObject);
+    procedure Btn4MouseLeave(Sender: TObject);
+
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -92,6 +111,12 @@ var
   songPath: PChar; //PChar ist irgentwie string aber PlayerSound braucht genau das
   songlength: integer; //wie lange MusicTimer warten muss bis er den song wiederholt. In sekunden, da alles darunter irgendwie nicht mehr richtig die Zeit wiederspiegelt
   muted: boolean; //wenn false wird musik gespielt
+
+  //Buttons
+  Btn1_active,
+  Btn2_active,
+  Btn3_active,
+  Btn4_active: boolean;
 
   RoomArr: Array of Array of Array of TRoom; //Das Array aller Räume
   Room_x, Room_y, Room_z: integer; //Die Länge des RoomArray in alle drei Richtungen
@@ -182,6 +207,26 @@ procedure TForm1.Btn2Click(Sender: TObject); begin Button_2_Action(); end;
 procedure TForm1.Btn3Click(Sender: TObject); begin Button_3_Action(); end;
 procedure TForm1.Btn4Click(Sender: TObject); begin Button_4_Action(); end;
 
+//MouseDown und MouseUp proceduren welche einfach nur den Buton an die Maus anpassen
+procedure TForm1.Btn1MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer); begin if (Btn1_active = true) then Btn1_Image.Picture.LoadFromFile('Images/Buttons/Button_down.png'); end;
+procedure TForm1.Btn1MouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer); begin if (Btn1_active = true) then Btn1_Image.Picture.LoadFromFile('Images/Buttons/Button.png'); end;
+procedure TForm1.Btn2MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer); begin if (Btn2_active = true) then Btn2_Image.Picture.LoadFromFile('Images/Buttons/Button_down.png'); end;
+procedure TForm1.Btn2MouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer); begin if (Btn2_active = true) then Btn2_Image.Picture.LoadFromFile('Images/Buttons/Button.png'); end;
+procedure TForm1.Btn3MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer); begin if (Btn3_active = true) then Btn3_Image.Picture.LoadFromFile('Images/Buttons/Button_down.png'); end;
+procedure TForm1.Btn3MouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer); begin if (Btn3_active = true) then Btn3_Image.Picture.LoadFromFile('Images/Buttons/Button.png'); end;
+procedure TForm1.Btn4MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer); begin if (Btn4_active = true) then Btn4_Image.Picture.LoadFromFile('Images/Buttons/Button_down.png'); end;
+procedure TForm1.Btn4MouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer); begin if (Btn4_active = true) then Btn4_Image.Picture.LoadFromFile('Images/Buttons/Button.png'); end;
+
+//Hover Effekt
+procedure TForm1.Btn1MouseEnter(Sender: TObject); begin if (Btn1_active = true) then Btn1_Image.Picture.LoadFromFile('Images/Buttons/Button_hover.png'); end;
+procedure TForm1.Btn1MouseLeave(Sender: TObject); begin if (Btn1_active = true) then Btn1_Image.Picture.LoadFromFile('Images/Buttons/Button.png'); end;
+procedure TForm1.Btn2MouseEnter(Sender: TObject); begin if (Btn2_active = true) then Btn2_Image.Picture.LoadFromFile('Images/Buttons/Button_hover.png'); end;
+procedure TForm1.Btn2MouseLeave(Sender: TObject); begin if (Btn2_active = true) then Btn2_Image.Picture.LoadFromFile('Images/Buttons/Button.png'); end;
+procedure TForm1.Btn3MouseEnter(Sender: TObject); begin if (Btn3_active = true) then Btn3_Image.Picture.LoadFromFile('Images/Buttons/Button_hover.png'); end;
+procedure TForm1.Btn3MouseLeave(Sender: TObject); begin if (Btn3_active = true) then Btn3_Image.Picture.LoadFromFile('Images/Buttons/Button.png'); end;
+procedure TForm1.Btn4MouseEnter(Sender: TObject); begin if (Btn4_active = true) then Btn4_Image.Picture.LoadFromFile('Images/Buttons/Button_hover.png'); end;
+procedure TForm1.Btn4MouseLeave(Sender: TObject); begin if (Btn4_active = true) then Btn4_Image.Picture.LoadFromFile('Images/Buttons/Button.png'); end;
+
 procedure TForm1.FormClose(Sender: TObject; var CloseAction: TCloseAction); //Wenn man Form1 schließ dann schließt sich Form2 nicht automatisch da Form2 die Main Form ist
 begin
   Form2.close();
@@ -191,10 +236,10 @@ procedure TForm1.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState)
 begin
   if (Key = VK_ESCAPE) then Application.Terminate();
 
-  if (Key = VK_1) or (Key = VK_RIGHT) or (Key = VK_D) then Button_1_Action();
-  if (Key = VK_2) or (Key = VK_LEFT) or (Key = VK_A) then Button_2_Action();
-  if (Key = VK_3) or (Key = VK_UP) or (Key = VK_W) then Button_3_Action();
-  if (Key = VK_4) or (Key = VK_DOWN) or (Key = VK_S) then Button_4_Action();
+  if (Key = VK_RIGHT) or (Key = VK_D) then Button_1_Action();
+  if (Key = VK_LEFT) or (Key = VK_A) then Button_2_Action();
+  if (Key = VK_UP) or (Key = VK_W) then Button_3_Action();
+  if (Key = VK_DOWN) or (Key = VK_S) then Button_4_Action();
 end;
 
 procedure TForm1.Label_LeaveClick(Sender: TObject); //Exit Button
@@ -243,18 +288,23 @@ begin
   begin
     _text.Cursor := crDefault;
     _background.Cursor := crDefault;
-    _background.Picture.LoadFromFile('Images/ButtonBgPlayeholderDoor.png');
+    _background.Picture.LoadFromFile('Images/Buttons/Button_chained.png');
   end else if (toSetTo = true) then
   begin
     _text.Cursor := crHandPoint;
     _background.Cursor := crHandPoint;
-    _background.Picture.LoadFromFile('Images/ButtonBgPlayeholder.png');
+    _background.Picture.LoadFromFile('Images/Buttons/Button.png');
   end
   else begin
     _text.Cursor := crDefault;
     _background.Cursor := crDefault;
-    _background.Picture.LoadFromFile('Images/ButtonBgPlayeholderDisabled.png');
+    _background.Picture.LoadFromFile('Images/Buttons/Button_off.png');
   end;
+
+  if (_background.Name = 'Btn1_Image') and (_text.Name = 'Btn1_Label') then Btn1_active := toSetTo;
+  if (_background.Name = 'Btn2_Image') and (_text.Name = 'Btn2_Label') then Btn2_active := toSetTo;
+  if (_background.Name = 'Btn3_Image') and (_text.Name = 'Btn3_Label') then Btn3_active := toSetTo;
+  if (_background.Name = 'Btn4_Image') and (_text.Name = 'Btn4_Label') then Btn4_active := toSetTo;
 end;
 
 procedure TForm1.Button_1_Action(); //                                     --> 1
@@ -1438,10 +1488,10 @@ begin
 
     //RoomArr[2, 0, 0].AddBoss(TBoss.Create('Astorias', 'corrupted kinght', 'Images/Enemies_lvl2/Astorias.png', 1, 999999, 999999));
     //RoomArr[2, 0, 0].Boss.SetStance1(0, 0, 0);
-    RoomArr[2, 0, 0].AddBoss(TBoss.Create('Test Boss', 'undefeated', 'Images/RoomObjects/Dealer.png', 1, 100, 10));
-    RoomArr[2, 0, 0].Boss.SetStance1(0.5, 0.5, 0.5);
-    RoomArr[2, 0, 0].Boss.SetStance2(0.5, 0.5, 0.5);
-    RoomArr[2, 0, 0].Boss.SetStance3(0.5, 0.5, 0.5);
+    //RoomArr[2, 0, 0].AddBoss(TBoss.Create('Test Boss', 'undefeated', 'Images/RoomObjects/Dealer.png', 1, 100, 10));
+    //RoomArr[2, 0, 0].Boss.SetStance1(0.5, 0.5, 0.5);
+    //RoomArr[2, 0, 0].Boss.SetStance2(0.5, 0.5, 0.5);
+    //RoomArr[2, 0, 0].Boss.SetStance3(0.5, 0.5, 0.5);
 
     CreateARoom('Der Raum mit der Ratte.', 'Images/Rooms_lvl1/MiddleCorridorClosedCells.png', 2, 1, 0);
     RoomArr[2, 1, 0].AddEnemy(TEnemy.Create('Rat', 20, 5, 'Images/Enemies/AAAAA.png'));
