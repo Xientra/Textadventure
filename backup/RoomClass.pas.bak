@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Dialogs{für ShowMessage},
-  EnemyClass{für TEnemy}, ItemClass{für TItem}, WeaponClass{für TWeapon}, RoomObjectClass{für TRoomObject};
+  EnemyClass{für TEnemy}, BossClass{für TBoss}, ItemClass{für TItem}, WeaponClass{für TWeapon}, RoomObjectClass{für TRoomObject};
 
 type
   TRoom = class
@@ -16,6 +16,7 @@ type
     WeaponArr: Array of TWeapon; //Waffen im Raum
     ItemArr: Array of TItem; //Items im Raum
     RoomObjectArr: Array of TRoomObject; //RoomObjects im Raum
+    Boss: TBoss; //der Vollständigkeit halber
 
     constructor Create(_description: string; _imagePath: string; _pos_x, _pos_y, _pos_z: integer);
 
@@ -34,10 +35,10 @@ type
     function GetPosZ: Integer;
 
     //Get/Set stuff über Ausgänge in alle Richtungen
-    procedure SetBlockedRight(b: boolean);
-    procedure SetBlockedLeft(b: boolean);
-    procedure SetBlockedTop(b: boolean);
-    procedure SetBlockedBottom(b: boolean);
+    procedure SetBlockedRight(b: boolean; f:boolean = false);
+    procedure SetBlockedLeft(b: boolean; f:boolean = false);
+    procedure SetBlockedTop(b: boolean; f:boolean = false);
+    procedure SetBlockedBottom(b: boolean; f:boolean = false);
 
     function GetBlockedRight: boolean;
     function GetBlockedLeft: boolean;
@@ -65,6 +66,7 @@ type
     function GetDoorIndexBottom: integer;
 
     procedure AddEnemy(_enemy: TEnemy);
+    procedure AddBoss(_boss: TBoss);
     procedure AddWeapon(_weapon: TWeapon);
     procedure AddItem(_item: TItem);
     procedure AddRoomObject(_roomObject: TRoomObject);
@@ -83,6 +85,7 @@ type
     blocked_right, blocked_left, blocked_top, blocked_bottom : boolean;
     door_right, door_left, door_top, door_bottom: boolean;
     doorIndex_right, doorIndex_left, doorIndex_top, doorIndex_bottom: integer;
+    fake_right, fake_left, fake_top, fake_bottom : boolean;
   end;
 
 implementation
@@ -128,7 +131,7 @@ end;
 
 function TRoom.GetImagePath(): string;
 begin
-  if ItemPickedUp = false
+  if ItemPickedUp = false then
   result := ImagePath
   else result := ImagePathVisited;
 end;
@@ -164,6 +167,11 @@ begin
   SetLength(EnemyArr, Length(EnemyArr) + 1);
   EnemyArr[Length(EnemyArr) - 1] := _enemy;
 end;
+procedure TRoom.AddBoss(_boss: TBoss);
+begin
+  if (Boss <> nil) then Showmessage('The Boss of this Room was not nil before.');
+  Boss := _boss;
+end;
 procedure TRoom.AddWeapon(_weapon: TWeapon);
 begin
   SetLength(WeaponArr, Length(WeaponArr) + 1);
@@ -181,21 +189,25 @@ begin
 end;
 
 //TÜREN!
-procedure TRoom.SetBlockedRight(b: boolean);
+procedure TRoom.SetBlockedRight(b: boolean; f:boolean = false);
 begin
   blocked_right := b;
+  fake_right := f;
 end;
-procedure TRoom.SetBlockedLeft(b: boolean);
+procedure TRoom.SetBlockedLeft(b: boolean; f:boolean = false);
 begin
   blocked_left := b;
+  fake_left := f;
 end;
-procedure TRoom.SetBlockedTop(b: boolean);
+procedure TRoom.SetBlockedTop(b: boolean; f:boolean = false);
 begin
   blocked_top := b;
+  fake_top := f;
 end;
-procedure TRoom.SetBlockedBottom(b: boolean);
+procedure TRoom.SetBlockedBottom(b: boolean; f:boolean = false);
 begin
   blocked_bottom := b;
+  fake_bottom := f;
 end;
 
 procedure TRoom.SetDoorRight(b: boolean);
@@ -217,11 +229,15 @@ end;
 
 function TRoom.GetBlockedRight: boolean;
 begin
-  result := blocked_right;
+  if (fake_right = false) then
+  result := blocked_right
+  else if (fake_right) and (blocked_right = false) then result := true;
 end;
 function TRoom.GetBlockedLeft: boolean;
 begin
-  result := blocked_left;
+  if (fake_left = false) then
+  result := blocked_left
+  else if (fake_left) and (blocked_left = false) then result := true;
 end;
 function TRoom.GetBlockedTop: boolean;
 begin

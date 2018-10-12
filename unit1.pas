@@ -133,7 +133,8 @@ var
   //diese Beiden vars sind dafür da, das die information an welcher stelle das item/etc jewailigen array des Inventar/Raum ist. bsp: man hat zwei items in inventar was auch immer danach geschaut hat weiß das und will, das infos zum ersten gedruckt werden also setzt es die var auf die stelle des items
   inventoryIndex: integer;
   roomStuffIndex: integer;
-  DmgBuffIndex, DefBuffIndex: integer;
+  DmgBuff, DefBuff: real;
+  DmgBuffUsed, DefBuffUsed: boolean;
   multyAttack: integer; //gimick for daggers
   isplaying: boolean;
 
@@ -152,8 +153,8 @@ var
 begin
   inventoryIndex := 0;
   roomStuffIndex := 0;
-  DmgBuffIndex := 0;
-  DefBuffIndex := 0;
+  DmgBuff := 1;
+  DefBuff := 1;
 
   DelayedPhaseChange := false;
 
@@ -425,24 +426,12 @@ begin
       begin
         randomize;
         multyattack := Random(4)+1;
-      {if Player1.itemInventory[DmgBuffIndex].GetDmgDuration > 0 then
-      _dmg := FightingEnemy.DoDamage(Player1.GetCurrendWeapon().GetStrikeDmg()*Player1.itemInventory[DmgBuffIndex].GetDamageUp*multyattack,
-                                     Player1.GetCurrendWeapon().GetThrustDmg()*Player1.itemInventory[DmgBuffIndex].GetDamageUp*multyattack,
-                                     Player1.GetCurrendWeapon().GetSlashDmg()*Player1.itemInventory[DmgBuffIndex].GetDamageUp*multyattack,
-                                     Player1.GetCurrendWeapon().GetMagicDmg()*Player1.itemInventory[DmgBuffIndex].GetDamageUp*multyattack)
-      else} _dmg := FightingEnemy.DoDamage(Player1.GetCurrendWeapon().GetStrikeDmg()*multyattack,
-                                          Player1.GetCurrendWeapon().GetThrustDmg()*multyattack,
-                                          Player1.GetCurrendWeapon().GetSlashDmg()*multyattack,
-                                          Player1.GetCurrendWeapon().GetMagicDmg()*multyattack);
-      end else {if Player1.itemInventory[DmgBuffIndex].GetDmgDuration > 0 then
-        _dmg := FightingEnemy.DoDamage(Player1.GetCurrendWeapon().GetStrikeDmg()*Player1.itemInventory[DmgBuffIndex].GetDamageUp,
-                                     Player1.GetCurrendWeapon().GetThrustDmg()*Player1.itemInventory[DmgBuffIndex].GetDamageUp,
-                                     Player1.GetCurrendWeapon().GetSlashDmg()*Player1.itemInventory[DmgBuffIndex].GetDamageUp,
-                                     Player1.GetCurrendWeapon().GetMagicDmg()*Player1.itemInventory[DmgBuffIndex].GetDamageUp)
-        else} _dmg := FightingEnemy.DoDamage(Player1.GetCurrendWeapon().GetStrikeDmg(),
-                                          Player1.GetCurrendWeapon().GetThrustDmg(),
-                                          Player1.GetCurrendWeapon().GetSlashDmg(),
-                                          Player1.GetCurrendWeapon().GetMagicDmg());
+      end;
+      _dmg := FightingEnemy.DoDamage(Player1.GetCurrendWeapon().GetStrikeDmg()*DmgBuff*multyattack,
+                                     Player1.GetCurrendWeapon().GetThrustDmg()*DmgBuff*multyattack,
+                                     Player1.GetCurrendWeapon().GetSlashDmg()*DmgBuff*multyattack,
+                                     Player1.GetCurrendWeapon().GetMagicDmg()*DmgBuff*multyattack);
+      multyattack := 1;
 
       if (Player1.GetCurrendWeapon.GetName = 'Dagger') or (Player1.GetCurrendWeapon.GetName = 'MagicDagger') then
       PrintAndUIChange(2, 'You quickly attacked '+ IntToStr(multyattack)+' times with your Dagger'+sLineBreak+'You delt ' + FloatToStr(Round(_dmg)) + ' damage.'+sLineBreak+'The Enemy now has ' + FloatToStr(Round(FightingEnemy.GetHealth())) + ' health left')
@@ -543,13 +532,13 @@ begin
         PrintAndUIChange(2, 'You used '+Player1.itemInventory[inventoryIndex].GetName()+'.');
         if Player1.itemInventory[inventoryIndex].GetDmgDuration = 0 then
         begin
-          Player1.itemInventory[inventoryIndex].SetDmgDuration(3);
-          DmgBuffIndex := inventoryindex;
+          DmgBuffUsed := true;
+          DmgBuff := 1.5;
         end;
         if Player1.itemInventory[inventoryIndex].GetDefDuration = 0 then
           begin
-          Player1.itemInventory[inventoryIndex].SetDefDuration(3);
-          DefBuffIndex := inventoryindex;
+          DefBuffUsed := true;
+          DefBuff := 0.5;
           end;
         PlayerEndTurn();
       end;
@@ -558,17 +547,11 @@ begin
     begin
       if (Player1.Skills[inventoryIndex].GetTurnsToWait() = 0) then
       begin
-        if Player1.itemInventory[DmgBuffIndex].GetDmgDuration > 0 then
         _dmg := FightingEnemy.DoDamage(
-          Player1.GetCurrendWeapon().GetHighestDmg() * Player1.Skills[inventoryIndex].GetStrikeMulti()*Player1.itemInventory[DmgBuffIndex].GetDamageUp,
-          Player1.GetCurrendWeapon().GetHighestDmg() * Player1.Skills[inventoryIndex].GetThrustMulti()*Player1.itemInventory[DmgBuffIndex].GetDamageUp,
-          Player1.GetCurrendWeapon().GetHighestDmg() * Player1.Skills[inventoryIndex].GetSlashMulti()*Player1.itemInventory[DmgBuffIndex].GetDamageUp,
-          Player1.GetCurrendWeapon().GetHighestDmg() * Player1.Skills[inventoryIndex].GetMagicMulti()*Player1.itemInventory[DmgBuffIndex].GetDamageUp)
-          else _dmg := FightingEnemy.DoDamage(
-          Player1.GetCurrendWeapon().GetHighestDmg() * Player1.Skills[inventoryIndex].GetStrikeMulti(),
-          Player1.GetCurrendWeapon().GetHighestDmg() * Player1.Skills[inventoryIndex].GetThrustMulti(),
-          Player1.GetCurrendWeapon().GetHighestDmg() * Player1.Skills[inventoryIndex].GetSlashMulti(),
-          Player1.GetCurrendWeapon().GetHighestDmg() * Player1.Skills[inventoryIndex].GetMagicMulti());
+          Player1.GetCurrendWeapon().GetHighestDmg() * Player1.Skills[inventoryIndex].GetStrikeMulti()*DmgBuff,
+          Player1.GetCurrendWeapon().GetHighestDmg() * Player1.Skills[inventoryIndex].GetThrustMulti()*DmgBuff,
+          Player1.GetCurrendWeapon().GetHighestDmg() * Player1.Skills[inventoryIndex].GetSlashMulti()*DmgBuff,
+          Player1.GetCurrendWeapon().GetHighestDmg() * Player1.Skills[inventoryIndex].GetMagicMulti()*DmgBuff);
 
         Player1.Skills[inventoryIndex].SetTurnToWaitToCooldown();
         PrintAndUIChange(2, 'You delt ' + FloatToStr(Round(_dmg)) + ' damage.'+sLineBreak+'The Enemy now has ' + FloatToStr(Round(FightingEnemy.GetHealth())) + ' health left');
@@ -1180,6 +1163,8 @@ begin
   for i := 0 to length(Player1.GetCurrendRoom().RoomObjectArr) - 1 do
     if (Player1.GetCurrendRoom().RoomObjectArr[i] <> nil) then
       Player1.GetCurrendRoom().RoomObjectArr[i].SetIgnore(false);
+  DmgBuff := 1;
+  DefBuff := 1;
 end;
 
 //wird am Ende der Spieler Runde aufgerufen und schaut ob der Gegner besiegt wurde
@@ -1236,9 +1221,7 @@ end;
 //wird am ende/in der Runde des Gegners aufgerufen und macht dem Spieler Schaden
 procedure TForm1.EnemyTurn(); //logic situation = 2
 begin
-{  if Player1.itemInventory[DefBuffIndex].GetDefDuration > 0 then
-  Player1.ChangeHealthBy(-(FightingEnemy.GetDamage())*Player1.itemInventory[DefBuffIndex].GetDefenseUp)
-  else} Player1.ChangeHealthBy(-(FightingEnemy.GetDamage()));
+  Player1.ChangeHealthBy(-(FightingEnemy.GetDamage()*DefBuff));
   Memo1.Clear();
   if (Player1.getHealth > 0) then
   Memo1.Lines.Add('The Enemy delt ' + FloatToStr(FightingEnemy.GetDamage())+' damage.'+sLineBreak+'You now have ' + FloatToStr(Player1.GetHealth()) + ' health left')
@@ -1537,7 +1520,7 @@ begin
     CreateARoom('Estus vorraus', 'Images/Rooms_lvl1/RoomWithHealItem.png', 3, 4, 0);
     RoomArr[3,4,0].AddItem(TItem.Create('Heiltrank', 'Dieses Elexier stellt deine Lebenskraft wieder her', 'Images/Items/HealingItem.png'));
     CreateARoom('This is so sad. Alexa, play Gwyns theme', 'Images/Rooms/Höle.png', 4, 5, 0);
-    RoomArr[4,5,0].AddBoss(TBoss.create('Rat King', 'muscular wererat', 'Images/Enemies_lvl1/RatKing.png',0, 120, 30);
+    RoomArr[4,5,0].AddBoss(TBoss.create('Rat King', 'muscular wererat', 'Images/Enemies_lvl1/RatKing.png',0, 120, 30));
     RoomArr[4,5,0].AddRoomObject(TRoomObject.Create('Ladder','The height of this ladder is beyond comprehension','Images/Rooms_lvl1/BossRoomWithLadder.png'));
     RoomArr[4,5,0].RoomObjectArr[0].SetLadder();
   end;
@@ -1555,9 +1538,9 @@ begin
     }
     CreateARoom('Treppe zu Ebene 3.', 'Images/Rooms_lvl2/part1/StartRoomWithLadder.png', 3, 5, 1);
     RoomArr[3,5,1].setblockedleft(true);
-    RoomArr[3,5,1].setdoorright(true);
+    //RoomArr[3,5,1].setdoorright(true);
     RoomArr[3,5,1].setblockedbottom(true);
-    RoomArr[3,5,1].setdoorindexright(1);
+    //RoomArr[3,5,1].setdoorindexright(1);
     RoomArr[3,5,1].AddRoomObject(TRoomObject.Create('A Staircase', 'This Staircase seems to lead out of these catacombs', 'Images/RoomObjects/Ladder_lvl1.png'));
     CreateARoom('Startraum der zeiten Ebene.', 'Images/Rooms_lvl2/part1/StartRoomWithLadder.png', 4, 5, 1);
     RoomArr[4,5,1].setdoorleft(true);
