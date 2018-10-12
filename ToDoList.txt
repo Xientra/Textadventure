@@ -6,12 +6,10 @@ _______________________________________
 
 //Muss noch gemacht werden
 
--Die Köpfe brauchen noch ein System das sie ändert je nach position des Cursors :D
 -Damage und Defense Up müssen noch einen Effekt haben und der muss auch wieder enden (muss in OnLeaveRoom deaktiviert werden)
 -Gegner müssen noch ihren Stance/Resistenzen ändern können :D
--Bosse müssen brauchen noch LateStanceChange :D
 -Alle Räume brauchen Beschreibungen :D
--man muss Waffen noch ausrüsten KÖNNEN wenn man sie aufhebt
+
 
 -wenn man stirbt werden ALLE erstellten Objekte von Räumen Gegner usw.einfach da gelassen und dann nochmal neu erstellt...
 
@@ -24,8 +22,6 @@ _______________________________________
 -Türen können Objekte sein :P
 
 //muss noch entschieden werden
--es muss noch entschieden werden ob Items verschiedene Effekte haben sollen können
--Das Spiel braucht noch ein Color Scheme :D
 -können wir Main Menu bitte vernichten (außer natürlich ihm wird irgendeine funktion gegeben...)
 
 -> 2D Assets :D
@@ -33,21 +29,15 @@ _______________________________________
 
 -> "3D" Assets :D
 	-> Items	
-		-Speer
-		-Heavy Sword
 		-Magic Dagger
 		
 	-> Räume
 		-Ebene 3
-		-orientation 
-			-lvl 1
-			-lvl 2
-			-lvl 3
+			-RoomBeforeExit
+			-RoomWithMagicWeapon
 	-> Gegner
 		-Ebene 1
-			-Ratte
-			-Goblin
-			-RattenMensch (Boss 1)
+
 		-Ebene 2
 
 		-Ebene 3
@@ -68,3 +58,6 @@ Fertig
 -Es muss noch der Spieler Tot integriert werden
 -YouDied muss noch rein fadeden
 -Die Leiter muss noch (als RoomObject) gemacht werden
+-Die Köpfe brauchen noch ein System das sie ändert je nach position des Cursors :D
+-man muss Waffen noch ausrüsten können wenn man sie aufhebt
+-Bosse müssen brauchen noch LateStanceChange :D
