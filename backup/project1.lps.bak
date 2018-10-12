@@ -20,7 +20,8 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Unit1"/>
-        <TopLine Value="1103"/>
+        <IsVisibleTab Value="True"/>
+        <TopLine Value="1061"/>
         <CursorPos X="50" Y="1541"/>
         <FoldState Value=" T3mU0321111m"/>
         <UsageCount Value="141"/>
@@ -152,10 +153,9 @@
       </Unit13>
       <Unit14>
         <Filename Value="RoomClass.pas"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="4"/>
-        <TopLine Value="216"/>
-        <CursorPos X="26" Y="233"/>
+        <TopLine Value="87"/>
+        <CursorPos X="79" Y="87"/>
         <UsageCount Value="62"/>
         <Loaded Value="True"/>
       </Unit14>
