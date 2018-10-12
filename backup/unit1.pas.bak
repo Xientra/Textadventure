@@ -180,7 +180,7 @@ begin
 
   CreateRooms(); //Erstellt das Spiel
   //Erschafft den Spieler in einem Raum
-  Player1 := TPlayer.Create(RoomArr[2, 4, 1], TWeapon.Create('Fists', 'Just your good old hands.', 'Images/Items/ShortSword.png', 102, 0, 0, 0), 10000);
+  Player1 := TPlayer.Create(RoomArr[3, 0, 0], TWeapon.Create('Fists', 'Just your good old hands.', 'Images/Items/ShortSword.png', 10, 0, 0, 0), 10000);
 
   //Stuff just for testing the inventory
   //Player1.AddItem(TItem.Create('some Key', 'it not usefull for any door...','Images/Items/Key1.png'));
@@ -456,7 +456,7 @@ begin
     end;
   3:
     begin
-      if (Player1.GetCurrendWeapon.GetName = 'Dagger') or (Player1.GetCurrendWeapon.GetName = 'MagicDagger') then
+      if (Player1.GetCurrendWeapon.GetName = 'Dagger') or (Player1.GetCurrendWeapon.GetName = 'Magic Dagger') then
       begin
         randomize;
         multyattack := Random(4)+1;
@@ -1546,7 +1546,7 @@ begin
     CreateARoom('Bossroom.', 'Images/Rooms_lvl2/part2/BossRoomlvl2.png', 2, 6, 1);
     RoomArr[2, 6, 1].AddBoss(TBoss.Create('Astorias', 'corrupted kinght', 'Images/Enemies_lvl2/Astorias.png', 1, 999999, 999999));
     CreateARoom('Hier liegt ein Skill.', 'Images/Rooms_lvl2/part2/RoomWithThrustSkill.png', 1, 5, 1);
-    RoomArr[1,5,1].AddRoomObject(TRoomObject.Create('Skill Stature', 'It looks skillfull (pun intended)', 'Images/RoomObjects/SlashSkillStature.png'));
+    RoomArr[1,5,1].AddRoomObject(TRoomObject.Create('Skill Stature', 'It looks skillfull (pun intended)', 'Images/RoomObjects/ThrustSkillStature.png'));
     RoomArr[1,5,1].RoomObjectArr[0].SetSkillStatue(TSkill.Create('Thrust SKill','You are able to thrust through everything','Images/Skills/SkillThrust.png',3,0,1.5,0,0));
     CreateARoom('You feel a dark presence from that Room.', 'Images/Rooms_lvl2/part2/RoomBeforeBosslvl2.png', 2, 5, 1);
     RoomArr[2,5,1].setblockedright(true);
@@ -1639,52 +1639,58 @@ begin
 
   //Ebene 3
   begin
-    CreateARoom('Startraum der 3. Ebene.', 'Images/Rooms/Höle.png', 3, 5, 2);
+    CreateARoom('Startraum der 3. Ebene.', 'Images/Rooms_lvl3/StartRoomLevel3.png', 3, 5, 2);
     RoomArr[3,5,2].setblockedbottom(true);
-    CreateARoom('erstes zusammentreffen mit einem Wächter.', 'Images/Rooms/Höle.png', 4, 5, 2);
+    CreateARoom('erstes zusammentreffen mit einem Wächter.', 'Images/Rooms_lvl3/RoomWithGuardianWithHeavySword.png', 4, 5, 2);
     RoomArr[3, 5, 2].AddEnemy(TEnemy.Create('Wächter', 20, 5, 'Images/Enemies/AAAAA.png'));
     RoomArr[3, 5, 2].EnemyArr[0].SetResistances(1, 1, 1);
-    CreateARoom('Hier liegt ein Greatsword (aber nicht "Greatsword" da es ein Ultragreatsword ist).', 'Images/Rooms/Höle.png', 5, 5, 2);
-    RoomArr[5,5,2].setblockedbottom(true);
-    CreateARoom('Alexa JETZT spiel Gwyns Theme.', 'Images/Rooms/Höle.png', 0, 4, 2);
-    CreateARoom('Ein Prediger (langweilig).', 'Images/Rooms/Höle.png', 1, 4, 2);
+    //CreateARoom('Hier liegt ein Greatsword (aber nicht "Greatsword" da es ein Ultragreatsword ist).', 'Images/Rooms/Höle.png', 5, 5, 2);
+    //RoomArr[5,5,2].setblockedbottom(true);
+    CreateARoom('Alexa JETZT spiel Gwyns Theme.', 'Images/Rooms_lvl3/BossRoomLevel3.png', 0, 4, 2);
+    CreateARoom('Ein Prediger (langweilig).', 'Images/Rooms_lvl3/RoomBeforeBoss.png', 1, 4, 2);
     RoomArr[1, 4, 2].AddEnemy(TEnemy.Create('Prediger', 20, 5, 'Images/Enemies/AAAAA.png'));
     RoomArr[1, 4, 2].EnemyArr[0].SetResistances(1, 1, 1);
-    CreateARoom('zwei Prediger (schnarch).', 'Images/Rooms/Höle.png', 2, 4, 2);
+    CreateARoom('zwei Prediger (schnarch).', 'Images/Rooms_lvl3/RoomWithTwoPreachersToBoss.png', 2, 4, 2);
     RoomArr[2, 4, 2].AddEnemy(TEnemy.Create('Prediger', 20, 5, 'Images/Enemies/AAAAA.png'));
     RoomArr[2, 4, 2].EnemyArr[0].SetResistances(1, 1, 1);
     RoomArr[2, 4, 2].AddEnemy(TEnemy.Create('Prediger', 20, 5, 'Images/Enemies/AAAAA.png'));
     RoomArr[2, 4, 2].EnemyArr[0].SetResistances(1, 1, 1);
-    CreateARoom('Könnte ich einen Moment mit ihnen über Gott reden?', 'Images/Rooms/Höle.png', 3, 4, 2);
+    CreateARoom('Könnte ich einen Moment mit ihnen über Gott reden?', 'Images/Rooms_lvl3/RoomWithPreacherWithKatana.png', 3, 4, 2);
     RoomArr[3,4,2].setblockedtop(true);
     RoomArr[3, 4, 2].AddEnemy(TEnemy.Create('Prediger', 20, 5, 'Images/Enemies/AAAAA.png'));
     RoomArr[3, 4, 2].EnemyArr[0].SetResistances(1, 1, 1);
-    CreateARoom('Links sind Gegner und Rechts solltest du lang gehen.', 'Images/Rooms/Höle.png', 4, 4, 2);
-    CreateARoom('Achtung vor Gegner, jedoch Schatz vorraus?.', 'Images/Rooms/Höle.png', 5, 4, 2);
+    CreateARoom('Links sind Gegner und Rechts solltest du lang gehen.', 'Images/Rooms_lvl3/CrossRoom.png', 4, 4, 2);
+    CreateARoom('Achtung vor Gegner, jedoch Schatz vorraus?.', 'Images/Rooms_lvl3/CrossRoomBeforeMagicWeapon.png', 5, 4, 2);
     RoomArr[5,4,2].setblockedtop(true);
     CreateARoom('In the name of god.', 'Images/Rooms/Höle.png', 6, 4, 2);
     RoomArr[6, 4, 2].AddEnemy(TEnemy.Create('AAAAA', 20, 5, 'Images/Enemies/AAAAA.png'));
     RoomArr[6, 4, 2].EnemyArr[0].SetResistances(1, 1, 1);
-    CreateARoom('Heal me up Scotty.', 'Images/Rooms/Höle.png', 1, 3, 2);
-    CreateARoom('Its going down down (out of array).', 'Images/Rooms/Höle.png', 3, 3, 2);
-    CreateARoom('Doppelte Predigt.', 'Images/Rooms/Höle.png', 5, 3, 2);
+    CreateARoom('Heal me up Scotty.', 'Images/Rooms_lvl3/RoomWithHealingStatureBeforeBoss.png', 1, 3, 2);
+    RoomArr[1,3,2].AddRoomObject(TRoomObject.create('Some Statue', 'DEUS LO VULT!', 'Images/RoomObjects/HealingStatureLevel2.png'));
+    CreateARoom('Its going down down (out of array).', 'Images/Rooms_lvl3/RoomToGuardianBeforeStorage.png', 3, 3, 2);
+    CreateARoom('Doppelte Predigt.', 'Images/Rooms_lvl3/RoomWithTwoPreachersToMagicWeapon.png', 5, 3, 2);
     RoomArr[5,3,2].setblockedright(true);
     RoomArr[5, 3, 2].AddEnemy(TEnemy.Create('Prediger', 20, 5, 'Images/Enemies/AAAAA.png'));
     RoomArr[5, 3, 2].EnemyArr[0].SetResistances(1, 1, 1);
     RoomArr[5, 3, 2].AddEnemy(TEnemy.Create('Prediger', 20, 5, 'Images/Enemies/AAAAA.png'));
     RoomArr[5, 3, 2].EnemyArr[0].SetResistances(1, 1, 1);
-    CreateARoom('Warum existiert dieser Raum?', 'Images/Rooms/Höle.png', 6, 3, 2);
+    CreateARoom('Warum existiert dieser Raum?', 'Images/Rooms_lvl3/RoomBeforeMoonlightRoom.png', 6, 3, 2);
     RoomArr[6,3,2].setblockedleft(true);
     RoomArr[6,3,2].setdoorbottom(true);
-    CreateARoom('Great Chest ahead ;).', 'Images/Rooms/Höle.png', 2, 2, 2);
-    CreateARoom('Ist das Ornstein?', 'Images/Rooms/Höle.png', 3, 2, 2);
+    CreateARoom('Great Chest ahead ;).', 'Images/Rooms_lvl3/StorageWithItemsRoom.png', 2, 2, 2);
+    RoomArr[2,2,2].AddRoomObject(TRoomObject.create('Chest', 'full of fun', 'Images/RoomObjects/ChestSecretRoom.png'));
+    RoomArr[2,2,2].RoomObjectArr[0].SetChest(TItem.create('One for All', 'Increases your power to plus ultra and beyond','Images/Items/DmgUp.png'));
+    CreateARoom('Ist das Ornstein?', 'Images/Rooms_lvl3/RoomWithGuardianBeforeStorage.png', 3, 2, 2);
     RoomArr[3, 2, 2].AddEnemy(TEnemy.Create('AAAAA', 20, 5, 'Images/Enemies/AAAAA.png'));
     RoomArr[3, 2, 2].EnemyArr[0].SetResistances(1, 1, 1);
     CreateARoom('Its MAGIC.', 'Images/Rooms/Höle.png', 5, 2, 2);
+    RoomArr[5,2,2].AddWeapon(TWeapon.create('Magic Dagger', 'Its magical', 'Images/Items/Dagger.png', 0,5,0,10));
     RoomArr[5,2,2].setblockedright(true);
-    CreateARoom('Alexa spiel Dancing in the Moonlight.', 'Images/Rooms/Höle.png', 6, 2, 2);
+    CreateARoom('Alexa spiel Dancing in the Moonlight.', 'Images/Rooms_lvl3/RoomWithSwordOfMoonlight.png', 6, 2, 2);
     RoomArr[6,2,2].setblockedleft(true);
-    CreateARoom('Poke to death.', 'Images/Rooms/Höle.png', 3, 1, 2);
+    RoomArr[6,2,2].AddWeapon(TWeapon.create('Sword of Moonlight', 'You can feel the great magical power this blade emits', 'Images/SwordOfMoonlightOnPedestal.png', 0,5,0,10));
+    CreateARoom('Poke to death.', 'Images/Rooms_lvl3/WeaponStorageRoom.png', 3, 1, 2);
+    RoomArr[3,1,2].AddWeapon(TWeapon.create('Spear', 'You can poke things to death like a pussy', 'Images/Items/Dagger.png', 0,20,0,0));
   end;
 end;
 {------------------------------------------------------------------------------}

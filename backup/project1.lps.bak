@@ -21,8 +21,8 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Unit1"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="166"/>
-        <CursorPos X="41" Y="183"/>
+        <TopLine Value="1540"/>
+        <CursorPos X="126" Y="1547"/>
         <FoldState Value=" T3mT0321111 pjArC0{1213]C1u60W2 piZjY0H7m"/>
         <UsageCount Value="138"/>
         <Loaded Value="True"/>
@@ -139,7 +139,6 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="BossClass"/>
         <EditorIndex Value="6"/>
-        <TopLine Value="363"/>
         <CursorPos X="84" Y="383"/>
         <UsageCount Value="45"/>
         <Loaded Value="True"/>
