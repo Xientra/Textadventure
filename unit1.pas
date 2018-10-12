@@ -1494,7 +1494,7 @@ begin
     //RoomArr[2, 0, 0].Boss.SetStance3(0.5, 0.5, 0.5);
 
     CreateARoom('Der Raum mit der Ratte.', 'Images/Rooms_lvl1/MiddleCorridorClosedCells.png', 4, 1, 0);
-    RoomArr[4, 1, 0].AddEnemy(TEnemy.Create('Rat', 20, 5, 'Images/Enemies/AAAAA.png'));
+    RoomArr[4, 1, 0].AddEnemy(TEnemy.Create('Rat', 20, 5, 'Images/Enemies_lvl1/Rat.png'));
     RoomArr[4, 1, 0].EnemyArr[0].SetResistances(0.5, 1.2, 1);
     RoomArr[4, 1, 0].EnemyArr[0].SetItemDrop(TItem.Create('Literely just Trash', 'Like acually.', 'Images/Items/ITEM.png'));
     //RoomArr[2, 0, 0].EnemyArr[0].SetWeaponDrop(TWeapon.Create('Test Wep', 'Hi, i am a test wep.', 'Images/Items/ITEM.png', 1, 2, 3, 4));
@@ -1508,16 +1508,16 @@ begin
     CreateARoom('F*cking Goblins', 'Images/Rooms_lvl1/RoomWithGoblin.png', 4, 3, 0);
     RoomArr[4,3,0].SetDoorTop(true);
     RoomArr[4,3,0].SetDoorIndexTop(0);
-    RoomArr[4, 3, 0].AddEnemy(TEnemy.Create('Goblin', 30, 10, 'Images/Enemies/AAAAA.png'));
+    RoomArr[4, 3, 0].AddEnemy(TEnemy.Create('Goblin', 30, 10, 'Images/Enemies_lvl1/Goblin.png'));
     RoomArr[4, 3, 0].EnemyArr[0].SetResistances(0.7,1.3,1);
     RoomArr[4, 3, 0].EnemyArr[0].SetWeaponDrop(TWeapon.Create('A fancy Sword', 'With this Sword you can slash through hords of enemies.', 'Images/Items/Sword.png', 0, 0, 18, 0));
     CreateARoom('I see trouble', 'Images/Rooms_lvl1/RoomBeforeRats.png', 5, 2, 0);
     CreateARoom('And we make it tripple', 'Images/Rooms_lvl1/RoomWithRats.png', 6, 2, 0);
-    RoomArr[6, 2, 0].AddEnemy(TEnemy.Create('Rat', 20, 5, 'Images/Enemies/AAAAA.png'));
+    RoomArr[6, 2, 0].AddEnemy(TEnemy.Create('Rat', 20, 5, 'Images/Enemies_lvl1/ThreeRats3.png'));
     RoomArr[6, 2, 0].EnemyArr[0].SetResistances(1, 0.8, 1.2);
-    RoomArr[6, 2, 0].AddEnemy(TEnemy.Create('Rat', 20, 5, 'Images/Enemies/AAAAA.png'));
+    RoomArr[6, 2, 0].AddEnemy(TEnemy.Create('Rat', 20, 5, 'Images/Enemies_lvl1/ThreeRats2.png'));
     RoomArr[6, 2, 0].EnemyArr[1].SetResistances(1, 0.8, 1.2);
-    RoomArr[6, 2, 0].AddEnemy(TEnemy.Create('Rat', 20, 5, 'Images/Enemies/AAAAA.png'));
+    RoomArr[6, 2, 0].AddEnemy(TEnemy.Create('Rat', 20, 5, 'Images/Enemies_lvl1/ThreeRats1.png'));
     RoomArr[6, 2, 0].EnemyArr[2].SetResistances(1, 0.8, 1.2);
     CreateARoom('Praise the Goddess!', 'Images/Rooms_lvl1/RoomWithHealStature.png', 7, 2, 0);
     RoomArr[7, 2, 0].AddRoomObject(TRoomObject.Create('A Stature of an unknown Godess', '', 'Images/RoomObjects/StatureOfAnUnknownGod.png'));
@@ -1527,7 +1527,7 @@ begin
     CreateARoom('Leerer Raum oder so', 'Images/Rooms_lvl1/RoomAfterRatsAndBeforeGoblin.png', 6, 3, 0);
     //RoomArr[4,3,0].SetBlockedRight(true);
     CreateARoom('Drop den Schlüssel Goblin', 'Images/Rooms_lvl1/RoomWithGoblinWithKey.png', 6, 4, 0);
-    RoomArr[6, 4, 0].AddEnemy(TEnemy.Create('AAAAA', 30, 10, 'Images/Enemies/AAAAA.png'));
+    RoomArr[6, 4, 0].AddEnemy(TEnemy.Create('Goblin', 30, 10, 'Images/Enemies_lvl1/GoblinWithKey.png'));
     RoomArr[6, 4, 0].EnemyArr[0].SetResistances(0.7, 1.3, 1);
     RoomArr[6, 4, 0].EnemyArr[0].SetItemDrop(TItem.Create('alter Schlüssel', 'Dieser Schlüssel scheint zu einer alte Tür irgendwo in diesem Höhlensystem zu gehören', 'Images/Items/Key1.png', 0));
     CreateARoom('Useless ahead', 'Images/Rooms_lvl1/RoomAfterGoblinWithKey.png', 5, 4, 0);
@@ -1537,6 +1537,7 @@ begin
     CreateARoom('Estus vorraus', 'Images/Rooms_lvl1/RoomWithHealItem.png', 3, 4, 0);
     RoomArr[3,4,0].AddItem(TItem.Create('Heiltrank', 'Dieses Elexier stellt deine Lebenskraft wieder her', 'Images/Items/HealingItem.png'));
     CreateARoom('This is so sad. Alexa, play Gwyns theme', 'Images/Rooms/Höle.png', 4, 5, 0);
+    RoomArr[4,5,0].AddBoss(TBoss.create('Rat King', 'muscular wererat', 'Images/Enemies_lvl1/RatKing.png',0, 120, 30);
     RoomArr[4,5,0].AddRoomObject(TRoomObject.Create('Ladder','The height of this ladder is beyond comprehension','Images/Rooms_lvl1/BossRoomWithLadder.png'));
     RoomArr[4,5,0].RoomObjectArr[0].SetLadder();
   end;
@@ -1644,6 +1645,7 @@ begin
     CreateARoom('erstes zusammentreffen mit einem Wächter.', 'Images/Rooms_lvl3/RoomWithGuardianWithHeavySword.png', 4, 5, 2);
     RoomArr[3, 5, 2].AddEnemy(TEnemy.Create('Wächter', 20, 5, 'Images/Enemies/AAAAA.png'));
     RoomArr[3, 5, 2].EnemyArr[0].SetResistances(1, 1, 1);
+    RoomArr[3, 5, 2].EnemyArr[0].SetWeaponDrop(TWeapon.create('Heavy Sword', 'Its quite heavy (who would have thought?)', 'Images/Items/HeavySword.png', 15,0,0,0));
     //CreateARoom('Hier liegt ein Greatsword (aber nicht "Greatsword" da es ein Ultragreatsword ist).', 'Images/Rooms/Höle.png', 5, 5, 2);
     //RoomArr[5,5,2].setblockedbottom(true);
     CreateARoom('Alexa JETZT spiel Gwyns Theme.', 'Images/Rooms_lvl3/BossRoomLevel3.png', 0, 4, 2);
@@ -1659,6 +1661,7 @@ begin
     RoomArr[3,4,2].setblockedtop(true);
     RoomArr[3, 4, 2].AddEnemy(TEnemy.Create('Prediger', 20, 5, 'Images/Enemies/AAAAA.png'));
     RoomArr[3, 4, 2].EnemyArr[0].SetResistances(1, 1, 1);
+    RoomArr[3, 4, 2].EnemyArr[0].SetWeaponDrop(TWeapon.create('Katana', 'A blade thinner than a pice of paper which can slash through Diamonds', 'Images/Items/Katana.png',0,0,25,0));
     CreateARoom('Links sind Gegner und Rechts solltest du lang gehen.', 'Images/Rooms_lvl3/CrossRoom.png', 4, 4, 2);
     CreateARoom('Achtung vor Gegner, jedoch Schatz vorraus?.', 'Images/Rooms_lvl3/CrossRoomBeforeMagicWeapon.png', 5, 4, 2);
     RoomArr[5,4,2].setblockedtop(true);
@@ -1690,7 +1693,7 @@ begin
     RoomArr[6,2,2].setblockedleft(true);
     RoomArr[6,2,2].AddWeapon(TWeapon.create('Sword of Moonlight', 'You can feel the great magical power this blade emits', 'Images/SwordOfMoonlightOnPedestal.png', 0,5,0,10));
     CreateARoom('Poke to death.', 'Images/Rooms_lvl3/WeaponStorageRoom.png', 3, 1, 2);
-    RoomArr[3,1,2].AddWeapon(TWeapon.create('Spear', 'You can poke things to death like a pussy', 'Images/Items/Dagger.png', 0,20,0,0));
+    RoomArr[3,1,2].AddWeapon(TWeapon.create('Spear', 'You can poke things to death like a pussy', 'Images/Items/Spear.png', 0,20,0,0));
   end;
 end;
 {------------------------------------------------------------------------------}
