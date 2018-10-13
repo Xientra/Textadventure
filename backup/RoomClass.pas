@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Dialogs{für ShowMessage},
-  EnemyClass{für TEnemy}, BossClass{für TBoss} ItemClass{für TItem}, WeaponClass{für TWeapon}, RoomObjectClass{für TRoomObject};
+  EnemyClass{für TEnemy}, BossClass{für TBoss}, ItemClass{für TItem}, WeaponClass{für TWeapon}, RoomObjectClass{für TRoomObject};
 
 type
   TRoom = class
@@ -168,7 +168,7 @@ begin
 end;
 procedure TRoom.AddBoss(_boss: TBoss);
 begin
-  if (Boss <> nil) then Showmessage('The Boss of this Room was not nil before.');
+  if (Boss <> nil) then Showmessage('The boss 'Boss.GetName() + ' of this Room was not nil before.');
   Boss := _boss;
 end;
 procedure TRoom.AddWeapon(_weapon: TWeapon);

@@ -168,7 +168,7 @@ begin
 end;
 procedure TRoom.AddBoss(_boss: TBoss);
 begin
-  if (Boss <> nil) then Showmessage('The Boss of this Room was not nil before.');
+  if (Boss <> nil) then Showmessage('The boss '+Boss.GetName()+' of this Room was not nil before.');
   Boss := _boss;
 end;
 procedure TRoom.AddWeapon(_weapon: TWeapon);

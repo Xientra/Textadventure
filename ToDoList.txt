@@ -10,7 +10,6 @@ _______________________________________
 -Gegner müssen noch ihren Stance/Resistenzen ändern können :D
 -Alle Räume brauchen Beschreibungen :D
 
-
 -wenn man stirbt werden ALLE erstellten Objekte von Räumen Gegner usw.einfach da gelassen und dann nochmal neu erstellt...
 
 //Das ist einfach so und nicht wirklich ein Bug muss aber möglicherweise dennoch geändert werden 
@@ -29,7 +28,8 @@ _______________________________________
 
 -> "3D" Assets :D
 	-> Items	
-		-Magic Dagger
+		-Bone Key
+		-Key3
 		
 	-> Räume
 		-Ebene 3
