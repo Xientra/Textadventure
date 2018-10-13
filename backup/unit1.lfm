@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 442
+  Left = 400
   Height = 800
-  Top = 149
+  Top = 166
   Width = 1400
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
@@ -61,7 +61,7 @@ object Form1: TForm1
   LCLVersion = '1.8.4.0'
   object Btn1_Image: TImage
     Cursor = crHandPoint
-    Left = 1256
+    Left = 1200
     Height = 64
     Top = 656
     Width = 128
@@ -156,7 +156,7 @@ object Form1: TForm1
   end
   object Btn2_Image: TImage
     Cursor = crHandPoint
-    Left = 1000
+    Left = 944
     Height = 64
     Top = 656
     Width = 128
@@ -206,7 +206,7 @@ object Form1: TForm1
   end
   object Btn3_Image: TImage
     Cursor = crHandPoint
-    Left = 1128
+    Left = 1072
     Height = 64
     Top = 592
     Width = 128
@@ -256,7 +256,7 @@ object Form1: TForm1
   end
   object Btn4_Image: TImage
     Cursor = crHandPoint
-    Left = 1128
+    Left = 1072
     Height = 64
     Top = 720
     Width = 128
@@ -306,7 +306,7 @@ object Form1: TForm1
   end
   object Btn1_Label: TLabel
     Cursor = crHandPoint
-    Left = 1256
+    Left = 1200
     Height = 18
     Top = 680
     Width = 128
@@ -329,7 +329,7 @@ object Form1: TForm1
   end
   object Btn2_Label: TLabel
     Cursor = crHandPoint
-    Left = 1000
+    Left = 944
     Height = 18
     Top = 680
     Width = 120
@@ -352,7 +352,7 @@ object Form1: TForm1
   end
   object Btn3_Label: TLabel
     Cursor = crHandPoint
-    Left = 1128
+    Left = 1072
     Height = 18
     Top = 616
     Width = 120
@@ -375,7 +375,7 @@ object Form1: TForm1
   end
   object Btn4_Label: TLabel
     Cursor = crHandPoint
-    Left = 1128
+    Left = 1072
     Height = 18
     Top = 744
     Width = 120
@@ -505,10 +505,10 @@ object Form1: TForm1
       10EDCDC1150000000049454E44AE426082
     }
   end
-  object Directions_Image: TImage
-    Left = 816
+  object Oriantation_Image: TImage
+    Left = 808
     Height = 33
-    Top = 7
+    Top = 623
     Width = 33
     Picture.Data = {
       1754506F727461626C654E6574776F726B477261706869632201000089504E47
@@ -522,6 +522,47 @@ object Form1: TForm1
       C7E7FAE35930AB16DD4B7EAED6C73E31DBFF6F76F953C28D1D92746BC788FE1D
       DAA2CD605A17E899EF01FC10BC222897D9E30000000049454E44AE426082
     }
+  end
+  object Direction_Image: TImage
+    Left = 800
+    Height = 100
+    Top = 696
+    Width = 100
+  end
+  object Direction_Label: TLabel
+    Left = 808
+    Height = 18
+    Top = 664
+    Width = 69
+    Caption = 'Direction:'
+    Font.CharSet = ANSI_CHARSET
+    Font.Color = clWhite
+    Font.Height = -16
+    Font.Name = 'Georgia'
+    Font.Pitch = fpVariable
+    Font.Quality = fqDraft
+    Font.Style = [fsUnderline]
+    ParentColor = False
+    ParentFont = False
+  end
+  object Arrow_Image: TImage
+    Left = 1104
+    Height = 63
+    Top = 656
+    Width = 63
+    Picture.Data = {
+      1754506F727461626C654E6574776F726B477261706869631801000089504E47
+      0D0A1A0A0000000D494844520000001F0000001F08060000001FAE1639000000
+      DF494441545847D556D10EC420081BFFFFD15E5C82219EDA0239F5F6B820A540
+      0179125F29A58888445D841F56C063E015581947D987991F03B7C019F621E65B
+      C16D632970ADB3FEB7FF3C8D48331FD578145405671B90061F69F96752631C67
+      6D96CC19E7ABE986DEDF09DE7770A4E6C8C71773CFE4426955D9CD065103EF07
+      07928B37489B39F5FD0E0A6625EA831E74A67FCAA71A1D61DE47E84D67A63C53
+      A9A14E656638F271A7CE1966A8A99014976967EA99B1B973AB312AD8B2CF8F5F
+      3236135B6FB85509B65FAF685B2109B6805943A601BDBEFE436A914B0665E203
+      0BDB082BAB3C98F70000000049454E44AE426082
+    }
+    Stretch = True
   end
   object MusicTimer: TTimer
     Enabled = False

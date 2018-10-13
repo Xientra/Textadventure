@@ -16,7 +16,10 @@ type
 
   TForm1 = class(TForm)
     Edit2: TEdit;
-    Directions_Image: TImage;
+    Arrow_Image: TImage;
+    Oriantation_Image: TImage;
+    Direction_Image: TImage;
+    Direction_Label: TLabel;
     MuteBtn_Image: TImage;
     Memo_Stats: TMemo;
     Memo_Description: TMemo;
@@ -181,7 +184,7 @@ begin
 
   CreateRooms(); //Erstellt das Spiel
   //Erschafft den Spieler in einem Raum
-  Player1 := TPlayer.Create(RoomArr[3, 0, 0], TWeapon.Create('Fists', 'Just your good old hands.', 'Images/Items/ShortSword.png', 10, 0, 0, 0), 10000);
+  Player1 := TPlayer.Create(RoomArr[3, 0, 0], TWeapon.Create('Fists', 'Just your good old hands.', 'Images/Items/ITEMpng', 10000, 0, 0, 0), 10000);
 
   //Stuff just for testing the inventory
   //Player1.AddItem(TItem.Create('some Key', 'it not usefull for any door...','Images/Items/Key1.png'));
@@ -1372,12 +1375,21 @@ begin
 end;
 
 procedure TForm1.PrintRoomData(_room: TRoom); //print situation = 0
+var _directionImagePath: string;
 begin
   Memo1.Clear();
   Memo1.Lines.Add(_room.GetDescription());
   Image1.Picture.LoadFromFile(_room.GetImagePath());
   Memo_Description.Clear();
   Player1.getcurrendroom.setvisited(true);
+
+  _directionImagePath := _room.GetImagePath();
+  _directionImagePath := StringReplace(_directionImagePath, 'Rooms_lvl1', 'Directions_Level1', [rfReplaceAll]);
+  _directionImagePath := StringReplace(_directionImagePath, 'Rooms_lvl2', 'Directions_Level2', [rfReplaceAll]);
+  _directionImagePath := StringReplace(_directionImagePath, 'Rooms_lvl3', 'Directions_Level3', [rfReplaceAll]);
+  _directionImagePath := StringReplace(_directionImagePath, '.png', '_XYZ.png', [rfReplaceAll]);
+
+  Direction_Image.Picture.LoadFromFile(_directionImagePath);
 end;
 
 procedure TForm1.PrintEnemyData(_enemy: TEnemy); //print situation 1 and 2
