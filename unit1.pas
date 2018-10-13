@@ -184,7 +184,7 @@ begin
 
   CreateRooms(); //Erstellt das Spiel
   //Erschafft den Spieler in einem Raum
-  Player1 := TPlayer.Create(RoomArr[3, 0, 0], TWeapon.Create('Fists', 'Just your good old hands.', 'Images/Items/ITEMpng', 10000, 0, 0, 0), 10000);
+  Player1 := TPlayer.Create(RoomArr[3, 2, 1], TWeapon.Create('Fists', 'Just your good old hands.', 'Images/Items/ITEMpng', 10000, 0, 0, 0), 10000);
 
   //Ändert die Situation zum erstem mal
   ChangeUIState(0); //also updates UI
@@ -368,6 +368,11 @@ begin
       Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].SetIgnore(true);
       PrintAndUIChange(currendSituation, 'You leave the Ladder.');
     end;
+  17: //lässt das RoomObject im Raum
+    begin
+      Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].SetIgnore(true);
+      PrintAndUIChange(currendSituation, 'You leave the Dealer.');
+    end;
   53: //Geht aus dem Waffen Menu zurück in das Kampf Menu
     begin
       ChangeUIState(currendSituation);
@@ -508,6 +513,17 @@ begin
                                          'You have learned... how to climb');
       FreeAndNil(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex]);
       Player1.ChangeRoom('zPos');
+    end;
+  17: //Interagiet mit dem Dealer
+    begin
+      PrintAndUIChange(0, 'This poor soul offers you a bomb if you can pay him appropriate.');
+      for i := 0 to length(Player1.iteminventory)-1 do begin
+        if Player1.iteminventory[i].GetIsCoin then begin
+           Player1.AddItem(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetDealerItem());
+           FreeAndNil(Player1.iteminventory[i]);
+           FreeAndNil(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex]);
+           end;
+      end;
     end;
   53: //Rüstet die im Inventar ausgewählte waffe aus und beendet die Runde des Spielers
     begin
@@ -831,6 +847,30 @@ begin
     end;
   3: //Kampf mit Bossen (Runde des Spielers)
     begin
+      if (muted = false) then
+      begin
+      if FightingBoss.getLevel = 1 then
+        begin
+        isplaying := false;
+        songlength := 31;
+        songpath := 'music\textadventure track2.wav';
+        end else if FightingBoss.getLevel = 2 then
+          begin
+        isplaying := false;
+        songlength := 36;
+        songpath := 'music\BossTrack1.wav';
+        end else if FightingBoss.getLevel = 3 then
+          begin
+        isplaying := false;
+        songlength := 31;
+        songpath := 'music\Textadventure_Track_3.wav';
+        end;
+        if isplaying = false then
+        begin
+          PlaySound(songPath,0,SND_ASYNC);
+          isplaying := true;
+        end;
+      end;
       currendSituation := 3;
       Btn1_Label.caption := 'Skills';
       Btn2_Label.caption := 'Attack';
@@ -948,6 +988,19 @@ begin
       Btn1_Label.caption := 'Leave';
       SetButton(Btn1_Image, Btn1_Label, true);
       Btn2_Label.caption := 'Climb';
+      SetButton(Btn2_Image, Btn2_Label, true);
+      Btn3_Label.caption := '';
+      SetButton(Btn3_Image, Btn3_Label, false);
+      Btn4_Label.caption := '';
+      SetButton(Btn4_Image, Btn4_Label, false);
+
+      PrintRoomObjectData(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex]);
+    end;
+  17: //Interagiert mit einem Dealer in einem Raum
+    begin
+      Btn1_Label.caption := 'Leave';
+      SetButton(Btn1_Image, Btn1_Label, true);
+      Btn2_Label.caption := 'Buy';
       SetButton(Btn2_Image, Btn2_Label, true);
       Btn3_Label.caption := '';
       SetButton(Btn3_Image, Btn3_Label, false);
@@ -1090,6 +1143,8 @@ begin
             PrintAndUIChange(15, 'You notice a stature and get closer to it.');
           if (Player1.GetCurrendRoom().RoomObjectArr[i].GetIsLadder()) then
             PrintAndUIChange(16, 'You notice a Ladder and get closer to it.');
+          if (Player1.GetCurrendRoom().RoomObjectArr[i].GetIsDealer()) then
+            PrintAndUIChange(17, 'You notice a Dealer in one of the cells and get closer to him.');
         end;
   end;
 
@@ -1538,13 +1593,13 @@ begin
 
     // 4 5 0
     CreateARoom('There is a ladder in this room.'+sLineBreak+'It this the way out?', 'Images/Rooms_lvl1/BossRoom.png', 4, 5, 0);
-    RoomArr[4, 5, 0].AddBoss(TBoss.create('Wererat', 'muscular', 'Images/Enemies_lvl1/RatKing.png',0, 120, 30));
+    RoomArr[4, 5, 0].AddBoss(TBoss.create('Wererat', 'muscular', 'Images/Enemies_lvl1/RatKing.png',1, 120, 30));
     RoomArr[4, 5, 0].Boss.SetStance1(1, 1, 1);
     RoomArr[4, 5, 0].Boss.SetStance2(1, 1, 1);
     RoomArr[4, 5, 0].Boss.SetStance3(1, 1, 1);
 
     RoomArr[4, 5, 0].Boss.SetSkillDrop(TSkill.Create('Strike Skill', 'This skill throws pure force at your enemies.', 'Images/Skills/SkillStrike.png', 3, 1.5, 0, 0, 0));
-    RoomArr[4, 5, 0].AddRoomObject(TRoomObject.Create('Ladder','The height of this ladder is beyond comprehension.','Images/Rooms_lvl1/BossRoomWithLadder.png'));
+    RoomArr[4, 5, 0].AddRoomObject(TRoomObject.Create('Ladder','The height of this ladder is beyond comprehension.','Images/RoomObjects/Ladder_lvl1.png'));
     RoomArr[4, 5, 0].RoomObjectArr[0].SetLadder();
   end;
 
@@ -1553,7 +1608,7 @@ begin
 
     //2 6 1
     CreateARoom('This looks like it has been corrupted by the guardain which has been standing here.', 'Images/Rooms_lvl2/part2/BossRoomlvl2.png', 2, 6, 1);
-    RoomArr[2, 6, 1].AddBoss(TBoss.Create('Artorias', 'corrupted guardian', 'Images/Enemies_lvl2/Astorias.png', 1, 999999, 999999));
+    RoomArr[2, 6, 1].AddBoss(TBoss.Create('Artorias', 'corrupted guardian', 'Images/Enemies_lvl2/Astorias.png', 2, 999999, 999999));
     RoomArr[2, 6, 1].Boss.SetStance1(1, 1, 1);
     RoomArr[2, 6, 1].Boss.SetStance2(1, 1, 1);
     RoomArr[2, 6, 1].Boss.SetStance3(1, 1, 1);
@@ -1610,6 +1665,7 @@ begin
     CreateARoom('There is a chest lying around.'+'You wonder why noone has opened this chest yet.', 'Images/Rooms_lvl2/part1/RoomWithChest.png', 6, 4, 1);
     RoomArr[6,4,1].AddRoomObject(TRoomObject.create('Chest','made out of wood','Images/RoomObjects/ChestWithCoin.png'));
     RoomArr[6,4,1].RoomObjectArr[0].SetChest(TItem.create('Coin','You can buy thing with it i guess...', 'Images/Items/Coin.png'));
+    RoomArr[6,4,1].RoomObjectArr[0].GetChestItem.SetIsCoin(true);
 
     //1 3 1
     CreateARoom('You can feel tranquility flow through this room. ', 'Images/Rooms_lvl2/part2/RoomWithHealingStaturePart2.png', 1, 3, 1);
@@ -1667,10 +1723,13 @@ begin
 
     //3 1 1
     CreateARoom('There is still someone in this cell.', 'Images/Rooms_lvl2/part1/RoomWithWardenAndDealer.png', 3, 1, 1);
+    RoomArr[3,1,1].AddRoomObject(TRoomObject.create('undead prisoner', 'even if he is in a cell he could help you', 'Images/RoomObjects/Dealer.png'));
+    RoomArr[3,1,1].RoomObjectArr[0].SetDealer(TItem.create('Bomb', 'At close range it influences everything with enough Newton force to breake a wall', 'Images/Items/Bomb.png'));
+
     RoomArr[3,1,1].AddEnemy(TEnemy.Create('Guardian',75, 20,'Images/Enemies_lvl2/WardenNearDealer.png'));
     RoomArr[3,1,1].EnemyArr[0].SetResistances(1.5,0.8,0.8);
     RoomArr[3,1,1].EnemyArr[0].SetItemDrop(TItem.create('Clean looking Key', 'This key looks way better than the other two.', 'Images/Items/Key1.png', 3));
-  end;
+     end;
 
   //Ebene 3
   begin
@@ -1686,7 +1745,7 @@ begin
 
     //0 4 2
     CreateARoom('You can still feel the power of the Spirtualist in this room.', 'Images/Rooms_lvl3/BossRoomLevel3.png', 0, 4, 2);
-    RoomArr[0, 4, 2].AddBoss(TBoss.create('Spiritualist', 'ascended', 'Images/Enemies_lvl3/Spiritualist.png',0, 120, 30));
+    RoomArr[0, 4, 2].AddBoss(TBoss.create('Spiritualist', 'ascended', 'Images/Enemies_lvl3/Spiritualist.png',3, 120, 30));
     RoomArr[0, 4, 2].Boss.SetStance1(1, 1, 1);
     RoomArr[0, 4, 2].Boss.SetStance2(1, 1, 1);
     RoomArr[0, 4, 2].Boss.SetStance3(1, 1, 1);

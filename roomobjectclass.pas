@@ -27,6 +27,7 @@ type
     procedure SetMimic(_item: TItem; _enemy: TEnemy);
     procedure SetSkillStatue(_skill: TSkill);
     procedure SetLadder();
+    procedure SetDealer(_item: TItem);
 
     //Get Effect
     function GetIsUseless(): boolean;
@@ -35,6 +36,8 @@ type
     function GetIsMimic(): boolean;
     function GetIsSkillStatue(): boolean;
     function GetIsLadder(): boolean;
+    function GetIsDealer(): boolean;
+    function GetDealerItem: TItem;
     //Get Effect Values
     function GetChestItem(): TItem;
     function GetMimicEnemy(): TEnemy;
@@ -50,11 +53,13 @@ type
     IsChest,
     IsMimic,
     IsSkillStatue,
-    IsLadder: boolean;
+    IsLadder,
+    IsDealer: boolean;
 
     ChestItem: TItem;
     MimicEnemy: TEnemy;
     SkillToTeach: TSkill;
+    DealerItem: TItem;
 
     Ignore: boolean;
   end;
@@ -145,6 +150,16 @@ begin
   isLadder := true;
   isUseless := false;
 end;
+procedure TRoomObject.SetDealer(_item: TItem);
+begin
+  IsUseless := false;
+  IsHealing := false;
+  IsChest := false;
+  IsMimic := false;
+  IsSkillStatue := false;
+  IsDealer := true;
+  DealerItem := _item;
+end;
 
 //Get Effect
 function TRoomObject.GetIsUseless(): boolean;
@@ -171,6 +186,10 @@ function TRoomObject.GetIsLadder(): boolean;
 begin
   result := IsLadder;
 end;
+function TRoomObject.GetIsDealer(): boolean;
+begin
+  result := IsDealer;
+end;
 
 //Get Effect Values
 function TRoomObject.GetChestItem(): TItem;
@@ -184,6 +203,10 @@ end;
 function TRoomObject.GetSkillToTeach(): TSkill;
 begin
   result := SkillToTeach;
+end;
+function TRoomObject.GetDealerItem: TItem;
+begin
+  result := DealerItem;
 end;
 
 end.

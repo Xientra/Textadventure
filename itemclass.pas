@@ -22,6 +22,7 @@ type
     function GetDmgDuration():integer;
     function GetDefenseUp: real;
     function GetDamageUp: real;
+    function GetIsCoin: boolean;
     //Get/Set Ignore
     function GetIgnore(): boolean;
     procedure SetIgnore(_setTo: boolean);
@@ -34,6 +35,7 @@ type
     procedure SetBomb(_damage: real);
     procedure SetDefDuration(_duration: integer);
     procedure SetDmgDuration(_duration: integer);
+    procedure SetIsCoin (b: boolean);
 
     function GetKeyIndex: integer;
 
@@ -48,7 +50,8 @@ type
     IsDamageUp,
     IsDefenseUp,
     IsBomb,
-    IsKey
+    IsKey,
+    IsCoin
     : boolean;
 
     //Werte zu den Verschiedene
@@ -80,6 +83,7 @@ begin
   IsDefenseUp := false;
   IsBomb := false;
   IsKey := false;
+  IsCoin := false;
   DmgBuffDuration := -1; //kein buff item
   DefBuffDuration := -1; //kein buff item
   KeyIndex := _keyindex; //
@@ -131,6 +135,11 @@ function TItem.GetImagePath(): string;
 begin
   result := ImagePath;
 end;
+function TItem.GetIsCoin: boolean;
+begin
+  result := IsCoin;
+end;
+
 //Get/Set Ignore
 function TItem.GetIgnore(): boolean;
 begin
@@ -198,6 +207,10 @@ begin
   IsKey := true;
 
   KeyIndex := _keyIndex;
+end;
+procedure TItem.SetIsCoin (b: boolean);
+begin
+  IsCoin := b;
 end;
 
 function TItem.GetKeyIndex(): integer;
