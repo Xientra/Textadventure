@@ -80,6 +80,4 @@ procedure TForm3.Image1MouseLeave(Sender: TObject); begin Image1.Picture.LoadFro
 procedure TForm3.Image2MouseEnter(Sender: TObject); begin Image2.Picture.LoadFromFile('Images/Buttons/Button_hover.png'); end;
 procedure TForm3.Image2MouseLeave(Sender: TObject); begin Image2.Picture.LoadFromFile('Images/Buttons/Button_down.png'); end;
 
-
-
 end.

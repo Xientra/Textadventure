@@ -97,6 +97,7 @@ end;
 procedure TPlayer.ChangeHealthBy(_amount: real);
 begin
   health := health + _amount;
+  if (health < 0) then health := 0;
 end;
 procedure TPlayer.SetFullHealth();
 begin

@@ -9,7 +9,7 @@ object Form3: TForm3
   Caption = 'Death Screen'
   ClientHeight = 195
   ClientWidth = 800
-  Color = 3947580
+  Color = clBlack
   Font.CharSet = ANSI_CHARSET
   Font.Color = clWhite
   Font.Height = -16

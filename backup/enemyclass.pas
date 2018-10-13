@@ -15,6 +15,8 @@ type
     constructor Create(_name: string; _health, _damage: real; _imagePath: string);
     function DoDamage(_strikeDmg, _thrustDmg, _slashDmg: real; _magicDmg: real): real; //macht dem Gegner Schaden multipliziert mit den Stärken und Schwächen des Gegners
     procedure SetResistances(_strikeResist, _thrustResist, _slashResist: real); //Gibt dem Gegner stärken oder Schwächen gegen bestimme Angriffe
+    procedure SetSecondStance(_strikeResist2, _thrustResist2, _slashResist2: real); //Gibt dem Gegner eine zweite phase in der er andere stärken und schwächen hat
+    procedure GoToSecondStance();
 
     //GetStuff
     function GetName(): string;
@@ -26,6 +28,8 @@ type
     function GetStrikeResist(): real;
     function GetThrustResist(): real;
     function GetSlashResist(): real;
+
+    function GetIsInSecondStance(): boolean;
 
     //Get/Set Stuff
     procedure SetWeaponDrop(_weapon: TWeapon);
@@ -47,6 +51,14 @@ type
     slashResist
     : real;
 
+    strikeResist2,
+    thrustResist2,
+    slashResist2
+    : real;
+
+    hasSecondStance: boolean;
+    isInSecondStance: boolean;
+
     //Sachen die der Gegner fallen läst wenn er besiegt wurde
     weaponDrop: TWeapon;
     itemDrop: TItem;
@@ -67,6 +79,12 @@ begin
   thrustResist := 1;
   slashResist := 1;
 
+  strikeResist2 := 1;
+  thrustResist2 := 1;
+  slashResist2 := 1;
+  hasSecondStance := false;
+  isInSecondStance := false;
+
   weaponDrop := nil;
   itemDrop := nil;
 end;
@@ -77,6 +95,24 @@ begin
   strikeResist := _strikeResist;
   thrustResist := _thrustResist;
   slashResist := _slashResist;
+end;
+
+procedure TEnemy.SetSecondResistances(_strikeResist2, _thrustResist2, _slashResist2: real);
+begin
+  strikeResist2 := _strikeResist2;
+  thrustResist2 := _thrustResist2;
+  slashResist2 := _slashResist2;
+
+  hasSecondStance := true;
+end;
+
+procedure TEnemy.GoToSecondStance();
+begin
+  strikeResist := strikeResist2;
+  thrustResist := thrustResist2;
+  slashResist := slashResist2;
+
+  isInSecondStance := true;
 end;
 
 //Macht dem gegner Schaden
@@ -107,7 +143,7 @@ function TEnemy.GetHealth(): real;
 begin
   result := health;
 end;
-function TPlayer.GetMaxHealth(): real;
+function TEnemy.GetMaxHealth(): real;
 begin
   result := maxHealth;
 end;
@@ -127,6 +163,11 @@ end;
 function TEnemy.GetSlashResist(): real;
 begin
   result := slashResist;
+end;
+
+function TEnemy.GetIsInSecondStance(): boolean;
+begin
+  result := isInSecondStance
 end;
 
 //Get/Set Drop

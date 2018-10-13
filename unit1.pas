@@ -1267,14 +1267,17 @@ end;
 //wird am ende/in der Runde des Gegners aufgerufen und macht dem Spieler Schaden
 procedure TForm1.EnemyTurn(); //logic situation = 2
 begin
-  Player1.ChangeHealthBy(-(FightingEnemy.GetDamage()*DefBuff));
   Memo1.Clear();
-  if (Player1.getHealth > 0) then
-  Memo1.Lines.Add('The Enemy delt ' + FloatToStr(FightingEnemy.GetDamage())+' damage.'+sLineBreak+'You now have ' + FloatToStr(Player1.GetHealth()) + ' health left')
-  else begin
-    Memo1.Lines.Add('The Enemy delt ' + FloatToStr(FightingEnemy.GetDamage())+' damage.'+sLineBreak+'You now have 0 health left');
 
-    PlayerDeath();
+  if (((FightingEnemy.GetHealth() / FightingEnemy.GetMaxHealth()) * 100) <= 50) and (FightingEnemy.GetIsInSecondStance() = false) then
+  begin
+    FightingEnemy.GoToSecondStance();
+    Memo1.Lines.Add(FightingEnemy.GetName()+' changed his stance.'+sLineBreak+'It now has different Resistences.')
+  end else
+  begin
+    Player1.ChangeHealthBy(-(FightingEnemy.GetDamage()*DefBuff));
+    Memo1.Lines.Add('The Enemy delt ' + FloatToStr(FightingEnemy.GetDamage())+' damage.'+sLineBreak+'You now have ' + FloatToStr(Player1.GetHealth()) + ' health left');
+    if (Player1.getHealth > 0) then PlayerDeath();
   end;
 end;
 

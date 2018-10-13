@@ -175,7 +175,7 @@ end;
 function TPlayer.HasSkills(): boolean;
 var i: integer;
 begin
-  result :0 false;
+  result := false;
   if (length(Skills) = 0) then result := false
   else
     for i := 0 to length(self.Skills) - 1 do
