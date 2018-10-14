@@ -253,7 +253,7 @@ begin
     if (strikeResistS1 > 1) then _weaknesses := 'strike';
       if (thrustResistS1 > 1) then
       begin
-        if (_weaknesses <> 'nothing') then
+        if (_weaknesses = 'nothing') then
           _weaknesses := 'thrust'
         else begin
           _weaknesses := _weaknesses + ' and ';
@@ -262,7 +262,7 @@ begin
       end;
       if (slashResistS1 > 1) then
       begin
-        if (_weaknesses <> 'nothing') then
+        if (_weaknesses = 'nothing') then
           _weaknesses := 'slash'
         else begin
           _weaknesses := _weaknesses + ' and ';
@@ -275,7 +275,7 @@ begin
       if (strikeResistS2 > 1) then _weaknesses := 'strike';
       if (thrustResistS2 > 1) then
       begin
-        if (_weaknesses <> 'nothing') then
+        if (_weaknesses = 'nothing') then
           _weaknesses := 'thrust'
         else begin
           _weaknesses := _weaknesses + ' and ';
@@ -284,7 +284,7 @@ begin
       end;
       if (slashResistS2 > 1) then
       begin
-        if (_weaknesses <> 'nothing') then
+        if (_weaknesses = 'nothing') then
           _weaknesses := 'slash'
         else begin
           _weaknesses := _weaknesses + ' and ';
@@ -297,7 +297,7 @@ begin
     if (strikeResistS3 > 1) then _weaknesses := 'strike';
       if (thrustResistS3 > 1) then
       begin
-        if (_weaknesses <> 'nothing') then
+        if (_weaknesses = 'nothing') then
           _weaknesses := 'thrust'
         else begin
           _weaknesses := _weaknesses + ' and ';
@@ -306,7 +306,7 @@ begin
       end;
       if (slashResistS3 > 1) then
       begin
-        if (_weaknesses <> 'nothing') then
+        if (_weaknesses = 'nothing') then
           _weaknesses := 'slash'
         else begin
           _weaknesses := _weaknesses + ' and ';
@@ -329,7 +329,7 @@ begin
     if (strikeResistS1 < 1) then _strengths := 'strike';
       if (thrustResistS1 < 1) then
       begin
-        if (_strengths <> 'nothing') then
+        if (_strengths = 'nothing') then
           _strengths := 'thrust'
         else begin
           _strengths := _strengths + ' and ';
@@ -338,7 +338,7 @@ begin
       end;
       if (slashResistS1 < 1) then
       begin
-        if (_strengths <> 'nothing') then
+        if (_strengths = 'nothing') then
           _strengths := 'slash'
         else begin
           _strengths := _strengths + ' and ';
@@ -351,7 +351,7 @@ begin
     if (strikeResistS2 < 1) then _strengths := 'strike';
       if (thrustResistS2 < 1) then
       begin
-        if (_strengths <> 'nothing') then
+        if (_strengths = 'nothing') then
           _strengths := 'thrust'
         else begin
           _strengths := _strengths + ' and ';
@@ -360,7 +360,7 @@ begin
       end;
       if (slashResistS2 < 1) then
       begin
-        if (_strengths <> 'nothing') then
+        if (_strengths = 'nothing') then
           _strengths := 'slash'
         else begin
           _strengths := _strengths + ' and ';
@@ -373,7 +373,7 @@ begin
     if (strikeResistS3 < 1) then _strengths := 'strike';
       if (thrustResistS3 < 1) then
       begin
-        if (_strengths <> 'nothing') then
+        if (_strengths = 'nothing') then
           _strengths := 'thrust'
         else begin
           _strengths := _strengths + ' and ';
@@ -382,7 +382,7 @@ begin
       end;
       if (slashResistS3 < 1) then
       begin
-        if (_strengths <> 'nothing') then
+        if (_strengths = 'nothing') then
           _strengths := 'slash'
         else begin
           _strengths := _strengths + ' and ';

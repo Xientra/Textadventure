@@ -429,7 +429,7 @@ begin
       z := _z;
       RoomObjectToCreate := _roomObject;
     end else ShowMessage('The Room at the Position '+IntToStr(_x*100+_y*10+_z)+' is nil.');
-  end;
+  end else ShowMessage('The Position '+IntToStr(_x*100+_y*10+_z)+' is out of array.');
 end;
 procedure TBoss.TriggerRoomObjectCreation();
 begin
