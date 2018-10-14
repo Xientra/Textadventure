@@ -35,30 +35,26 @@ type
     function GetPosZ: Integer;
 
     //Get/Set stuff über Ausgänge in alle Richtungen
-    procedure SetBlockedRight(b: boolean);
-    procedure SetBlockedLeft(b: boolean);
-    procedure SetBlockedTop(b: boolean);
-    procedure SetBlockedBottom(b: boolean);
+    procedure SetFakeRight(b: boolean);
+    procedure SetFakeLeft(b: boolean);
+    procedure SetFakeTop(b: boolean);
+    procedure SetFakeBottom(b: boolean);
 
-    function GetBlockedRight: boolean;
-    function GetBlockedLeft: boolean;
-    function GetBlockedTop: boolean;
-    function GetBlockedBottom: boolean;
+    function GetFakeRight: boolean;
+    function GetFakeLeft: boolean;
+    function GetFakeTop: boolean;
+    function GetFakeBottom: boolean;
 
-    procedure SetDoorRight(b: boolean);
-    procedure SetDoorLeft(b: boolean);
-    procedure SetDoorTop(b: boolean);
-    procedure SetDoorBottom(b: boolean);
+    procedure SetDoorRight(b: boolean; door_index: integer = -1);
+    procedure SetDoorLeft(b: boolean; door_index: integer = -1);
+    procedure SetDoorTop(b: boolean; door_index: integer = -1);
+    procedure SetDoorBottom(b: boolean; door_index: integer = -1);
 
     function GetDoorRight: boolean;
     function GetDoorLeft: boolean;
     function GetDoorTop: boolean;
     function GetDoorBottom: boolean;
     //Schlüsselloch Prinzip
-    procedure SetDoorIndexRight(b: integer);
-    procedure SetDoorIndexLeft(b: integer);
-    procedure SetDoorIndexTop(b: integer);
-    procedure SetDoorIndexBottom(b: integer);
 
     function GetDoorIndexRight: integer;
     function GetDoorIndexLeft: integer;
@@ -82,7 +78,7 @@ type
     //Position des Raumes
     pos_x, pos_y, pos_z: integer;
     //Tür Variablen
-    blocked_right, blocked_left, blocked_top, blocked_bottom : boolean;
+    Fake_right, Fake_left, Fake_top, Fake_bottom : boolean;
     door_right, door_left, door_top, door_bottom: boolean;
     doorIndex_right, doorIndex_left, doorIndex_top, doorIndex_bottom: integer;
   end;
@@ -105,10 +101,10 @@ begin
   pos_z := _pos_z;
 
   //Türen stuff
-  blocked_right:= false;
-  blocked_left := false;
-  blocked_top := false;
-  blocked_bottom := false;
+  Fake_right:= false;
+  Fake_left := false;
+  Fake_top := false;
+  Fake_bottom := false;
   door_right := false;
   door_left := false;
   door_top := false;
@@ -188,55 +184,59 @@ begin
 end;
 
 //TÜREN!
-procedure TRoom.SetBlockedRight(b: boolean);
+procedure TRoom.SetFakeRight(b: boolean);
 begin
-  blocked_right := b;
+  Fake_right := b;
 end;
-procedure TRoom.SetBlockedLeft(b: boolean);
+procedure TRoom.SetFakeLeft(b: boolean);
 begin
-  blocked_left := b;
+  Fake_left := b;
 end;
-procedure TRoom.SetBlockedTop(b: boolean);
+procedure TRoom.SetFakeTop(b: boolean);
 begin
-  blocked_top := b;
+  Fake_top := b;
 end;
-procedure TRoom.SetBlockedBottom(b: boolean);
+procedure TRoom.SetFakeBottom(b: boolean);
 begin
-  blocked_bottom := b;
+  Fake_bottom := b;
 end;
 
-procedure TRoom.SetDoorRight(b: boolean);
+procedure TRoom.SetDoorRight(b: boolean; door_index: integer = -1);
 begin
   door_right := b;
+  doorIndex_right := door_index;
 end;
-procedure TRoom.SetDoorLeft(b: boolean);
+procedure TRoom.SetDoorLeft(b: boolean; door_index: integer = -1);
 begin
   door_left := b;
+  doorIndex_left := door_index;
 end;
-procedure TRoom.SetDoorTop(b: boolean);
+procedure TRoom.SetDoorTop(b: boolean; door_index: integer = -1);
 begin
   door_top := b;
+  doorIndex_top := door_index;
 end;
-procedure TRoom.SetDoorBottom(b: boolean);
+procedure TRoom.SetDoorBottom(b: boolean; door_index: integer = -1);
 begin
   door_bottom := b;
+  doorIndex_bottom := door_index;
 end;
 
-function TRoom.GetBlockedRight: boolean;
+function TRoom.GetFakeRight: boolean;
 begin
-  result := blocked_right;
+  result := Fake_right;
 end;
-function TRoom.GetBlockedLeft: boolean;
+function TRoom.GetFakeLeft: boolean;
 begin
-  result := blocked_left;
+  result := Fake_left;
 end;
-function TRoom.GetBlockedTop: boolean;
+function TRoom.GetFakeTop: boolean;
 begin
-  result := blocked_top;
+  result := Fake_top;
 end;
-function TRoom.GetBlockedBottom: boolean;
+function TRoom.GetFakeBottom: boolean;
 begin
-  result := blocked_bottom;
+  result := Fake_bottom;
 end;
 
 function TRoom.GetDoorRight: boolean;
@@ -257,22 +257,6 @@ begin
 end;
 
 //Schlüsselloch Prinzip
-procedure TRoom.SetDoorIndexRight(b: integer);
-begin
-  doorIndex_right := b;
-end;
-procedure TRoom.SetDoorIndexLeft(b: integer);
-begin
-  doorIndex_left := b;
-end;
-procedure TRoom.SetDoorIndexTop(b: integer);
-begin
-  doorIndex_top := b;
-end;
-procedure TRoom.SetDoorIndexBottom(b: integer);
-begin
-  doorIndex_bottom := b;
-end;
 
 
 function TRoom.GetDoorIndexRight: integer;

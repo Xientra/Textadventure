@@ -53,7 +53,8 @@ type
     IsChest,
     IsMimic,
     IsSkillStatue,
-    IsLadder: boolean;
+    IsLadder,
+    IsDealer: boolean;
 
     ChestItem: TItem;
     MimicEnemy: TEnemy;
