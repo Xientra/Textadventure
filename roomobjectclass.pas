@@ -78,6 +78,7 @@ begin
   IsChest := false;
   IsMimic := false;
   IsSkillStatue := false;
+  IsDealer := false;
 
   Ignore := false;
 end;
