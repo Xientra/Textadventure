@@ -30,6 +30,7 @@ type
     function GetSlashResist(): real;
 
     function GetIsInSecondStance(): boolean;
+    function GetHasSecondStance(): boolean;
 
     //Get/Set Stuff
     procedure SetWeaponDrop(_weapon: TWeapon);
@@ -168,6 +169,10 @@ end;
 function TEnemy.GetIsInSecondStance(): boolean;
 begin
   result := isInSecondStance
+end;
+function TEnemy.GetHasSecondStance(): boolean;
+begin
+  result := hasSecondStance;
 end;
 
 //Get/Set Drop
