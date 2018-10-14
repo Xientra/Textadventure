@@ -153,7 +153,7 @@ procedure TForm1.FormCreate(Sender: TObject);
 var
   i, ii: integer;
 begin
-
+  Form1.visible := false;
 
   inventoryIndex := 0;
   roomStuffIndex := 0;
@@ -314,7 +314,7 @@ begin
   case UIState of
   0: //x Plus im RoomArr
     begin
-      if (Player1.GetCurrendRoom.GetPosX+1 <= Room_x) and (RoomArr[Player1.GetCurrendRoom.getPosX+1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] <> nil) and (Player1.GetCurrendRoom.GetDoorRight = false) and (Player1.GetCurrendRoom.GetDoorRight = false) then
+      if (Player1.GetCurrendRoom.GetPosX+1 <= Room_x-1) and (RoomArr[Player1.GetCurrendRoom.getPosX+1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ] <> nil) and (Player1.GetCurrendRoom.GetDoorRight = false) and (Player1.GetCurrendRoom.GetDoorRight = false) then
       begin
         OnLeaveRoom();
         Player1.ChangeRoom('xPos');
@@ -1381,7 +1381,7 @@ begin
                           FightingBoss.GetSkillDrop().GetDescription());
     end else PrintAndUIChange(0, 'You defeated you Opponent!'+sLineBreak+'You Health has been restored.');
     //Der Kampf wurde dadurch beendet, dass die Situation auf von 4 (Runde des Bosses) auf 0 gesetzt wurde
-
+    //FightingBoss.TriggerRoomObjectCreation();
     //Destroy das Boss Object und setzt alle Variablen die auf ihn zeigen zu nil
     FreeAndNil(Player1.GetCurrendRoom().Boss); //FreeAndNil Destroyd ein Object und setz die pointer var (die in den Klammern) auf nil
     FightingEnemy := nil; //da der gegner zerstört wurde sollte auch FightingEnemy wieder auf nil
@@ -1692,6 +1692,7 @@ begin
     RoomArr[2, 6, 1].Boss.SetStance1(1, 1, 1);
     RoomArr[2, 6, 1].Boss.SetStance2(1, 1, 1);
     RoomArr[2, 6, 1].Boss.SetStance3(1, 1, 1);
+    //RoomArr[2, 6, 1].Boss.SetRoomObjectToCreate(TRoomObject.create('Staircase', 'It leads out of the cave', 'Images/RoomObjects/StairsToLevel2'),3,5,1);
 
     //1 5 1
     CreateARoom('You can feel the power of the stature that holds a green skill.', 'Images/Rooms_lvl2/part2/RoomWithThrustSkill.png', 1, 5, 1);
@@ -1703,10 +1704,10 @@ begin
     RoomArr[2,5,1].setDoorright(true);
 
     //3 5 1
-    CreateARoom('There seem to be a contraption which makes it possible to go up.', 'Images/Rooms_lvl2/part1/StartRoomWithLadder.png', 3, 5, 1);
+    CreateARoom('There seem to be a contraption which makes it possible to go up.', 'Images/Rooms_lvl2/part1/RoomWithStairsUp.png', 3, 5, 1);
     RoomArr[3,5,1].setDoorleft(true);
     RoomArr[3,5,1].setDoorbottom(true);
-    RoomArr[3,5,1].AddRoomObject(TRoomObject.Create('A Staircase', 'This Staircase seems to lead out of these catacombs', 'Images/RoomObjects/Ladder_lvl1.png'));
+    //RoomArr[3,5,1].AddRoomObject(TRoomObject.Create('A Staircase', 'This Staircase seems to lead out of these catacombs', 'Images/RoomObjects/Ladder_lvl1.png'));
 
     //4 5 1
     CreateARoom('Your still in a cave but you can feel that you are closer to the surface.', 'Images/Rooms_lvl2/part1/StartRoomWithLadder.png', 4, 5, 1);
@@ -1800,7 +1801,7 @@ begin
     CreateARoom('There is still someone in this cell.', 'Images/Rooms_lvl2/part1/RoomWithWardenAndDealer.png', 3, 1, 1);
     RoomArr[3,1,1].AddRoomObject(TRoomObject.create('Undead prisoner', 'Even if he is in a cell he could help you', 'Images/RoomObjects/Dealer.png'));
     RoomArr[3,1,1].RoomObjectArr[0].SetDealer(TItem.create('Bomb', 'At close range it influences everything with enough Newton force to breake a wall!', 'Images/Items/Bomb.png'));
-
+    RoomArr[3,1,1].RoomObjectArr[0].GetDealerItem.SetBomb(50);
     RoomArr[3,1,1].AddEnemy(TEnemy.Create('Warden', 40, 15,'Images/Enemies_lvl2/WardenNearDealer.png'));
     RoomArr[3,1,1].EnemyArr[0].SetResistances(1.5, 0.9, 0.9);
     RoomArr[3,1,1].EnemyArr[0].SetSecondStance(0.9, 0.9, 1.5);

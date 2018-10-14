@@ -55,7 +55,7 @@ object Form2: TForm2
   }
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.8.4.0'
+  LCLVersion = '1.6.2.0'
   object Image1_Btn: TImage
     Cursor = crHandPoint
     Left = 88
