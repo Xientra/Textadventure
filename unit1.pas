@@ -1100,7 +1100,7 @@ end;
 //wird aufgerufen wenn man einen Raum betritt und wenn man eine aktion im Raum beendet hat (Kämpfen, Interagieren)
 procedure TForm1.OnEnterRoom(); //logic situation = 0
 var
-  i: integer;  check: booelan;
+  i: integer;  check: boolean;
 begin
   check := true;
 
@@ -1128,6 +1128,12 @@ begin
       if (Player1.GetCurrendRoom().WeaponArr[i] <> nil) then
         if (Player1.GetCurrendRoom().WeaponArr[i].GetIgnore() = false) then
         begin
+          If Player1.GetCurrendRoom().WeaponArr[i].GetName = 'Sword of Moonlight' then begin
+            songpath := 'music\Dancing in the Moonlight piano.wav';
+            songlength := 45;
+            if muted = false then
+            PlaySound('music\Dancing in the Moonlight piano.wav',0,SND_ASYNC);
+            end;
           roomStuffIndex := i;
           ChangeUIState(10);
         end;
@@ -1161,10 +1167,8 @@ begin
             PrintAndUIChange(15, 'You notice a stature and get closer to it.');
           if (Player1.GetCurrendRoom().RoomObjectArr[i].GetIsLadder()) then
             PrintAndUIChange(16, 'You notice a Ladder and get closer to it.');
-          if (Player1.GetCurrendRoom().RoomObjectArr[i].GetIsDealer()) then begin
-            ShowMessage('HI');
+          if (Player1.GetCurrendRoom().RoomObjectArr[i].GetIsDealer()) then
             PrintAndUIChange(17, 'You notice a Dealer in one of the cells and get closer to him.');
-          end;
         end;
   end;
 
@@ -1830,7 +1834,7 @@ begin
 
     //5 2 2
     CreateARoom('The preachers use this room to enchant weapons with magic.', 'Images/Rooms_lvl3/RoomWithMagicWeapon.png', 5, 2, 2);
-    RoomArr[5,2,2].AddWeapon(TWeapon.create('Magic Dagger', 'It''s blade is infused with magic.', 'Images/Items/Dagger.png', 0,5,0,10));
+    RoomArr[5,2,2].AddWeapon(TWeapon.create('Magic Dagger', 'It''s blade is infused with magic.', 'Images/Items/Magic Dagger.png', 0,5,0,10));
     RoomArr[5,2,2].setDoorright(true);
 
     //6 2 2
