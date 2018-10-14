@@ -5,8 +5,6 @@ _______________________________________
 -wenn jemand herrausfindest wie man etwas in das Nachrichten Fenster unten schreibt sag es mir (Paul) bitte...
 
 //Muss noch gemacht werden
--Der Dealer muss noch erstellt werden
--Items werden noch nicht zerstört
 -respawn
 -balancing :D
 -muted muss am anfang false sein
@@ -20,7 +18,7 @@ _______________________________________
 -Der Cooldown von skills geht noch in der Runde runter in der er eingesetzt wurde
 -Türen können Objekte sein :P
 -wenn man stirbt werden ALLE erstellten Objekte von Räumen Gegner usw.einfach da gelassen und dann nochmal neu erstellt...
-
+-mit healing Items kann man sich überheilen
 
 //muss noch entschieden werden
 
@@ -49,3 +47,4 @@ Fertig
 -Alle Räume brauchen Beschreibungen :D
 -Gegner müssen noch ihren Stance/Resistenzen ändern können :D
 -Damage und Defense Up müssen noch einen Effekt haben und der muss auch wieder enden (muss in OnLeaveRoom deaktiviert werden)
+-Items werden noch nicht zerstört
