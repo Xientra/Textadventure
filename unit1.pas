@@ -183,8 +183,8 @@ begin
   end;
 
   CreateRooms(); //Erstellt das Spiel
-  //Erschafft den Spieler in einem Raum
-  Player1 := TPlayer.Create(RoomArr[3, 2, 1], TWeapon.Create('Fists', 'Just your good old hands.', 'Images/Items/ITEMpng', 10000, 0, 0, 0), 10000);
+  //Erschafft den Spieler in einem Raum (3 0 0 ist der Start Raum)
+  Player1 := TPlayer.Create(RoomArr[3, 0, 0], TWeapon.Create('Fists', 'Just your good old hands.', 'Images/Items/ITEMpng', 5, 0, 0, 0), 100);
 
   //Ändert die Situation zum erstem mal
   ChangeUIState(0); //also updates UI
@@ -1084,8 +1084,10 @@ end;
 //wird aufgerufen wenn man einen Raum betritt und wenn man eine aktion im Raum beendet hat (Kämpfen, Interagieren)
 procedure TForm1.OnEnterRoom(); //logic situation = 0
 var
-  i: integer;
+  i: integer;  check: booelan;
 begin
+  check := true;
+
   //check nach Gegnern
   if (length(Player1.GetCurrendRoom().EnemyArr) > 0) then
   begin
@@ -1264,7 +1266,7 @@ begin
   end;
 end;
 
-//wird am ende/in der Runde des Gegners aufgerufen und macht dem Spieler Schaden
+//wird am ende/in der Runde des Gegners aufgerufen und macht dem Spieler Schaden oder ändert die Haltung des gegners wenn seine leben unter 50% fallen
 procedure TForm1.EnemyTurn(); //logic situation = 2
 begin
   Memo1.Clear();
@@ -1277,11 +1279,12 @@ begin
   begin
     Player1.ChangeHealthBy(-(FightingEnemy.GetDamage()*DefBuff));
     Memo1.Lines.Add('The Enemy delt ' + FloatToStr(FightingEnemy.GetDamage())+' damage.'+sLineBreak+'You now have ' + FloatToStr(Player1.GetHealth()) + ' health left');
-    if (Player1.getHealth > 0) then PlayerDeath();
+    if (Player1.getHealth < 0) then PlayerDeath();
   end;
 end;
 
-procedure TForm1.PlayerEndTurnBoss();
+//eigentlich das selbe wie bei normalen gegner nur für einen Boss
+procedure TForm1.PlayerEndTurnBoss(); //logic situation = 3
 var
   i: integer;
 begin
@@ -1314,6 +1317,8 @@ begin
     end;
   end;
 end;
+
+//wird am ende/in der Runde des Bosses aufgerufen und macht dem Spieler Schaden oder ändert die Haltung wenn seine leben unter 66% und 33% fallen
 procedure TForm1.BossTurn(); //logic situation = 4
 begin
   Memo1.Clear();
@@ -1374,12 +1379,8 @@ begin
   begin
     Player1.ChangeHealthBy(-(FightingBoss.GetDamage()));
 
-    if (Player1.getHealth > 0) then
-    Memo1.Lines.Add('The Boss delt ' + FloatToStr(FightingBoss.GetDamage())+' damage.'+sLineBreak+'You now have ' + FloatToStr(Player1.GetHealth()) + ' health left')
-    else begin
-      Memo1.Lines.Add('The Boss delt ' + FloatToStr(FightingBoss.GetDamage())+' damage.'+sLineBreak+'You now have 0 health left');
-      PlayerDeath();
-    end;
+    Memo1.Lines.Add('The Boss delt ' + FloatToStr(FightingBoss.GetDamage())+' damage.'+sLineBreak+'You now have ' + FloatToStr(Player1.GetHealth()) + ' health left');
+    if (Player1.getHealth < 0) then PlayerDeath();
   end;
 end;
 
@@ -1524,16 +1525,16 @@ begin
     CreateARoom('Your in a cell.'+sLineBreak+'But the Door is so old and rusted you can easily pass through a hole in the door.', 'Images/Rooms_lvl1/Cell1.png', 3, 0, 0);
 
     //4 0 0
-    CreateARoom('There are more than just your cell down here but they don''t seem to be used anymore.', 'Images/Rooms_lvl1/RoomAfterStartCell.png', 4, 0, 0);
+    CreateARoom('There are other cells down here but they don''t seem to be used anymore.'+sLineBreak+'Maybe I can find something usefull in there.', 'Images/Rooms_lvl1/RoomAfterStartCell.png', 4, 0, 0);
 
     //5 0 0
     CreateARoom('This cells door rusted away long time ago but the remains still can be usefull.', 'Images/Rooms_lvl1/Cell2.png', 5, 0, 0);
-    RoomArr[5, 0, 0].AddWeapon(TWeapon.Create('Iron Bar', 'A brocken piece of a former cell.'+sLineBreak+'It is a bit rosty but can still function as a simple weapon.', 'Images/Items/IronBar.png', 15, 0, 0, 0));
+    RoomArr[5, 0, 0].AddWeapon(TWeapon.Create('Iron Bar', 'A brocken piece of a former cell.'+sLineBreak+'It''s already starting to rost but can still function as a simple weapon.', 'Images/Items/IronBar.png', 14, 0, 0, 0));
 
     //4 1 0
     CreateARoom('There are even more cells here but they are also empty.', 'Images/Rooms_lvl1/MiddleCorridorClosedCells.png', 4, 1, 0);
-    RoomArr[4, 1, 0].AddEnemy(TEnemy.Create('Rat', 20, 5, 'Images/Enemies_lvl1/Rat.png'));
-    RoomArr[4, 1, 0].EnemyArr[0].SetResistances(0.5, 1.2, 1);
+    RoomArr[4, 1, 0].AddEnemy(TEnemy.Create('Rat', 10, 5, 'Images/Enemies_lvl1/Rat.png'));
+    RoomArr[4, 1, 0].EnemyArr[0].SetResistances(0.8, 1, 1.2);
 
     //4 2 0
     CreateARoom('You can see a goblin in the room in front of you, he wears light armor but it has some unprotected spots.', 'Images/Rooms_lvl1/MiddleCorridorCross.png', 4, 2, 0);
@@ -1544,7 +1545,7 @@ begin
 
     //2 2 0
     CreateARoom('Here they stopped mining deeper.'+sLineBreak+'You wonder why...', 'Images/Rooms_lvl1/RoomWithDagger.png', 2, 2, 0);
-    RoomArr[2,2,0].AddWeapon(TWeapon.Create('Dagger', 'A small Dagger which lacks power and reach, but can deal quick consecutive hits to unprotected spots due to their light weight', 'Images/Items/Dagger.png', 0, 8, 0, 0));
+    RoomArr[2,2,0].AddWeapon(TWeapon.Create('Dagger', 'A small dagger which lacks power and reach, but can deal quick consecutive hits to unprotected spots due to it''s light weight.', 'Images/Items/Dagger.png', 0, 8, 0, 0));
 
     //4 3 0
     CreateARoom('Before you is a wodden barack with a door build in it'+sLineBreak+'With a fitting key maybe you could open this door', 'Images/Rooms_lvl1/RoomWithGoblin.png', 4, 3, 0);
