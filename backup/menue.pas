@@ -60,9 +60,8 @@ end;
 
 procedure TForm2.BtnClick1(Sender: TObject);
 begin
-  Application.CreateForm(TForm1, Form1);
-  Form1.Show();
-  Form2.visible := false;
+  Form1.visible := true;
+  Form2.close;
 end;
 
 procedure TForm2.BtnClick2(Sender: TObject);

@@ -60,6 +60,7 @@ end;
 
 procedure TForm2.BtnClick1(Sender: TObject);
 begin
+  //Form1.visible := true;
   Form2.close;
 end;
 

@@ -42,6 +42,7 @@ type
     procedure SetSkillDrop(_skill: TSkill);
     function GetSkillDrop(): TSkill;
     procedure SetRoomObjectToCreate(_roomObject: TRoomObject; _x, _y, _z: integer);
+    function GetRoomObjectToCreate(): TRoomObject;
     procedure TriggerRoomObjectCreation();
 
   private
@@ -429,13 +430,19 @@ begin
       z := _z;
       RoomObjectToCreate := _roomObject;
     end else ShowMessage('The Room at the Position '+IntToStr(_x*100+_y*10+_z)+' is nil.');
-  end;
+  end else ShowMessage('The Position '+IntToStr(_x*100+_y*10+_z)+' is out of array.');
 end;
+function TBoss.GetRoomObjectToCreate(): TRoomObject;
+begin
+  result := RoomObjectToCreate;
+end;
+
 procedure TBoss.TriggerRoomObjectCreation();
 begin
   if (RoomObjectToCreate <> nil) then
   begin
     Unit1.RoomArr[x, y, z].AddRoomObject(RoomObjectToCreate);
+    ShowMessage('it should be there now');
   end; //else ShowMessage('SetRoomObjectToCreate has to be called before this can be called.');
 end;
 

@@ -189,12 +189,12 @@ begin
   end;
 
   CreateRooms(); //Erstellt das Spiel
-  //Erschafft den Spieler in einem Raum (3 0 0 ist der Start Raum)
-  Player1 := TPlayer.Create(RoomArr[2, 6, 1], TWeapon.Create('Fists', 'Just your good old hands.', 'Images/Items/ITEM.png', 5, 0, 0, 0), 100);
+  //Erschafft den Spieler in einem Raum (Start: 3 0 0 lvl1; 4 5 1 lvl2)
+  Player1 := TPlayer.Create(RoomArr[4, 5, 1], TWeapon.Create('Fists', 'Just your good old hands.', 'Images/Items/ITEM.png', 5, 0, 0, 0), 100);
 
   //Stuff just for testing
-  Player1.SetCurrendWeapon(TWeapon.Create('Magic Sword', 'This is what even a god would call OPAF.', 'Images/Items/MagicWeapon.png', 10000, 10000, 10000, 10000));
-  //Player1.AddSkill(TSkill.Create('test skill', 'test', 'Images/Skills/SkillStrike.png', 3, 1.5, 0, 0, 0));
+  Player1.SetCurrendWeapon(TWeapon.Create('Magic Sword (magic)', 'This is what even a god would call OPAF.', 'Images/Items/MagicWeapon.png', 10000, 10000, 10000, 10000));
+  //Player1.AddSkill(TSkill.Create('test skill', 'test', 'Images/Skills/SkillStrike.png', 2, 1.5, 0, 0, 0));
 
 
   //Ändert die Situation zum erstem mal
@@ -1238,7 +1238,7 @@ begin
           if (Player1.GetCurrendRoom().RoomObjectArr[i].GetIsSkillStatue()) then
             PrintAndUIChange(15, 'You notice a stature and get closer to it.');
           if (Player1.GetCurrendRoom().RoomObjectArr[i].GetIsLadder()) then
-            PrintAndUIChange(16, 'You notice a Ladder and get closer to it.');
+            ChangeUIState(16);
           if (Player1.GetCurrendRoom().RoomObjectArr[i].GetIsDealer()) then
             PrintAndUIChange(17, 'You notice someone in one of the cells and get closer to him.'+sLineBreak+'Even if he is in a cell he could still help you.');
           check := false;
@@ -1318,7 +1318,7 @@ begin
     begin
       PLayer1.AddWeapon((FightingEnemy.GetWeaponDrop()));
       PrintAndUIChange(0, 'You Won!'+sLineBreak+
-                          'He dropt '+FightingEnemy.GetWeaponDrop().GetName()+'. '+sLineBreak+
+                          'He dropt a '+FightingEnemy.GetWeaponDrop().GetName()+'. '+sLineBreak+
                           FightingEnemy.GetWeaponDrop().GetDescription()+sLineBreak+
                           'It deals '+FloatToStr(FightingEnemy.GetWeaponDrop().GetStrikeDmg())+' strike, '+FloatToStr(FightingEnemy.GetWeaponDrop().GetThrustDmg())+' thrust, '+FloatToStr(FightingEnemy.GetWeaponDrop().GetSlashDmg())+' slash, '+FloatToStr(FightingEnemy.GetWeaponDrop().GetMagicDmg())+' magic damage.'+sLineBreak+
                           'It was added to your Weapon arsenal.');
@@ -1326,7 +1326,7 @@ begin
     begin
       Player1.AddItem(FightingEnemy.GetItemDrop());
       PrintAndUIChange(0, 'You Won!'+sLineBreak+
-                          'He dropt ' + FightingEnemy.GetItemDrop().GetName()+'. '+sLineBreak+
+                          'He dropt a ' + FightingEnemy.GetItemDrop().GetName()+'. '+sLineBreak+
                           FightingEnemy.GetItemDrop().GetDescription()+sLineBreak+
                           'It was added to your Inventory.');
     end
@@ -1393,6 +1393,9 @@ begin
     //Der Kampf wurde dadurch beendet, dass die Situation auf von 4 (Runde des Bosses) auf 0 gesetzt wurde
 
     FightingBoss.TriggerRoomObjectCreation();
+    Memo1.Lines.Add('The ground is vibrating and it feels like that somewhere something has been activated.');
+
+
 
     //Destroy das Boss Object und setzt alle Variablen die auf ihn zeigen zu nil
     FreeAndNil(Player1.GetCurrendRoom().Boss); //FreeAndNil Destroyd ein Object und setz die pointer var (die in den Klammern) auf nil
@@ -1613,7 +1616,7 @@ begin
 //Ebene 1
   begin
     //3 0 0
-    CreateARoom('Your in a cell.'+sLineBreak+'But the Door is so old and rusted you can easily pass through a hole in the door.', 'Images/Rooms_lvl1/Cell1.png', 3, 0, 0);
+    CreateARoom('Your in a cell.'+sLineBreak+'But the Door is so old and rusted you can easily pass through a hole in the door.'+sLineBreak+'This it the opportunity to escape!', 'Images/Rooms_lvl1/Cell1.png', 3, 0, 0);
 
     //4 0 0
     CreateARoom('There are other cells down here but they don''t seem to be used anymore.'+sLineBreak+'Maybe I can find something usefull in there.', 'Images/Rooms_lvl1/RoomAfterStartCell.png', 4, 0, 0);
@@ -1668,7 +1671,7 @@ begin
 
     //6 4 0
     CreateARoom('The path takes a turn here.', 'Images/Rooms_lvl1/RoomWithGoblinWithKey.png', 6, 4, 0);
-    RoomArr[6, 4, 0].AddEnemy(TEnemy.Create('Goblin', 33, 6, 'Images/Enemies_lvl1/GoblinWithKey.png'));
+    RoomArr[6, 4, 0].AddEnemy(TEnemy.Create('Goblin', 30, 6, 'Images/Enemies_lvl1/GoblinWithKey.png'));
     RoomArr[6, 4, 0].EnemyArr[0].SetResistances(0.6, 1.4, 0.8);
     RoomArr[6, 4, 0].EnemyArr[0].SetItemDrop(TItem.Create('Old key', 'This key probably belongs to a door in this cave.', 'Images/Items/Key1.png', 0));
 
@@ -1677,7 +1680,7 @@ begin
     RoomArr[5, 4, 0].SetDescriptionVisited('This corridor connects the stature with the way to the next level.');
 
     //4 4 0
-    CreateARoom('You can hear the footsteps of something bigger than a rat or goblin in the room ahead.'+sLineBreak+'Be aware of what might comes.'+'The door behind me is the one i saw earlier, maybe I should try the key.' ,'Images/Rooms_lvl1/RoomBeforeBoss.png', 4, 4, 0);
+    CreateARoom('You can hear the footsteps of something bigger than a rat or goblin in the room ahead.'+sLineBreak+'Be aware of what might comes.'+sLineBreak+'The door behind me is the one i saw earlier, maybe I should try the key.' ,'Images/Rooms_lvl1/RoomBeforeBoss.png', 4, 4, 0);
     RoomArr[4, 4, 0].SetDescriptionVisited('This room is the beginning of the corridor which leads to the cells.');
     RoomArr[4, 4, 0].SetDoorBottom(true,0);
 
@@ -1690,10 +1693,10 @@ begin
     // 4 5 0
     CreateARoom('There is a ladder in this room.'+sLineBreak+'It this the way out?', 'Images/Rooms_lvl1/BossRoom.png', 4, 5, 0);
     RoomArr[4, 5, 0].AddBoss(TBoss.create('Wererat', 'muscular', 'Images/Enemies_lvl1/RatKing.png',1, 60, 15));
-    RoomArr[4, 5, 0].Boss.SetStance1(0.5, 1.3, 0.5);
+    RoomArr[4, 5, 0].Boss.SetStance1(0.5, 1.31, 0.5);
     RoomArr[4, 5, 0].Boss.SetStance2(1.3, 0.5, 0.5);
     RoomArr[4, 5, 0].Boss.SetStance3(0.5, 0.5, 1.3);
-    RoomArr[4, 5, 0].Boss.SetSkillDrop(TSkill.Create('Strike Skill', 'This skill throws pure force at your enemies.', 'Images/Skills/SkillStrike.png', 3, 1.5, 0, 0, 0));
+    RoomArr[4, 5, 0].Boss.SetSkillDrop(TSkill.Create('Strike Skill', 'This skill throws pure force at your enemies.', 'Images/Skills/SkillStrike.png', 2, 1.5, 0, 0, 0));
     RoomArr[4, 5, 0].AddRoomObject(TRoomObject.Create('Ladder','This may be the way to escape.','Images/RoomObjects/Ladder_lvl1.png'));
     RoomArr[4, 5, 0].RoomObjectArr[0].SetLadder();
   end;
@@ -1703,18 +1706,18 @@ begin
 
     //2 6 1
     CreateARoom('This looks like it has been corrupted by the guardain which has been standing here.', 'Images/Rooms_lvl2/part2/BossRoomlvl2.png', 2, 6, 1);
-    RoomArr[2, 6, 1].AddBoss(TBoss.Create('Artorias', 'corrupted guardian', 'Images/Enemies_lvl2/Astorias.png', 2, 100, 30));
+    RoomArr[2, 6, 1].AddBoss(TBoss.Create('Artorias', 'corrupted guardian', 'Images/Enemies_lvl2/Astorias.png', 2, 80, 30));
     RoomArr[2, 6, 1].Boss.SetStance1(0.5, 1, 0.5);
     RoomArr[2, 6, 1].Boss.SetStance2(1, 0.5, 0.5);
     RoomArr[2, 6, 1].Boss.SetStance3(0.5, 0.5, 1);
-    RoomArr[2, 6, 1].Boss.SetSkillDrop(TSkill.Create('Magic Skill', 'A Skill which attacks with powerfull magic and ignores all resistances of the target.', 'Images/Skills/SkillMagic.png', 3, 0, 0, 0, 1.5));
+    RoomArr[2, 6, 1].Boss.SetSkillDrop(TSkill.Create('Magic Skill', 'A Skill which attacks with powerfull magic and ignores all resistances of the target.', 'Images/Skills/SkillMagic.png', 2, 0, 0, 0, 1.5));
     RoomArr[2, 6, 1].SetDoorTop(True);
     //Es wird ein RoomObject beim tod dieses Bosses erstellt (in Raum 3 5 1)
 
     //1 5 1
     CreateARoom('You can feel the power of the stature that holds a green skill.', 'Images/Rooms_lvl2/part2/RoomWithThrustSkill.png', 1, 5, 1);
-    RoomArr[1,5,1].AddRoomObject(TRoomObject.Create('Skill Stature', 'Suddenly you know that if you touch the stature you will gain knowledge of the power sealed inside of it.', 'Images/RoomObjects/ThrustSkillStature.png'));
-    RoomArr[1,5,1].RoomObjectArr[0].SetSkillStatue(TSkill.Create('Thrust Skill','It throws compressed power at you enemies able to pierce them like a speer. ','Images/Skills/SkillThrust.png', 3, 0, 1.5, 0, 0));
+    RoomArr[1,5,1].AddRoomObject(TRoomObject.Create('Skill Stature', 'You can feel the power that it emits.', 'Images/RoomObjects/ThrustSkillStature.png'));
+    RoomArr[1,5,1].RoomObjectArr[0].SetSkillStatue(TSkill.Create('Thrust Skill','It throws compressed power at you enemies and is even able to pierce them.','Images/Skills/SkillThrust.png', 2, 0, 1.5, 0, 0));
 
     //2 5 1
     CreateARoom('You feel a dark presence from that room in front of you.', 'Images/Rooms_lvl2/part2/RoomBeforeBosslvl2.png', 2, 5, 1);
@@ -1725,15 +1728,16 @@ begin
     RoomArr[3,5,1].setDoorleft(true);
     RoomArr[3,5,1].setDoorbottom(true);
     //dies fügt dem boss der Ebene 2 (in Raum 2 6 1) den Effekt hinzu, dass ein Roomobjcet in diesem Raum gespawnt wird wenn er stirbt. Es kann erst nach der erstellung des raumes gemacht werden
-    RoomArr[2, 6, 1].Boss.SetRoomObjectToCreate(TRoomObject.create('Staircase', 'It leads out of the cave', 'Images/RoomObjects/StairsToLevel2'),3,5,1);
+    RoomArr[2, 6, 1].Boss.SetRoomObjectToCreate(TRoomObject.create('Staircase', 'It leads out of the cave', 'Images/RoomObjects/StairsToLevel2.png'), 3, 5, 1);
+    RoomArr[2, 6, 1].Boss.GetRoomObjectToCreate().SetLadder();
 
     //4 5 1
-    CreateARoom('Your still in a cave but you can feel that you are closer to the surface.', 'Images/Rooms_lvl2/part1/StartRoomWithLadder.png', 4, 5, 1);
+    CreateARoom('Your still in a cave but you can feel that you have come closer to the surface.', 'Images/Rooms_lvl2/part1/StartRoomWithLadder.png', 4, 5, 1);
 
     //2 4 1
     CreateARoom('This area looks compleatly different from what you what you experienced before.'+sLineBreak+'You wonder what lies ahead of you.', 'Images/Rooms_lvl2/part2/FirstRoomPart2.png', 2, 4, 1);
     RoomArr[2,4,1].setdoorright(true,3);
-    RoomArr[2,4,1].AddEnemy(TEnemy.Create('Warder', 50, 15, 'Images/Enemies_lvl2/WarderPart2.png'));
+    RoomArr[2,4,1].AddEnemy(TEnemy.Create('Warder', 50, 12, 'Images/Enemies_lvl2/WarderPart2.png'));
     RoomArr[2,4,1].EnemyArr[0].SetResistances(1.5, 0.9, 0.9);
     RoomArr[2,4,1].EnemyArr[0].SetSecondStance(0.9, 0.9, 1.5);
 
@@ -1747,16 +1751,16 @@ begin
     CreateARoom('There are two way from here on the left you see even more skelletons and on the right are two doors which are probably locked.', 'Images/Rooms_lvl2/part1/RoomAfterStart.png', 4, 4, 1);
     RoomArr[4,4,1].SetDescriptionVisited('There are two ways from here.');
     RoomArr[4,4,1].setDoorbottom(true);
-    RoomArr[4,4,1].AddEnemy(TEnemy.Create('Skelleton', 30, 10, 'Images/Enemies_lvl2/FirstSkelleton.png'));
-    RoomArr[4,4,1].EnemyArr[0].SetResistances(2, 0.4, 0.4);
+    RoomArr[4,4,1].AddEnemy(TEnemy.Create('Skelleton', 30, 8, 'Images/Enemies_lvl2/FirstSkelleton.png'));
+    RoomArr[4,4,1].EnemyArr[0].SetResistances(2, 0.4, 0.5);
 
     //5 4 1
     CreateARoom('You can see a chest at the end of this corridor.', 'Images/Rooms_lvl2/part1/RoomWithTwoSkelletons.png', 5, 4, 1);
     RoomArr[5,4,1].setDoorbottom(true);
-    RoomArr[5,4,1].AddEnemy(TEnemy.Create('Skelleton', 30, 10, 'Images/Enemies_lvl2/TwoSkelletons2.png'));
-    RoomArr[5,4,1].EnemyArr[0].SetResistances(2, 0.4, 0.4);
-    RoomArr[5,4,1].AddEnemy(TEnemy.Create('Skelleton', 30, 10, 'Images/Enemies_lvl2/TwoSkelletons1.png'));
-    RoomArr[5,4,1].EnemyArr[1].SetResistances(2, 0.4, 0.4);
+    RoomArr[5,4,1].AddEnemy(TEnemy.Create('Skelleton', 30, 8, 'Images/Enemies_lvl2/TwoSkelletons2.png'));
+    RoomArr[5,4,1].EnemyArr[0].SetResistances(2, 0.4, 0.5);
+    RoomArr[5,4,1].AddEnemy(TEnemy.Create('Skelleton', 30, 8, 'Images/Enemies_lvl2/TwoSkelletons1.png'));
+    RoomArr[5,4,1].EnemyArr[1].SetResistances(2, 0.4, 0.5);
 
     //6 4 1
     CreateARoom('There is a chest lying around.'+sLineBreak+'You wonder why no one has opened this chest yet.', 'Images/Rooms_lvl2/part1/RoomWithChest.png', 6, 4, 1);
@@ -1770,10 +1774,11 @@ begin
     RoomArr[1,3,1].RoomObjectArr[0].SetHealing();
 
     //2 3 1
-    CreateARoom('You can feel a aura coming from the next room.', 'Images/Rooms_lvl2/part2/RoomWithMimic.png', 2, 3, 1);
+    CreateARoom('You can feel a calming aura coming from the next room.', 'Images/Rooms_lvl2/part2/RoomWithMimic.png', 2, 3, 1);
     RoomArr[2,3,1].setDoorright(true);
     RoomArr[2,3,1].AddRoomObject(TRoomObject.Create('Another Chest','It''s also made out of wood.','Images/RoomObjects/ChestMimic.png'));
-    RoomArr[2,3,1].RoomObjectArr[0].SetMimic(TItem.Create('Defense Up', 'This makes your skin harder than steel so you receive less damage', 'Images/Items/DefUp.png'),TEnemy.create('Mimic',80, 15, 'Images/Enemies_lvl2/Mimic.png'));
+    RoomArr[2,3,1].RoomObjectArr[0].SetMimic(TItem.Create('Defense Up', 'This makes your skin harder than steel so you receive less damage', 'Images/Items/DefUp.png'),TEnemy.create('Mimic',60, 13, 'Images/Enemies_lvl2/Mimic.png'));
+    RoomArr[2,3,1].RoomObjectArr[0].GetMimicEnemy().SetResistances(1, 1, 1.25);
     RoomArr[2,3,1].RoomObjectArr[0].GetChestItem().SetDefenseUp(1.5);
     RoomArr[2,3,1].SetImagePathVisited('Images/Rooms_lvl2/part2/RoomWithMimic_itemless.png');
 
@@ -1791,7 +1796,7 @@ begin
 
     //5 3 1
     CreateARoom('This corridor leads to a door behind which is a crossroad.', 'Images/Rooms_lvl2/part1/RoomWithWarderWithKey2.png', 5, 3, 1);
-    RoomArr[5,3,1].AddEnemy(TEnemy.Create('Warder', 50, 15,'Images/Enemies_lvl2/WarderWithKey2.png'));
+    RoomArr[5,3,1].AddEnemy(TEnemy.Create('Warder', 50, 12,'Images/Enemies_lvl2/WarderWithKey2.png'));
     RoomArr[5,3,1].EnemyArr[0].SetResistances(1.5, 0.9, 0.9);
     RoomArr[5,3,1].EnemyArr[0].SetSecondStance(0.9, 0.9, 1.5);
     RoomArr[5,3,1].EnemyArr[0].SetItemDrop(TItem.create('Bone key', 'Never seen a key made out of bones?', 'Images/Items/BoneKey2.png', 2));
@@ -1799,15 +1804,15 @@ begin
     RoomArr[5,3,1].setDoorbottom(true);
 
     //6 3 1
-    CreateARoom('This room is filled with the power that the sature emits.', 'Images/Rooms_lvl2/part1/RoomWithSlashSkill.png', 6, 3, 1);
-    RoomArr[6,3,1].AddRoomObject(TRoomObject.Create('Skill Stature', 'You can feel the power that it emits.', 'Images/RoomObjects/SlashSkillStature.png'));
-    RoomArr[6,3,1].RoomObjectArr[0].SetSkillStatue(TSkill.Create('Slash Skill', 'It creates blades fromed from power that are thrown at enemies.','Images/Skills/SkillSlash.png',3,0,0,1.5,0));
+    CreateARoom('This room is filled with the power that the stature emits.', 'Images/Rooms_lvl2/part1/RoomWithSlashSkill.png', 6, 3, 1);
+    RoomArr[6,3,1].AddRoomObject(TRoomObject.Create('Skill Stature', 'Suddenly you know that if you touch the stature you will gain knowledge of the power sealed inside of it.', 'Images/RoomObjects/SlashSkillStature.png'));
+    RoomArr[6,3,1].RoomObjectArr[0].SetSkillStatue(TSkill.Create('Slash Skill', 'It creates blades fromed from power that are thrown at enemies.','Images/Skills/SkillSlash.png',2,0,0,1.5,0));
 
     //3 2 1
     CreateARoom('This is just another corridor in the same big cave.', 'Images/Rooms_lvl2/part1/RoomWithSkelletonToDealer.png', 3, 2, 1);
     RoomArr[3,2,1].setDoorright(true);
-    RoomArr[3,2,1].AddEnemy(TEnemy.Create('Skelleton', 30, 10, 'Images/Enemies_lvl2/SkelletonNearDealer.png'));
-    RoomArr[3,2,1].EnemyArr[0].SetResistances(2, 0.4, 0.4);
+    RoomArr[3,2,1].AddEnemy(TEnemy.Create('Skelleton', 30, 8, 'Images/Enemies_lvl2/SkelletonNearDealer.png'));
+    RoomArr[3,2,1].EnemyArr[0].SetResistances(2, 0.4, 0.5);
 
     //4 2 1
     CreateARoom('This room was hidden behind a wall.'+sLineBreak+'I wonder who did that.', 'Images/Rooms_lvl2/part1/SecretRoom.png', 4, 2, 1);
@@ -1821,10 +1826,10 @@ begin
     RoomArr[3,1,1].AddRoomObject(TRoomObject.create('Undead prisoner', 'This poor soul offers you a bomb if you can pay him appropriate.', 'Images/RoomObjects/Dealer.png'));
     RoomArr[3,1,1].RoomObjectArr[0].SetDealer(TItem.create('Bomb', 'At close range it infictes enough force to breake a wall!'+sLineBreak+'You can use it to damage your opponent.', 'Images/Items/Bomb.png'));
     RoomArr[3,1,1].RoomObjectArr[0].GetDealerItem.SetBomb(50);
-    RoomArr[3,1,1].AddEnemy(TEnemy.Create('Warder', 50, 15,'Images/Enemies_lvl2/WarderNearDealer.png'));
+    RoomArr[3,1,1].AddEnemy(TEnemy.Create('Warder', 50, 12,'Images/Enemies_lvl2/WarderNearDealer.png'));
     RoomArr[3,1,1].EnemyArr[0].SetResistances(1.5, 0.9, 0.9);
     RoomArr[3,1,1].EnemyArr[0].SetSecondStance(0.9, 0.9, 1.5);
-    RoomArr[3,1,1].EnemyArr[0].SetItemDrop(TItem.create('Stone Key', 'This key looks way more important than the other two.', 'Images/Items/StoneKey2.png', 3));
+    RoomArr[3,1,1].EnemyArr[0].SetItemDrop(TItem.create('Stone Key', 'This key looks way more important than the other two.', 'Images/Items/StoneKey3.png', 3));
      end;
 
 //Ebene 3

@@ -10,7 +10,7 @@ uses
 type
   TItem = class
   public
-    constructor Create(_name, _description, _imagePath: string);
+    constructor Create(_name, _description, _imagePath: string; _keyindex: integer = -1);
 
     function UseItem(): boolean; //Macht sachen basierent auf der Art des Items; returns false wenn man das Item nicht benutzen kann (sowas wie Schlüssel)
 
@@ -18,6 +18,11 @@ type
     function GetName(): string;
     function GetDescription(): string;
     function GetImagePath(): string;
+    function GetDefDuration():integer;
+    function GetDmgDuration():integer;
+    function GetDefenseUp: real;
+    function GetDamageUp: real;
+    function GetIsCoin: boolean;
     //Get/Set Ignore
     function GetIgnore(): boolean;
     procedure SetIgnore(_setTo: boolean);
@@ -26,10 +31,13 @@ type
     procedure SetHealing(_factor: real);
     procedure SetDamageUp(_factor: real);
     procedure SetDefenseUp(_factor: real);
-    procedure SetKey(_keyIndex: real);
+    procedure SetKey(_keyIndex: integer);
     procedure SetBomb(_damage: real);
+    procedure SetDefDuration(_duration: integer);
+    procedure SetDmgDuration(_duration: integer);
+    procedure SetIsCoin (b: boolean);
 
-    function GetKeyIndex: real;
+    function GetKeyIndex: integer;
 
   private
     ItemName: string;
@@ -42,17 +50,19 @@ type
     IsDamageUp,
     IsDefenseUp,
     IsBomb,
-    IsKey
+    IsKey,
+    IsCoin
     : boolean;
 
     //Werte zu den Verschiedene
     HealingFactor,
     DamageUpFactor,
     DefenseUpFactor,
-    BombDamage,
-    KeyIndex
+    BombDamage
+
     : real;
 
+    DmgBuffDuration, DefBuffDuration, KeyIndex: integer;
     Ignore: boolean; //Diese Variable ist dafür da um das Item die im Raum liegt einmalig zu ignorieren fallst man sie nicht aufheben will
   end;
 
@@ -60,7 +70,7 @@ implementation
 
 uses Unit1;
 
-constructor TItem.Create(_name, _description, _imagePath: string);
+constructor TItem.Create(_name, _description, _imagePath: string; _keyindex: integer = -2);
 begin
   inherited Create;
   itemName := _name;
@@ -73,6 +83,10 @@ begin
   IsDefenseUp := false;
   IsBomb := false;
   IsKey := false;
+  IsCoin := false;
+  DmgBuffDuration := -1; //kein buff item
+  DefBuffDuration := -1; //kein buff item
+  KeyIndex := _keyindex; //
 
   Ignore := false;
 end;
@@ -121,6 +135,11 @@ function TItem.GetImagePath(): string;
 begin
   result := ImagePath;
 end;
+function TItem.GetIsCoin: boolean;
+begin
+  result := IsCoin;
+end;
+
 //Get/Set Ignore
 function TItem.GetIgnore(): boolean;
 begin
@@ -130,7 +149,6 @@ procedure TItem.SetIgnore(_setTo: boolean);
 begin
   Ignore := _setTo;
 end;
-
 
 //Sets den Effekt des Items
 procedure TItem.SetHealing(_factor: real);
@@ -153,6 +171,7 @@ begin
   IsBomb := false;
   IsKey := false;
 
+  DmgBuffDuration := 0;
   DamageUpFactor := _factor;
 end;
 procedure TItem.SetDefenseUp(_factor: real);
@@ -164,6 +183,7 @@ begin
   IsBomb := false;
   IsKey := false;
 
+  DefBuffDuration := 0;
   DefenseUpFactor := _factor;
 end;
 procedure TItem.SetBomb(_damage: real);
@@ -177,7 +197,7 @@ begin
 
   BombDamage := _damage;
 end;
-procedure TItem.SetKey(_keyIndex: real);
+procedure TItem.SetKey(_keyIndex: integer);
 begin
   IsUseless := false;
   IsHealing := false;
@@ -188,10 +208,41 @@ begin
 
   KeyIndex := _keyIndex;
 end;
+procedure TItem.SetIsCoin (b: boolean);
+begin
+  IsCoin := b;
+end;
 
-function TItem.GetKeyIndex(): real;
+function TItem.GetKeyIndex(): integer;
 begin
   result := KeyIndex;
 end;
 
+function TItem.GetDmgDuration(): integer;
+begin
+  result := DmgBuffDuration;
+end;
+procedure TItem.SetDmgDuration(_duration: integer);
+begin
+  DmgBuffDuration := _duration;
+end;
+
+function TItem.GetDefDuration: integer;
+begin
+  result := DefBuffDuration;
+end;
+
+procedure TItem.SetDefDuration(_duration: integer);
+begin
+  DefBuffDuration := _duration;
+end;
+
+function TItem.GetDamageUp: real;
+begin
+  result := DamageUpFactor;
+end;
+function TItem.GetDefenseUp: real;
+begin
+  result := DamageUpFactor;
+end;
 end.
