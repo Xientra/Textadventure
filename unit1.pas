@@ -154,6 +154,8 @@ var
   i, ii: integer;
 begin
   Form1.visible := false;
+  Application.CreateForm(TForm2, Form2);
+  Form2.ShowModal();
 
   inventoryIndex := 0;
   roomStuffIndex := 0;
@@ -1258,7 +1260,7 @@ begin
       SetButton(Btn2_Image, Btn2_Label, true, true)
       else SetButton(Btn2_Image, Btn2_Label, true);
 
-    if (Player1.GetCurrendRoom.GetPosY+1 > Room_y-1) or (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY+1,Player1.GetCurrendRoom.getPosZ] = nil) or ((Player1.GetCurrendRoom.GetDoorTop = true) and (Player1.GetCurrendRoom.GetDoorIndexTop = -1)) or (Player1.GetCurrendRoom.GetFakeTop = true) then
+    if (Player1.GetCurrendRoom.GetPosY+1 > Room_y-1) or ((Player1.GetCurrendRoom.GetDoorTop = true) and (Player1.GetCurrendRoom.GetDoorIndexTop = -1)) or (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY+1,Player1.GetCurrendRoom.getPosZ] = nil) or  (Player1.GetCurrendRoom.GetFakeTop = true) then
       SetButton(Btn3_Image, Btn3_Label, false)
     else if (Player1.GetCurrendRoom.GetDoorTop = true) and (Player1.GetCurrendRoom.GetDoorIndexTop <> -1) then
       SetButton(Btn3_Image, Btn3_Label, true, true)
@@ -1706,6 +1708,7 @@ begin
     RoomArr[2, 6, 1].Boss.SetStance2(1, 0.5, 0.5);
     RoomArr[2, 6, 1].Boss.SetStance3(0.5, 0.5, 1);
     RoomArr[2, 6, 1].Boss.SetSkillDrop(TSkill.Create('Magic Skill', 'A Skill which attacks with powerfull magic and ignores all resistances of the target.', 'Images/Skills/SkillMagic.png', 3, 0, 0, 0, 1.5));
+    RoomArr[2, 6, 1].SetDoorTop(True);
     //Es wird ein RoomObject beim tod dieses Bosses erstellt (in Raum 3 5 1)
 
     //1 5 1
