@@ -20,9 +20,8 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Unit1"/>
-        <TopLine Value="142"/>
+        <TopLine Value="151"/>
         <CursorPos X="41" Y="157"/>
-        <FoldState Value=" T3mT03111\"/>
         <UsageCount Value="164"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -52,9 +51,10 @@
         <Filename Value="itemclass.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="ItemClass"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="8"/>
-        <TopLine Value="195"/>
-        <CursorPos Y="218"/>
+        <TopLine Value="60"/>
+        <CursorPos X="90" Y="73"/>
         <UsageCount Value="150"/>
         <Loaded Value="True"/>
       </Unit4>
@@ -113,7 +113,6 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Menue"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
         <TopLine Value="50"/>
         <CursorPos X="6" Y="62"/>

@@ -70,7 +70,7 @@ implementation
 
 uses Unit1;
 
-constructor TItem.Create(_name, _description, _imagePath: string; _keyindex: integer = -1);
+constructor TItem.Create(_name, _description, _imagePath: string; _keyindex: integer = -2);
 begin
   inherited Create;
   itemName := _name;
