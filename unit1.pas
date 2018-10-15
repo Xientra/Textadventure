@@ -188,7 +188,7 @@ begin
 
   CreateRooms(); //Erstellt das Spiel
   //Erschafft den Spieler in einem Raum (3 0 0 ist der Start Raum)
-  Player1 := TPlayer.Create(RoomArr[3, 5, 2], TWeapon.Create('Fists', 'Just your good old hands.', 'Images/Items/ITEM.png', 5, 0, 0, 0), 100);
+  Player1 := TPlayer.Create(RoomArr[2, 6, 1], TWeapon.Create('Fists', 'Just your good old hands.', 'Images/Items/ITEM.png', 5, 0, 0, 0), 100);
 
   Player1.SetCurrendWeapon(TWeapon.Create('Magic Sword', 'This is what even a god would call OPAF.', 'Images/Items/MagicWeapon.png', 10000, 10000, 10000, 10000));
 
@@ -320,10 +320,11 @@ begin
         Player1.ChangeRoom('xPos');
         PrintRoomData(Player1.GetCurrendRoom());
         OnEnterRoom();
-      end else if Player1.GetCurrendRoom.GetDoorRight then
+      end else if (Player1.GetCurrendRoom.GetDoorRight) and (Player1.GetCurrendRoom.GetDoorIndexRight <> -1) then
       begin
         for i:=0 to length(Player1.itemInventory)-1 do begin
-            if Player1.GetCurrendRoom.GetDoorIndexRight = Player1.itemInventory[i].getKeyIndex then begin
+          if (Player1.itemInventory[i] <> nil) then
+            if Player1.GetCurrendRoom.GetDoorIndexRight = Player1.itemInventory[i].GetKeyIndex then begin
               Player1.GetCurrendRoom.SetDoorRight(false);
               RoomArr[Player1.GetCurrendRoom.getPosX+1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ].SetDoorLeft(false);
               SetButton(Btn1_Image, Btn1_Label, true);
@@ -419,8 +420,12 @@ begin
         OnEnterRoom();
       end else if Player1.GetCurrendRoom.GetDoorLeft then
       begin
-        for i:=0 to length(Player1.itemInventory)-1 do begin
-            if Player1.GetCurrendRoom.GetDoorIndexLeft = Player1.itemInventory[i].getKeyIndex then begin
+
+          for i:=0 to length(Player1.itemInventory)-1 do
+          begin
+            if (Player1.itemInventory[i] <> nil) then
+            if Player1.GetCurrendRoom.GetDoorIndexLeft = Player1.itemInventory[i].getKeyIndex then
+            begin
               Player1.GetCurrendRoom.SetDoorLeft(false);
               RoomArr[Player1.GetCurrendRoom.getPosX-1,Player1.GetCurrendRoom.getPosY,Player1.GetCurrendRoom.getPosZ].SetDoorRight(false);
               SetButton(Btn2_Image, Btn2_Label, true);
@@ -547,13 +552,14 @@ begin
     end;
   53: //Rüstet die im Inventar ausgewählte waffe aus und beendet die Runde des Spielers
     begin
-      Player1.SetCurrendWeapon(Player1.weaponInventory[inventoryIndex]);
       if (FightingEnemy <> nil) and (FightingBoss = nil) then
       begin
+        Player1.SetCurrendWeapon(Player1.weaponInventory[inventoryIndex]);
         PrintAndUIChange(2, 'You equiped '+Player1.weaponInventory[inventoryIndex].GetName()+'.');
         PlayerEndTurn();
       end else if (FightingEnemy = nil) and (FightingBoss <> nil) then
       begin
+        Player1.SetCurrendWeapon(Player1.weaponInventory[inventoryIndex]);
         PrintAndUIChange(4, 'You equiped '+Player1.weaponInventory[inventoryIndex].GetName()+'.');
         PlayerEndTurnBoss();
       end;
@@ -646,6 +652,7 @@ begin
       end else if Player1.GetCurrendRoom.GetDoorTop then
       begin
         for i:=0 to length(Player1.itemInventory)-1 do begin
+          if (Player1.itemInventory[i] <> nil) then
             if Player1.GetCurrendRoom.GetDoorIndexTop = Player1.itemInventory[i].getKeyIndex then begin
               Player1.GetCurrendRoom.SetDoorTop(false);
               RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY+1,Player1.GetCurrendRoom.getPosZ].SetDoorBottom(false);
@@ -743,6 +750,7 @@ begin
       end else if Player1.GetCurrendRoom.GetDoorBottom then
       begin
         for i:=0 to length(Player1.itemInventory)-1 do begin
+          if (Player1.itemInventory[i] <> nil) then
             if Player1.GetCurrendRoom.GetDoorIndexBottom = Player1.itemInventory[i].getKeyIndex then begin
               Player1.GetCurrendRoom.SetDoorBottom(false);
               RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY-1,Player1.GetCurrendRoom.getPosZ].SetDoorTop(false);
@@ -1526,6 +1534,7 @@ begin
   _directionImagePath := StringReplace(_directionImagePath, 'Rooms_lvl1', 'Directions_Level1', [rfReplaceAll]);
   _directionImagePath := StringReplace(_directionImagePath, 'Rooms_lvl2', 'Directions_Level2', [rfReplaceAll]);
   _directionImagePath := StringReplace(_directionImagePath, 'Rooms_lvl3', 'Directions_Level3', [rfReplaceAll]);
+  _directionImagePath := StringReplace(_directionImagePath, '_itemless', '', [rfReplaceAll]);
   _directionImagePath := StringReplace(_directionImagePath, '.png', '_XYZ.png', [rfReplaceAll]);
 
   Direction_Image.Picture.LoadFromFile(_directionImagePath);
@@ -1687,7 +1696,7 @@ begin
     CreateARoom('This looks like a working place'+sLineBreak+'Who would work at a place like this?', 'Images/Rooms_lvl1/RoomWithHealItem.png', 3, 4, 0);
     RoomArr[3, 4, 0].AddItem(TItem.Create('Healing potion', 'This elixir restores part of your health.', 'Images/Items/HealingItem.png'));
     RoomArr[3, 4, 0].ItemArr[0].SetHealing(50);
-    RoomArr[3, 4, 0].SetImagePathVisited('Images/Items/RoomWithHealItem_itemless.png');
+    RoomArr[3, 4, 0].SetImagePathVisited('Images/Rooms_lvl1/RoomWithHealItem_itemless.png');
 
     // 4 5 0
     CreateARoom('There is a ladder in this room.'+sLineBreak+'It this the way out?', 'Images/Rooms_lvl1/BossRoom.png', 4, 5, 0);
