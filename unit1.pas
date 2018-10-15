@@ -154,6 +154,8 @@ var
   i, ii: integer;
 begin
   Form1.visible := false;
+  Application.CreateForm(TForm2, Form2);
+  Form2.ShowModal();
 
   inventoryIndex := 0;
   roomStuffIndex := 0;

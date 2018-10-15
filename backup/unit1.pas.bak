@@ -154,6 +154,7 @@ var
   i, ii: integer;
 begin
   Form1.visible := false;
+  Form2.ShowModal();
 
   inventoryIndex := 0;
   roomStuffIndex := 0;
@@ -1259,7 +1260,7 @@ begin
       SetButton(Btn2_Image, Btn2_Label, true, true)
       else SetButton(Btn2_Image, Btn2_Label, true);
 
-    if (Player1.GetCurrendRoom.GetPosY+1 > Room_y-1) or (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY+1,Player1.GetCurrendRoom.getPosZ] = nil) or ((Player1.GetCurrendRoom.GetDoorTop = true) and (Player1.GetCurrendRoom.GetDoorIndexTop = -1)) or (Player1.GetCurrendRoom.GetFakeTop = true) then
+    if (Player1.GetCurrendRoom.GetPosY+1 > Room_y-1) or ((Player1.GetCurrendRoom.GetDoorTop = true) and (Player1.GetCurrendRoom.GetDoorIndexTop = -1)) or (RoomArr[Player1.GetCurrendRoom.getPosX,Player1.GetCurrendRoom.getPosY+1,Player1.GetCurrendRoom.getPosZ] = nil) or  (Player1.GetCurrendRoom.GetFakeTop = true) then
       SetButton(Btn3_Image, Btn3_Label, false)
     else if  (Player1.GetCurrendRoom.GetDoorTop = true) and (Player1.GetCurrendRoom.GetDoorIndexTop <> -1) then
       SetButton(Btn3_Image, Btn3_Label, true, true)
