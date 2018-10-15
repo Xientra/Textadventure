@@ -1,7 +1,7 @@
 object Form3: TForm3
-  Left = 258
+  Left = 359
   Height = 195
-  Top = 371
+  Top = 425
   Width = 1400
   AlphaBlend = True
   BorderIcons = []
@@ -139,7 +139,7 @@ object Form3: TForm3
     Width = 128
     Alignment = taCenter
     AutoSize = False
-    Caption = 'Retry'
+    Caption = 'Continue'
     ParentColor = False
     OnClick = Image1Click
     OnMouseDown = Image1MouseDown

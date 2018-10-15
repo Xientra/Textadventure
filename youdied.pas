@@ -60,14 +60,12 @@ end;
 
 procedure TForm3.Image1Click(Sender: TObject);
 begin
-  Form1.visible := false;
-  Form2.visible := true;
-  Form3.visible := false;
+  close;
 end;
 
 procedure TForm3.Image2Click(Sender: TObject);
 begin
-  Form2.close;
+  Application.Terminate();
 end;
 
 procedure TForm3.Image1MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer); begin Image1.Picture.LoadFromFile('Images/Buttons/Button_down.png'); end;

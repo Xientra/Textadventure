@@ -136,7 +136,7 @@ var
   inventoryIndex: integer;
   roomStuffIndex: integer;
   DmgBuff, DefBuff: real;
-  multyAttack: integer; //gimick for daggers
+  multiAttack: integer; //gimick for daggers
   isplaying: boolean;
   secretroom: boolean;
 
@@ -162,7 +162,7 @@ begin
   DmgBuff := 1;
   DefBuff := 1;
 
-  multyAttack := 1;
+  multiAttack := 1;
 
   DelayedPhaseChange := false;
   secretroom := false;
@@ -190,7 +190,7 @@ begin
 
   CreateRooms(); //Erstellt das Spiel
   //Erschafft den Spieler in einem Raum (Start: 3 0 0 lvl1; 4 5 1 lvl2)
-  Player1 := TPlayer.Create(RoomArr[4, 5, 1], TWeapon.Create('Fists', 'Just your good old hands.', 'Images/Items/ITEM.png', 5, 0, 0, 0), 100);
+  Player1 := TPlayer.Create(RoomArr[3, 0, 0], TWeapon.Create('Fists', 'Just your good old hands.', 'Images/Items/ITEM.png', 5, 0, 0, 0), 1);
 
   //Stuff just for testing
   Player1.SetCurrendWeapon(TWeapon.Create('Magic Sword (magic)', 'This is what even a god would call OPAF.', 'Images/Items/MagicWeapon.png', 10000, 10000, 10000, 10000));
@@ -382,7 +382,7 @@ begin
   16: //lässt das RoomObject im Raum
     begin
       Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].SetIgnore(true);
-      PrintAndUIChange(currendSituation, 'You leave the Ladder.');
+      ChangeUIState(currendSituation);
     end;
   17: //lässt das RoomObject im Raum
     begin
@@ -443,19 +443,19 @@ begin
       if (Player1.GetCurrendWeapon.GetName = 'Dagger') or (Player1.GetCurrendWeapon.GetName = 'MagicDagger') then
       begin
         randomize;
-        multyattack := Random(4)+1;
+        multiAttack := Random(4)+1;
       end;
-      _dmg := FightingEnemy.DoDamage(Player1.GetCurrendWeapon().GetStrikeDmg()*DmgBuff*multyattack,
-                                     Player1.GetCurrendWeapon().GetThrustDmg()*DmgBuff*multyattack,
-                                     Player1.GetCurrendWeapon().GetSlashDmg()*DmgBuff*multyattack,
-                                     Player1.GetCurrendWeapon().GetMagicDmg()*DmgBuff*multyattack);
+      _dmg := FightingEnemy.DoDamage(Player1.GetCurrendWeapon().GetStrikeDmg()*DmgBuff*multiAttack,
+                                     Player1.GetCurrendWeapon().GetThrustDmg()*DmgBuff*multiAttack,
+                                     Player1.GetCurrendWeapon().GetSlashDmg()*DmgBuff*multiAttack,
+                                     Player1.GetCurrendWeapon().GetMagicDmg()*DmgBuff*multiAttack);
 
 
       if (Player1.GetCurrendWeapon.GetName = 'Dagger') or (Player1.GetCurrendWeapon.GetName = 'MagicDagger') then
-        PrintAndUIChange(2, 'You quickly attacked '+ IntToStr(multyattack)+' times with your Dagger'+sLineBreak+'You delt ' + FloatToStr(Round(_dmg)) + ' damage.'+sLineBreak+'The Enemy now has ' + FloatToStr(Round(FightingEnemy.GetHealth())) + ' health left')
+        PrintAndUIChange(2, 'You quickly attacked '+ IntToStr(multiAttack)+' times with your Dagger'+sLineBreak+'You delt ' + FloatToStr(Round(_dmg)) + ' damage.'+sLineBreak+'The Enemy now has ' + FloatToStr(Round(FightingEnemy.GetHealth())) + ' health left')
       else PrintAndUIChange(2, 'You delt ' + FloatToStr(Round(_dmg)) + ' damage.'+sLineBreak+'The Enemy now has ' + FloatToStr(Round(FightingEnemy.GetHealth())) + ' health left');
 
-      multyattack := 1;
+      multiAttack := 1;
       PlayerEndTurn();
     end;
   2: //Beendet die Runde des Gegners
@@ -467,19 +467,19 @@ begin
       if (Player1.GetCurrendWeapon.GetName = 'Dagger') or (Player1.GetCurrendWeapon.GetName = 'MagicDagger') then
       begin
         randomize;
-        multyattack := Random(4)+1;
+        multiAttack := Random(4)+1;
       end;
-      _dmg := FightingBoss.DoDamage(Player1.GetCurrendWeapon().GetStrikeDmg()*DmgBuff*multyattack,
-                                    Player1.GetCurrendWeapon().GetThrustDmg()*DmgBuff*multyattack,
-                                    Player1.GetCurrendWeapon().GetSlashDmg()*DmgBuff*multyattack,
-                                    Player1.GetCurrendWeapon().GetMagicDmg()*DmgBuff*multyattack);
+      _dmg := FightingBoss.DoDamage(Player1.GetCurrendWeapon().GetStrikeDmg()*DmgBuff*multiAttack,
+                                    Player1.GetCurrendWeapon().GetThrustDmg()*DmgBuff*multiAttack,
+                                    Player1.GetCurrendWeapon().GetSlashDmg()*DmgBuff*multiAttack,
+                                    Player1.GetCurrendWeapon().GetMagicDmg()*DmgBuff*multiAttack);
 
 
       if (Player1.GetCurrendWeapon.GetName = 'Dagger') or (Player1.GetCurrendWeapon.GetName = 'MagicDagger') then
-        PrintAndUIChange(4, 'You quickly attacked '+ IntToStr(multyattack)+' times with your Dagger'+sLineBreak+'You delt ' + FloatToStr(Round(_dmg)) + ' damage.'+sLineBreak+'The Enemy now has ' + FloatToStr(Round(FightingBoss.GetHealth())) + ' health left')
+        PrintAndUIChange(4, 'You quickly attacked '+ IntToStr(multiAttack)+' times with your Dagger'+sLineBreak+'You delt ' + FloatToStr(Round(_dmg)) + ' damage.'+sLineBreak+'The Enemy now has ' + FloatToStr(Round(FightingBoss.GetHealth())) + ' health left')
       else PrintAndUIChange(4, 'You delt ' + FloatToStr(Round(_dmg)) + ' damage.'+sLineBreak+'The Boss now has ' + FloatToStr(Round(FightingBoss.GetHealth())) + ' health left');
 
-      multyattack := 1;
+      multiAttack := 1;
 
       PlayerEndTurnBoss();
     end;
@@ -921,9 +921,9 @@ begin
       Btn4_Label.caption := '';
       SetButton(Btn4_Image, Btn4_Label, false);
 
-      EnemyTurn(); //The Enemy deals Damage
-
       PrintEnemyData(FightingEnemy);
+
+      EnemyTurn(); //The Enemy deals Damage
     end;
   3: //Kampf mit Bossen (Runde des Spielers)
     begin
@@ -977,9 +977,9 @@ begin
       Btn4_Label.caption := '';
       SetButton(Btn4_Image, Btn4_Label, false);
 
-      BossTurn(); //The Boss deals Damage
-
       PrintBossData(FightingBoss);
+
+      BossTurn(); //The Boss deals Damage
     end;
   10: //Interagiert mit einer Waffe in einem Raum
     begin
@@ -1365,8 +1365,8 @@ begin
     Player1.ChangeHealthBy(-(FightingEnemy.GetDamage()*DefBuff));
     if (Player1.getHealth <= 0) then
     begin
-      PlayerDeath();
       Memo1.Lines.Add('The Enemy delt ' + FloatToStr(FightingEnemy.GetDamage())+' damage.'+sLineBreak+'You now have 0 health left');
+      PlayerDeath();
     end else Memo1.Lines.Add('The Enemy delt ' + FloatToStr(FightingEnemy.GetDamage())+' damage.'+sLineBreak+'You now have ' + FloatToStr(Player1.GetHealth()) + ' health left');
   end;
 end;
@@ -1479,15 +1479,33 @@ end;
 
 procedure TForm1.PlayerDeath(); //death has no logic
 begin
-  Form3.Timer1.Enabled := true;
-  Form3.AlphaBlendValue := 0;
-  Form3.ShowModal();
-  //mute music
+  //music
   MuteBtn_Image.Picture.LoadFromFile('Images/Buttons/MuteBtnOff.png');
   MusicTimer.Enabled := false;
   MusicCounter := 0;
-  PlaySound('music/mute.wav', 0, SND_ASYNC);
-  muted := true;
+  if (muted = true) then PlaySound('music/mute.wav', 0, SND_ASYNC)
+  else PlaySound('music/dramatic-hit.wav', 0, SND_ASYNC);
+
+  //Show You Died screen
+  Form3.Timer1.Enabled := true;
+  Form3.AlphaBlendValue := 0;
+  Form3.ShowModal();
+
+  //Teleportiert den Spieler zum start Raum der Ebene und ändert die Situation und die UI dem entsprechend
+  FightingBoss := nil;
+  FightingEnemy := nil;
+
+  OnLeaveRoom();
+  if (Player1.GetCurrendRoom().GetPosZ = 0) then Player1.Teleport(3, 0, 0); //Start Raum von Enene 1
+  if (Player1.GetCurrendRoom().GetPosZ = 1) then Player1.Teleport(4, 5, 1); //Start Raum von Enene 2
+  if (Player1.GetCurrendRoom().GetPosZ = 2) then Player1.Teleport(3, 5, 2); //Start Raum von Enene 3
+  ChangeUIState(0);
+  OnEnterRoom();
+  PrintRoomData(Player1.GetCurrendRoom());
+
+  //Gibt dem Spieler wieder volle leben (weil wir nicht gemein sind :)
+  Player1.SetFullHealth();
+
 end;
 
 {------------------------------------------------------------------------------}

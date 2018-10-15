@@ -19,6 +19,7 @@ type
     constructor Create(startRoom: TRoom; startWeapon: TWeapon; _health: real);
 
     procedure ChangeRoom(_direction: string); //ändert den Raum in der gegebenen Richtung
+    procedure Teleport(_xCoord, _yCoord, _zCoord: integer); //Teleportiert den Spieler zu einem bestimmten Raum checkt nicht ob der Raum existiert
 
     function GetHealth(): real;
     function GetMaxHealth(): real;
@@ -89,6 +90,12 @@ begin
   end;
 end;
 
+procedure TPlayer.Teleport(_xCoord, _yCoord, _zCoord: integer);
+begin
+  currendRoom := Unit1.RoomArr[_xCoord, _yCoord, _zCoord];
+  ShowMessage(intToStr(currendRoom.GetPosZ()));
+end;
+
 //Get/Set Stuff
 function TPlayer.GetHealth(): real;
 begin
@@ -97,6 +104,7 @@ end;
 procedure TPlayer.ChangeHealthBy(_amount: real);
 begin
   health := health + _amount;
+  if (health < 0) then health := 0;
 end;
 procedure TPlayer.SetFullHealth();
 begin

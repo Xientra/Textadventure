@@ -139,7 +139,7 @@ object Form3: TForm3
     Width = 128
     Alignment = taCenter
     AutoSize = False
-    Caption = 'Retry'
+    Caption = 'Continue'
     ParentColor = False
     OnClick = Image1Click
     OnMouseDown = Image1MouseDown
