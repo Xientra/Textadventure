@@ -14,6 +14,7 @@ _______________________________________
 
 //Bugs
 -das Spiel crasht wenn man im Raum von Artorias ist
+-man kann durch wände gehen wenn man zweimal auf den Knopf drückt welcher eigentlich der blockierte weg sein sollte sein sollte..., da der Button wieder normal wird heißt das auch, dass er nicht deaktiviert ist (also die Variable BtnX_active ist true) was bedeutet, dass der weg nie geblockt war...
 
 //Das ist einfach so und nicht wirklich ein Bug muss aber möglicherweise dennoch geändert werden 
 -Im Skills Menu fängt man unten an
