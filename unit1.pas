@@ -140,6 +140,7 @@ var
   multiAttack: integer; //gimick for daggers
   isplaying: boolean;
   secretroom: boolean;
+  bob: boolean;
 
 implementation
 
@@ -167,6 +168,7 @@ begin
 
   DelayedPhaseChange := false;
   secretroom := false;
+  bob := false;
 
   songPath := 'music\overworldTheme_loop.wav';
   songlength := 27; //27s ist die exakte länge von overworldTheme_loop
@@ -191,7 +193,7 @@ begin
 
   CreateRooms(); //Erstellt das Spiel
   //Erschafft den Spieler in einem Raum (Start: 3 0 0 lvl1; 4 5 1 lvl2; 3 5 2 lvl3)
-  Player1 := TPlayer.Create(RoomArr[3, 0, 0], TWeapon.Create('Fists', 'Just your good old hands.', 'Images/Items/ITEM.png', 5, 0, 0, 0), 100);
+  Player1 := TPlayer.Create(RoomArr[3, 5, 2], TWeapon.Create('Fists', 'Just your good old hands.', 'Images/Items/ITEM.png', 5, 0, 0, 0), 100);
 
   //Stuff just for testing
   Player1.SetCurrendWeapon(TWeapon.Create('Magic Sword', 'This is what even a god would call OPAF.', 'Images/Items/MagicWeapon.png', 10000, 10000, 10000, 10000));
@@ -535,6 +537,8 @@ begin
   16: //Interagiet mit der Leiter
     begin
       FreeAndNil(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex]);
+      if RoomArr[Player1.getcurrendRoom.GetPosX,Player1.getcurrendRoom.GetPosY,Player1.getcurrendRoom.GetPosZ+1] = nil then
+        endGame(true) else
       Player1.ChangeRoom('zPos');
       ChangeUIState(0);
     end;
@@ -852,6 +856,7 @@ begin
   0: //das Bewegen in den Räumen
     begin
       currendSituation := 0;
+      bob := false;
 
       if (muted = false) then
       begin
@@ -892,10 +897,11 @@ begin
         isplaying := false;
         songlength := 32;
         songpath := 'music\FightinTrackAlternative.wav';
-        if isplaying = false then
+        if (isplaying = false) and (bob = false) then
         begin
           PlaySound(songPath,0,SND_ASYNC);
           isplaying := true;
+          bob := true;
         end;
       end;
 
@@ -948,10 +954,11 @@ begin
         songlength := 31;
         songpath := 'music\Textadventure_Track_3.wav';
         end;
-        if isplaying = false then
+        if (isplaying = false) and (bob = false) then
         begin
           PlaySound(songPath,0,SND_ASYNC);
           isplaying := true;
+          bob := true;
         end;
       end;
 
@@ -1901,8 +1908,7 @@ begin
     RoomArr[0, 4, 2].Boss.SetStance1(0.5, 1.1, 0.5);
     RoomArr[0, 4, 2].Boss.SetStance2(0.5, 0.5, 1);
     RoomArr[0, 4, 2].Boss.SetStance3(0.1, 0.1, 0.1);
-    RoomArr[0, 4, 2].Boss.SetRoomObjectToCreate(TRoomObject.create('The way out!', 'Finaly freedom!', 'Images/Rooms_lvl3/StartRoomLevel3.png'), 3, 5, 2);
-    RoomArr[0, 4, 2].Boss.GetRoomObjectToCreate().SetLadder();
+
 
     //1 4 2
     CreateARoom('This whole corridor lead to this room.'+sLineBreak+'You feel a incedible presence of power behind this door', 'Images/Rooms_lvl3/RoomBeforeBoss.png', 1, 4, 2);
@@ -1941,6 +1947,8 @@ begin
     RoomArr[6, 4, 2].AddEnemy(TEnemy.Create('Preacher', 55, 8, 'Images/Enemies_lvl3/PreacherBeforeExit.png'));
     RoomArr[6, 4, 2].EnemyArr[0].SetResistances(0.8, 1, 0.8);
     RoomArr[6, 4, 2].EnemyArr[0].SetSecondStance(1, 0.8, 0.8);
+    RoomArr[0, 4, 2].Boss.SetRoomObjectToCreate(TRoomObject.create('The way out!', 'Finaly freedom!', 'Images/Rooms_lvl3/StartRoomLevel3.png'), 6, 4, 2);
+    RoomArr[0, 4, 2].Boss.GetRoomObjectToCreate().SetLadder();
 
     //1 3 2
     CreateARoom('You feel determined and ready for whatever comes.', 'Images/Rooms_lvl3/RoomWithHealingStatureBeforeBoss.png', 1, 3, 2);
