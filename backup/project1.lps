@@ -4,11 +4,11 @@
     <PathDelim Value="\"/>
     <Version Value="10"/>
     <BuildModes Active="Default"/>
-    <Units Count="19">
+    <Units Count="20">
       <Unit0>
         <Filename Value="project1.lpr"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="11"/>
+        <EditorIndex Value="12"/>
         <CursorPos X="3" Y="17"/>
         <UsageCount Value="172"/>
         <Loaded Value="True"/>
@@ -21,9 +21,8 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Unit1"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="1516"/>
-        <CursorPos X="56" Y="1531"/>
-        <FoldState Value=" T0{Z2{416"/>
+        <TopLine Value="180"/>
+        <CursorPos X="139" Y="194"/>
         <UsageCount Value="172"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -43,7 +42,7 @@
         <Filename Value="playerclass.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="PlayerClass"/>
-        <EditorIndex Value="3"/>
+        <EditorIndex Value="4"/>
         <TopLine Value="67"/>
         <CursorPos X="29" Y="85"/>
         <UsageCount Value="167"/>
@@ -53,7 +52,7 @@
         <Filename Value="itemclass.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="ItemClass"/>
-        <EditorIndex Value="8"/>
+        <EditorIndex Value="9"/>
         <TopLine Value="172"/>
         <CursorPos Y="205"/>
         <UsageCount Value="158"/>
@@ -71,7 +70,7 @@
         <Filename Value="enemyclass.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="EnemyClass"/>
-        <EditorIndex Value="5"/>
+        <EditorIndex Value="6"/>
         <TopLine Value="118"/>
         <CursorPos Y="137"/>
         <UsageCount Value="157"/>
@@ -81,7 +80,7 @@
         <Filename Value="weaponclass.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="WeaponClass"/>
-        <EditorIndex Value="7"/>
+        <EditorIndex Value="8"/>
         <TopLine Value="25"/>
         <CursorPos X="42"/>
         <UsageCount Value="157"/>
@@ -91,7 +90,7 @@
         <Filename Value="skillclass.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="SkillClass"/>
-        <EditorIndex Value="10"/>
+        <EditorIndex Value="11"/>
         <TopLine Value="33"/>
         <CursorPos Y="82"/>
         <UsageCount Value="147"/>
@@ -101,7 +100,7 @@
         <Filename Value="roomobjectclass.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="RoomObjectClass"/>
-        <EditorIndex Value="9"/>
+        <EditorIndex Value="10"/>
         <TopLine Value="49"/>
         <CursorPos X="21" Y="81"/>
         <UsageCount Value="121"/>
@@ -114,7 +113,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Menue"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="3"/>
         <TopLine Value="44"/>
         <CursorPos X="12" Y="63"/>
         <UsageCount Value="113"/>
@@ -128,7 +127,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="YouDied"/>
-        <EditorIndex Value="1"/>
+        <EditorIndex Value="2"/>
         <TopLine Value="10"/>
         <CursorPos X="45" Y="44"/>
         <UsageCount Value="91"/>
@@ -139,9 +138,9 @@
         <Filename Value="bossclass.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="BossClass"/>
-        <EditorIndex Value="6"/>
-        <TopLine Value="19"/>
-        <CursorPos X="50" Y="46"/>
+        <EditorIndex Value="7"/>
+        <TopLine Value="149"/>
+        <CursorPos X="36" Y="31"/>
         <UsageCount Value="79"/>
         <Loaded Value="True"/>
       </Unit12>
@@ -155,7 +154,7 @@
       </Unit13>
       <Unit14>
         <Filename Value="RoomClass.pas"/>
-        <EditorIndex Value="4"/>
+        <EditorIndex Value="5"/>
         <TopLine Value="11"/>
         <CursorPos X="28" Y="33"/>
         <UsageCount Value="78"/>
@@ -189,6 +188,15 @@
         <UsageCount Value="7"/>
         <DefaultSyntaxHighlighter Value="XML"/>
       </Unit18>
+      <Unit19>
+        <Filename Value="C:\Users\Henke\Desktop\MagicaVoxel 0.99\bossclass.pas"/>
+        <UnitName Value="BossClass"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="87"/>
+        <CursorPos X="53" Y="30"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit19>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>

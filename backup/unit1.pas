@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, LCLType, ActnList, MMSystem{für die Musik},
+  StdCtrls, LCLType, ActnList, MMSystem{für die Musik}, ShellApi{um sich selbst wieder zu starten},
   menue, youdied, //Die Anderen Formen
   RoomClass{für TRoom}, PlayerClass{für TPlayer}, EnemyClass{für TEnemy}, WeaponClass{für TWeapon}, ItemClass{für TItem}, SkillClass{I think you know by now...}, RoomObjectClass{could it be? is this really for TRoomClass?!}, BossClass{...};
 
@@ -191,7 +191,7 @@ begin
 
   CreateRooms(); //Erstellt das Spiel
   //Erschafft den Spieler in einem Raum (Start: 3 0 0 lvl1; 4 5 1 lvl2; 3 5 2 lvl3)
-  Player1 := TPlayer.Create(RoomArr[3, 0, 0], TWeapon.Create('Fists', 'Just your good old hands.', 'Images/Items/ITEM.png', 5, 0, 0, 0), 1);
+  Player1 := TPlayer.Create(RoomArr[3, 0, 0], TWeapon.Create('Fists', 'Just your good old hands.', 'Images/Items/ITEM.png', 5, 0, 0, 0), 7);
 
   //Stuff just for testing
   Player1.SetCurrendWeapon(TWeapon.Create('Magic Sword', 'This is what even a god would call OPAF.', 'Images/Items/MagicWeapon.png', 10000, 10000, 10000, 10000));
@@ -500,7 +500,7 @@ begin
       Player1.AddItem(Player1.GetCurrendRoom().ItemArr[roomStuffIndex]);
       Player1.GetCurrendRoom().ItemArr[roomStuffIndex] := nil;
       Player1.GetCurrendRoom().SetItemPickedUp(true);
-      PrintAndUIChange(currendSituation, 'You take the Item');
+      PrintAndUIChange(currendSituation, 'You take the Item.');
     end;
   12: //Interagiert mit der HeilStatur und heit den Spieler
     begin
@@ -511,7 +511,7 @@ begin
   13: //Öffnet die Chest und gibt dem Spieler das Item in der Truhe
     begin
       Player1.AddItem(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetChestItem());
-      PrintAndUIChange(currendSituation, 'You open the chest.'+sLineBreak+'You found '+Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetChestItem().GetName()+'. '+sLineBreak+Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetChestItem().GetDescription());
+      PrintAndUIChange(currendSituation, 'You open the chest.'+sLineBreak+'You found a '+Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetChestItem().GetName()+'. '+sLineBreak+Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex].GetChestItem().GetDescription());
       FreeAndNil(Player1.GetCurrendRoom().RoomObjectArr[roomStuffIndex]);
       //Player1.GetCurrendRoom().SetItemPickedUp(true);
     end;
@@ -575,7 +575,7 @@ begin
 
       if (Player1.itemInventory[inventoryIndex].UseItem() = false) then PrintAndUIChange(UIState, 'You are not able to use this Item in combat.')
       else begin
-        //Damage/Defense Up Items
+        //Damage/Defense Up Buff Items
         if (Player1.itemInventory[inventoryIndex].GetDmgDuration = 0) then
         begin
           DmgBuff := 1.5;
@@ -1070,7 +1070,7 @@ begin
     begin
       Btn1_Label.caption := 'Leave';
       SetButton(Btn1_Image, Btn1_Label, true);
-      Btn2_Label.caption := 'Climb';
+      Btn2_Label.caption := 'Continue';
       SetButton(Btn2_Image, Btn2_Label, true);
       Btn3_Label.caption := '';
       SetButton(Btn3_Image, Btn3_Label, false);
@@ -1398,6 +1398,7 @@ begin
                           'You feel how some of his powers transfer to you.'+sLineBreak+
                           'Your Health has been restored and you learned the '+FightingBoss.GetSkillDrop().GetName()+'. '+sLineBreak+
                           FightingBoss.GetSkillDrop().GetDescription());
+      Image1.Picture.LoadFromFile(FightingBoss.GetSkillDrop().GetImagePath());
     end else PrintAndUIChange(0, 'You defeated you Opponent!'+sLineBreak+'You Health has been restored.');
     //Der Kampf wurde dadurch beendet, dass die Situation auf von 4 (Runde des Bosses) auf 0 gesetzt wurde
 
@@ -1482,7 +1483,7 @@ end;
 
 procedure TForm1.EndGame(_end: boolean); //death has no logic
 begin
-  if (_end = true) then //Verloren
+  if (_end = false) then //Verloren
   begin
     //music
     MuteBtn_Image.Picture.LoadFromFile('Images/Buttons/MuteBtnOff.png');
@@ -1492,13 +1493,15 @@ begin
     else PlaySound('music/dramatic-hit.wav', 0, SND_ASYNC);
 
     //Show You Died screen
-    youdied.Form3.Header_Lose.Enabled := true;
-    youdied.Form3.Header_Win.Enabled := false;
+    youdied.Form3.Header_Lose.Visible := true;
+    youdied.Form3.Header_Win.Visible := false;
     Form3.Timer1.Enabled := true;
     Form3.AlphaBlendValue := 0;
     Form3.ShowModal();
 
     //Teleportiert den Spieler zum start Raum der Ebene und ändert die Situation und die UI dem entsprechend
+    if (FightingBoss <> nil) then FightingBoss.HealFull();
+    if (FightingEnemy <> nil) then FightingEnemy.HealFull();
     FightingBoss := nil;
     FightingEnemy := nil;
 
@@ -1509,11 +1512,12 @@ begin
     ChangeUIState(0);
     OnEnterRoom();
     PrintRoomData(Player1.GetCurrendRoom());
+    PrintAndUIChange(UIState, 'You have been saved by an unknown entity.'+sLineBreak+sLineBreak+'Or maybe you already know who it was...');
 
     //Gibt dem Spieler wieder volle leben (weil wir nicht gemein sind :)
     Player1.SetFullHealth();
   end else
-  if (_end = false) then //Gewonnen
+  if (_end = true) then //Gewonnen
   begin
     //music
     MuteBtn_Image.Picture.LoadFromFile('Images/Buttons/MuteBtnOff.png');
@@ -1523,21 +1527,16 @@ begin
     //else PlaySound('music/dramatic-hit.wav', 0, SND_ASYNC);
 
     //Show Win screen
-    youdied.Form3.Header_Lose.Enabled := false;
-    youdied.Form3.Header_Win.Enabled := true;
+    youdied.Form3.Header_Lose.Visible := false;
+    youdied.Form3.Header_Win.Visible := true;
+    youdied.Form3.Label1.Caption := 'Restart';
     Form3.Timer1.Enabled := true;
     Form3.AlphaBlendValue := 0;
     Form3.ShowModal();
 
     //Restart Game
-    Application.Terminate();
-
-    RequireDerivedFormResource := True;
-    Application.Initialize;
-    Application.CreateForm(TForm1, Form1);
-    Application.CreateForm(TForm2, Form2);
-    Application.CreateForm(TForm3, Form3);
-    Application.Run;
+    Application.Terminate(); //beendet das Programm
+    ShellExecute(0,nil, PChar('"project1.exe"'),nil,nil,1); //Startet siech selbst wieder
   end;
 end;
 
@@ -1679,7 +1678,7 @@ begin
     //4 1 0
     CreateARoom('There are even more cells here but they are also empty.', 'Images/Rooms_lvl1/MiddleCorridorClosedCells.png', 4, 1, 0);
     RoomArr[4, 1, 0].AddEnemy(TEnemy.Create('Rat', 20, 5, 'Images/Enemies_lvl1/Rat.png'));
-    RoomArr[4, 1, 0].EnemyArr[0].SetResistances(0.8, 1, 1.2);
+    RoomArr[4, 1, 0].EnemyArr[0].SetResistances(0.8, 1, 1.5);
 
     //4 2 0
     CreateARoom('You can see a goblin in the room in front of you, he wears light armor but it has some unprotected spots.', 'Images/Rooms_lvl1/MiddleCorridorCross.png', 4, 2, 0);
@@ -1706,11 +1705,11 @@ begin
     //6 2 0
     CreateARoom('There is a mysterious aura coming from your right.', 'Images/Rooms_lvl1/RoomWithRats.png', 6, 2, 0);
     RoomArr[6, 2, 0].AddEnemy(TEnemy.Create('Rat', 20, 5, 'Images/Enemies_lvl1/ThreeRats3.png'));
-    RoomArr[6, 2, 0].EnemyArr[0].SetResistances(0.8, 1, 1.2);
+    RoomArr[6, 2, 0].EnemyArr[0].SetResistances(0.8, 1, 1.5);
     RoomArr[6, 2, 0].AddEnemy(TEnemy.Create('Rat', 20, 5, 'Images/Enemies_lvl1/ThreeRats2.png'));
-    RoomArr[6, 2, 0].EnemyArr[1].SetResistances(0.8, 1, 1.2);
+    RoomArr[6, 2, 0].EnemyArr[1].SetResistances(0.8, 1, 1.5);
     RoomArr[6, 2, 0].AddEnemy(TEnemy.Create('Rat', 20, 5, 'Images/Enemies_lvl1/ThreeRats1.png'));
-    RoomArr[6, 2, 0].EnemyArr[2].SetResistances(0.8, 1, 1.2);
+    RoomArr[6, 2, 0].EnemyArr[2].SetResistances(0.8, 1, 1.5);
 
     //7 2 0
     CreateARoom('You feel peaceful and safe in this room', 'Images/Rooms_lvl1/RoomWithHealStature.png', 7, 2, 0);
@@ -1756,8 +1755,8 @@ begin
   begin
 
     //2 6 1
-    CreateARoom('This looks like it has been corrupted by the guardain which has been standing here.', 'Images/Rooms_lvl2/part2/BossRoomlvl2.png', 2, 6, 1);
-    RoomArr[2, 6, 1].AddBoss(TBoss.Create('Artorias', 'corrupted guardian', 'Images/Enemies_lvl2/Astorias.png', 2, 80, 20));
+    CreateARoom('This room looks like it has been corrupted by the guardain which has been standing here.', 'Images/Rooms_lvl2/part2/BossRoomlvl2.png', 2, 6, 1);
+    RoomArr[2, 6, 1].AddBoss(TBoss.Create('Artorias', 'corrupted guardian', 'Images/Enemies_lvl2/Astorias.png', 2, 80, 22));
     RoomArr[2, 6, 1].Boss.SetStance1(0.5, 1, 0.5);
     RoomArr[2, 6, 1].Boss.SetStance2(1, 0.5, 0.5);
     RoomArr[2, 6, 1].Boss.SetStance3(0.5, 0.5, 1);
@@ -1828,7 +1827,7 @@ begin
     CreateARoom('You can feel a calming aura coming from the next room.', 'Images/Rooms_lvl2/part2/RoomWithMimic.png', 2, 3, 1);
     RoomArr[2,3,1].setDoorright(true);
     RoomArr[2,3,1].AddRoomObject(TRoomObject.Create('Another Chest','It''s also made out of wood.','Images/RoomObjects/ChestMimic.png'));
-    RoomArr[2,3,1].RoomObjectArr[0].SetMimic(TItem.Create('Defense Up', 'This makes your skin harder than steel so you receive less damage', 'Images/Items/DefUp.png'),TEnemy.create('Mimic',60, 13, 'Images/Enemies_lvl2/Mimic.png'));
+    RoomArr[2,3,1].RoomObjectArr[0].SetMimic(TItem.Create('Defense Up Buff', 'This makes your skin harder than steel so you receive less damage', 'Images/Items/DefUp.png'),TEnemy.create('Mimic',60, 13, 'Images/Enemies_lvl2/Mimic.png'));
     RoomArr[2,3,1].RoomObjectArr[0].GetMimicEnemy().SetResistances(1, 1, 1.25);
     RoomArr[2,3,1].RoomObjectArr[0].GetChestItem().SetDefenseUp(1.5);
     RoomArr[2,3,1].SetImagePathVisited('Images/Rooms_lvl2/part2/RoomWithMimic_itemless.png');
@@ -1898,32 +1897,33 @@ begin
 
     //0 4 2
     CreateARoom('You can still feel the power of the Spirtualist in this room.', 'Images/Rooms_lvl3/BossRoomLevel3.png', 0, 4, 2);
-    RoomArr[0, 4, 2].AddBoss(TBoss.create('Spiritualist', 'ascended', 'Images/Enemies_lvl3/Spiritualist.png',3, 120, 30));
-    RoomArr[0, 4, 2].Boss.SetStance1(1, 1, 1);
-    RoomArr[0, 4, 2].Boss.SetStance2(1, 1, 1);
-    RoomArr[0, 4, 2].Boss.SetStance3(1, 1, 1);
-    RoomArr[0, 4, 2].Boss.SetRoomObjectToCreate(TRoomObject.create('The way out!', 'Finaly freedom!', 'Images/Rooms_lvl3/StartRoomLevel3.png'), 3, 5, 1);
+    RoomArr[0, 4, 2].AddBoss(TBoss.create('Spiritualist', 'ascended', 'Images/Enemies_lvl3/Spiritualist.png',3, 200, 33));
+    RoomArr[0, 4, 2].Boss.SetStance1(0.5, 1.1, 0.5);
+    RoomArr[0, 4, 2].Boss.SetStance2(0.5, 0.5, 1);
+    RoomArr[0, 4, 2].Boss.SetStance3(0.1, 0.1, 0.1);
+    RoomArr[0, 4, 2].Boss.SetRoomObjectToCreate(TRoomObject.create('The way out!', 'Finaly freedom!', 'Images/Rooms_lvl3/StartRoomLevel3.png'), 3, 5, 2);
     RoomArr[0, 4, 2].Boss.GetRoomObjectToCreate().SetLadder();
 
     //1 4 2
     CreateARoom('This whole corridor lead to this room.'+sLineBreak+'You feel a incedible presence of power behind this door', 'Images/Rooms_lvl3/RoomBeforeBoss.png', 1, 4, 2);
-    RoomArr[1, 4, 2].AddEnemy(TEnemy.Create('Preacher', 45, 7, 'Images/Enemies_lvl3/PreacherBeforeBoss.png'));
+    RoomArr[1, 4, 2].AddEnemy(TEnemy.Create('Preacher', 55, 8, 'Images/Enemies_lvl3/PreacherBeforeBoss.png'));
     RoomArr[1, 4, 2].EnemyArr[0].SetResistances(0.8, 1, 0.8);
     RoomArr[1, 4, 2].EnemyArr[0].SetSecondStance(1, 0.8, 0.8);
 
     //2 4 2
     CreateARoom('You continue the corridor. It looks like it''s leading to somewhere important.', 'Images/Rooms_lvl3/RoomWithTwoPreachersToBoss.png', 2, 4, 2);
-    RoomArr[2, 4, 2].AddEnemy(TEnemy.Create('Preacher', 45, 7, 'Images/Enemies_lvl3/TwoPreachersToBoss2.png'));
+    RoomArr[2, 4, 2].AddEnemy(TEnemy.Create('Preacher', 55, 8, 'Images/Enemies_lvl3/TwoPreachersToBoss2.png'));
     RoomArr[2, 4, 2].EnemyArr[0].SetResistances(0.8, 1, 0.8);
     RoomArr[2, 4, 2].EnemyArr[0].SetSecondStance(1, 0.8, 0.8);
-    RoomArr[2, 4, 2].AddEnemy(TEnemy.Create('Preacher', 45, 7, 'Images/Enemies_lvl3/TwoPreachersToBoss1.png'));
+    RoomArr[2, 4, 2].AddEnemy(TEnemy.Create('Preacher', 55, 8, 'Images/Enemies_lvl3/TwoPreachersToBoss1.png'));
     RoomArr[2, 4, 2].EnemyArr[1].SetResistances(0.8, 1, 0.8);
     RoomArr[2, 4, 2].EnemyArr[1].SetSecondStance(1, 0.8, 0.8);
 
     //3 4 2
-    CreateARoom('I should be prepared if I want to continue forward.'+sLineBreak+'On the left side seems to be a storage of some kind maybe I can get a better weapon there.', 'Images/Rooms_lvl3/RoomWithPreacherWithKatana.png', 3, 4, 2);
+    CreateARoom('I should be prepared if I want to continue forward.'+sLineBreak+'On the left seems to be a storage of some kind maybe I can get a better weapon there.', 'Images/Rooms_lvl3/RoomWithPreacherWithKatana.png', 3, 4, 2);
     RoomArr[3, 4, 2].setDoortop(true);
-    RoomArr[3, 4, 2].AddEnemy(TEnemy.Create('Preacher', 45, 7, 'Images/Enemies_lvl3/PreacherWithKatana.png'));
+    RoomArr[3, 4, 2].SetDescriptionVisited('I should be prepared if I want to continue forward.');
+    RoomArr[3, 4, 2].AddEnemy(TEnemy.Create('Preacher', 55, 8, 'Images/Enemies_lvl3/PreacherWithKatana.png'));
     RoomArr[3, 4, 2].EnemyArr[0].SetResistances(0.8, 1, 0.8);
     RoomArr[3, 4, 2].EnemyArr[0].SetSecondStance(1, 0.8, 0.8);
     RoomArr[3, 4, 2].EnemyArr[0].SetWeaponDrop(TWeapon.create('Katana', 'A blade thinner than paper and able to cut through Diamonds.', 'Images/Items/Katana.png', 0, 0, 25, 0));
@@ -1937,8 +1937,8 @@ begin
     RoomArr[5,4,2].setDoortop(true);
 
     //6 4 2
-    CreateARoom('There is an enormous door in front of you.'+sLineBreak+'But it''s sealed by powerfull magic. The only person how can lift such a seal it the one who made it.', 'Images/Rooms_lvl3/RoomBeforeExit.png', 6, 4, 2);
-    RoomArr[6, 4, 2].AddEnemy(TEnemy.Create('Preacher', 45, 7, 'Images/Enemies_lvl3/PreacherBeforeExit.png'));
+    CreateARoom('There is an enormous door in front of you but it''s sealed by powerfull magic.'+sLineBreak+'The only person who can lift such a seal it the one who made it.', 'Images/Rooms_lvl3/RoomBeforeExit.png', 6, 4, 2);
+    RoomArr[6, 4, 2].AddEnemy(TEnemy.Create('Preacher', 55, 8, 'Images/Enemies_lvl3/PreacherBeforeExit.png'));
     RoomArr[6, 4, 2].EnemyArr[0].SetResistances(0.8, 1, 0.8);
     RoomArr[6, 4, 2].EnemyArr[0].SetSecondStance(1, 0.8, 0.8);
 
@@ -1954,10 +1954,10 @@ begin
     //5 3 2
     CreateARoom('The next room is important enough that is was guarded by two preachers.', 'Images/Rooms_lvl3/RoomWithTwoPreachersToMagicWeapon.png', 5, 3, 2);
     RoomArr[5, 3, 2].setDoorright(true);
-    RoomArr[5, 3, 2].AddEnemy(TEnemy.Create('Preacher', 45, 7, 'Images/Enemies_lvl3/TwoPeachersToMagicWeapon2.png'));
+    RoomArr[5, 3, 2].AddEnemy(TEnemy.Create('Preacher', 55, 8, 'Images/Enemies_lvl3/TwoPeachersToMagicWeapon2.png'));
     RoomArr[5, 3, 2].EnemyArr[0].SetResistances(0.8, 1, 0.8);
     RoomArr[5, 3, 2].EnemyArr[0].SetSecondStance(1, 0.8, 0.8);
-    RoomArr[5, 3, 2].AddEnemy(TEnemy.Create('Preacher', 45, 7, 'Images/Enemies_lvl3/TwoPeachersToMagicWeapon1.png'));
+    RoomArr[5, 3, 2].AddEnemy(TEnemy.Create('Preacher', 55, 8, 'Images/Enemies_lvl3/TwoPeachersToMagicWeapon1.png'));
     RoomArr[5, 3, 2].EnemyArr[1].SetResistances(0.8, 1, 0.8);
     RoomArr[5, 3, 2].EnemyArr[1].SetSecondStance(1, 0.8, 0.8);
 
@@ -1971,7 +1971,7 @@ begin
     RoomArr[2,2,2].AddRoomObject(TRoomObject.create('Chest', 'Made out of wood.', 'Images/RoomObjects/ChestInStorage.png'));
     RoomArr[2,2,2].RoomObjectArr[0].SetChest(TItem.Create('Healing potion', 'This elixir restores part of your health.', 'Images/Items/HealingItem.png'));
     RoomArr[2,2,2].RoomObjectArr[0].GetChestItem().SetHealing(75);
-    RoomArr[2,2,2].AddItem(TItem.Create('Defense Up', 'This makes your skin harder than steel so you receive less damage', 'Images/Items/DefUp.png'));
+    RoomArr[2,2,2].AddItem(TItem.Create('Defense Up Buff', 'This makes your skin harder than steel so you receive less damage', 'Images/Items/DefUp.png'));
     RoomArr[2,2,2].ItemArr[0].SetDefenseUp(1.5);
 
     //3 2 2
@@ -1981,20 +1981,20 @@ begin
 
     //5 2 2
     CreateARoom('The preachers use this room to enchant weapons with magic.', 'Images/Rooms_lvl3/RoomWithMagicWeapon.png', 5, 2, 2);
-    RoomArr[5,2,2].AddWeapon(TWeapon.create('Magic Dagger', 'It''s blade is imbued with magic.', 'Images/Items/MagicDagger.png', 0, 0, 0, 8));
+    RoomArr[5,2,2].AddWeapon(TWeapon.create('Magic Dagger', 'It handles exactly like a normal dagger but it''s blade is imbued with magic.', 'Images/Items/MagicDagger.png', 0, 0, 0, 8));
     RoomArr[5,2,2].setDoorright(true);
     RoomArr[5,2,2].SetImagePathVisited('Images/Rooms_lvl3/RoomWithMagicWeapon_itemless.png');
 
     //6 2 2
-    CreateARoom('This is so dark you can barely see.', 'Images/Rooms_lvl3/RoomWithSwordOfMoonlight.png', 6, 2, 2);
+    CreateARoom('you walked right through the wall to get to this room'+sLineBreak+'It''s so dark you can barely see anything.', 'Images/Rooms_lvl3/RoomWithSwordOfMoonlight.png', 6, 2, 2);
     RoomArr[6,2,2].setDoorleft(true);
     RoomArr[6,2,2].AddWeapon(TWeapon.create('Sword of Moonlight', 'You can feel the great magical power this blade emits.', 'Images/Items/SwordOfMoonlight.png', 0, 0, 0, 30));
     RoomArr[6,2,2].SetImagePathVisited('Images/Rooms_lvl3/RoomWithSwordOfMoonlight_itemless.png');
 
     //3 1 2
     CreateARoom('This room used to storage weapons.', 'Images/Rooms_lvl3/WeaponStorageRoom.png', 3, 1, 2);
-    RoomArr[3,1,2].AddWeapon(TWeapon.create('Spear', 'If you had a shield you can use both to have optimal defense and attack.'+sLineBreak+'Sadly the shields from the guardians are way to heavy for you.', 'Images/Items/Spear.png', 0,20,0,0));
-    RoomArr[3,1,2].SetImagePathVisited('Images/Rooms_lvl3/WeaponStorageRoom.png');
+    RoomArr[3,1,2].AddWeapon(TWeapon.create('Spear', 'If you had a shield you can use both to have optimal defense and attack.'+sLineBreak+'Sadly the shields from the guardians are way to heavy for you.', 'Images/Items/Spear.png', 0, 25, 0, 0));
+    RoomArr[3,1,2].SetImagePathVisited('Images/Rooms_lvl3/WeaponStorageRoom_itemless.png');
   end;
 end;
 {------------------------------------------------------------------------------}
