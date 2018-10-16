@@ -1947,7 +1947,7 @@ begin
     RoomArr[6, 4, 2].AddEnemy(TEnemy.Create('Preacher', 55, 8, 'Images/Enemies_lvl3/PreacherBeforeExit.png'));
     RoomArr[6, 4, 2].EnemyArr[0].SetResistances(0.8, 1, 0.8);
     RoomArr[6, 4, 2].EnemyArr[0].SetSecondStance(1, 0.8, 0.8);
-    RoomArr[0, 4, 2].Boss.SetRoomObjectToCreate(TRoomObject.create('The way out!', 'Finaly freedom!', 'Images/Rooms_lvl3/StartRoomLevel3.png'), 6, 4, 2);
+    RoomArr[0, 4, 2].Boss.SetRoomObjectToCreate(TRoomObject.create('The way out!', 'Finaly freedom!', 'Images/RoomObjects/DoorToFreedom'), 6, 4, 2);
     RoomArr[0, 4, 2].Boss.GetRoomObjectToCreate().SetLadder();
 
     //1 3 2
