@@ -5,15 +5,19 @@ _______________________________________
 -wenn jemand herrausfindest wie man etwas in das Nachrichten Fenster unten schreibt sag es mir (Paul) bitte...
 
 //Muss noch gemacht werden
--respawn & wenn man stirbt und dann retyen möchte öffnet sich form 1 nicht
 -How To Play muss gefült werden :D
 -muted muss am anfang false sein
 -balancing level 3 :D
--man muss noch irgentwie gewinnen...
 -bugtesting
+-der Moolightraum wird sofort aufgedeckt
+-der Raum mit dem speer braucht noch ein zweites bild
+-WinMusik/Acord
+-man muss das spiel bei gewinn restarten könnehjn
 
 //Bugs
 -man kann nicht in den raum hinter der Wand selbst wenn man die Bombe hat
+-musik startet neu wenn man im kanpf aus einem anderen menü zurückgeht...
+-man kann nicht in den GeheimRaum...
 
 //Das ist einfach so und nicht wirklich ein Bug muss aber möglicherweise dennoch geändert werden 
 -Im Skills Menu fängt man unten an
@@ -39,6 +43,7 @@ _______________________________________
 -> Musik
 
 _____________________
+
 Fertig
 -Räume brauchen noch eine zweite beschreibung wenn man sie das zweite mal besucht 
 -Bosse müssen noch gemacht werden

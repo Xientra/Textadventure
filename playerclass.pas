@@ -80,6 +80,10 @@ end;
 
 procedure TPlayer.ChangeRoom(_direction: string); //ändert den Raum
 begin
+  if (_direction = 'zNeg') and (currendRoom.GetPosZ = 2) then
+  begin
+    Unit1.Form1.EndGame(true);
+  end else
   case _direction of
   'xPos': currendRoom := Unit1.RoomArr[currendRoom.GetPosX+1,currendRoom.GetPosY,currendRoom.GetPosZ];
   'yPos': currendRoom := Unit1.RoomArr[currendRoom.GetPosX,currendRoom.GetPosY+1,currendRoom.GetPosZ];

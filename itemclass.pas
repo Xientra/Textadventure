@@ -193,7 +193,6 @@ begin
   IsDamageUp := false;
   IsDefenseUp := false;
   IsBomb := true;
-  IsKey := false;
 
   BombDamage := _damage;
 end;
@@ -203,7 +202,6 @@ begin
   IsHealing := false;
   IsDamageUp := false;
   IsDefenseUp := false;
-  IsBomb := false;
   IsKey := true;
 
   KeyIndex := _keyIndex;

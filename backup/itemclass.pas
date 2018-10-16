@@ -10,7 +10,7 @@ uses
 type
   TItem = class
   public
-    constructor Create(_name, _description, _imagePath: string; _keyindex: integer = -1);
+    constructor Create(_name, _description, _imagePath: string; _keyindex: integer = -2);
 
     function UseItem(): boolean; //Macht sachen basierent auf der Art des Items; returns false wenn man das Item nicht benutzen kann (sowas wie Schlüssel)
 

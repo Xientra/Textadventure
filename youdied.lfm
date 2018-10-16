@@ -1,7 +1,7 @@
 object Form3: TForm3
-  Left = 359
+  Left = 273
   Height = 195
-  Top = 425
+  Top = 395
   Width = 1400
   AlphaBlend = True
   BorderIcons = []
@@ -18,7 +18,7 @@ object Form3: TForm3
   Font.Quality = fqDraft
   Position = poScreenCenter
   LCLVersion = '1.8.4.0'
-  object Header_Label: TLabel
+  object Header_Lose: TLabel
     Left = 560
     Height = 56
     Top = 16
@@ -161,6 +161,22 @@ object Form3: TForm3
     OnMouseEnter = Image2MouseEnter
     OnMouseLeave = Image2MouseLeave
     OnMouseUp = Image2MouseUp
+  end
+  object Header_Win: TLabel
+    Left = 568
+    Height = 56
+    Top = 16
+    Width = 217
+    Caption = 'You Won!'
+    Font.CharSet = ANSI_CHARSET
+    Font.Color = clYellow
+    Font.Height = -48
+    Font.Name = 'Arial'
+    Font.Pitch = fpVariable
+    Font.Quality = fqDraft
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
   end
   object Timer1: TTimer
     Enabled = False

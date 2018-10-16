@@ -13,6 +13,7 @@ type
   { TForm3 }
 
   TForm3 = class(TForm)
+    Header_Label1: TLabel;
     Image1: TImage;
     Image2: TImage;
     Header_Label: TLabel;
@@ -45,8 +46,6 @@ uses unit1, menue;
 {$R *.lfm}
 
 { TForm3 }
-
-
 
 procedure TForm3.Timer1Timer(Sender: TObject);
 begin

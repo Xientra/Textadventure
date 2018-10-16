@@ -43,7 +43,7 @@ type
     function GetSkillDrop(): TSkill;
     procedure SetRoomObjectToCreate(_roomObject: TRoomObject; _x, _y, _z: integer);
     function GetRoomObjectToCreate(): TRoomObject;
-    procedure TriggerRoomObjectCreation();
+    function TriggerRoomObjectCreation(): boolean;
 
   private
     name: string;
@@ -437,11 +437,13 @@ begin
   result := RoomObjectToCreate;
 end;
 
-procedure TBoss.TriggerRoomObjectCreation();
+function TBoss.TriggerRoomObjectCreation(): boolean;
 begin
+  result := false;
   if (RoomObjectToCreate <> nil) then
   begin
     Unit1.RoomArr[x, y, z].AddRoomObject(RoomObjectToCreate);
+    result := true;
   end; //else ShowMessage('SetRoomObjectToCreate has to be called before this can be called.');
 end;
 
