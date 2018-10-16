@@ -172,7 +172,7 @@ begin
 
   songPath := 'music\overworldTheme_loop.wav';
   songlength := 27; //27s ist die exakte länge von overworldTheme_loop
-  muted := true;
+  muted := false;
   if (muted = true) then
     MuteBtn_Image.Picture.LoadFromFile('Images/Buttons/MuteBtnOff.png')
   else if (muted = false) then
@@ -1947,7 +1947,7 @@ begin
     RoomArr[6, 4, 2].AddEnemy(TEnemy.Create('Preacher', 55, 8, 'Images/Enemies_lvl3/PreacherBeforeExit.png'));
     RoomArr[6, 4, 2].EnemyArr[0].SetResistances(0.8, 1, 0.8);
     RoomArr[6, 4, 2].EnemyArr[0].SetSecondStance(1, 0.8, 0.8);
-    RoomArr[0, 4, 2].Boss.SetRoomObjectToCreate(TRoomObject.create('The way out!', 'Finaly freedom!', 'Images/Rooms_lvl3/StartRoomLevel3.png'), 6, 4, 2);
+    RoomArr[0, 4, 2].Boss.SetRoomObjectToCreate(TRoomObject.create('The way out!', 'Finaly freedom!', 'Images/RoomObjects/DoorToFreedom.png'), 6, 4, 2);
     RoomArr[0, 4, 2].Boss.GetRoomObjectToCreate().SetLadder();
 
     //1 3 2
@@ -1994,7 +1994,7 @@ begin
     RoomArr[5,2,2].SetImagePathVisited('Images/Rooms_lvl3/RoomWithMagicWeapon_itemless.png');
 
     //6 2 2
-    CreateARoom('you walked right through the wall to get to this room'+sLineBreak+'It''s so dark you can barely see anything.', 'Images/Rooms_lvl3/RoomWithSwordOfMoonlight.png', 6, 2, 2);
+    CreateARoom('You walked right through the wall to get to this room'+sLineBreak+'It''s so dark you can barely see anything.', 'Images/Rooms_lvl3/RoomWithSwordOfMoonlight.png', 6, 2, 2);
     RoomArr[6,2,2].setDoorleft(true);
     RoomArr[6,2,2].AddWeapon(TWeapon.create('Sword of Moonlight', 'You can feel the great magical power this blade emits.', 'Images/Items/SwordOfMoonlight.png', 0, 0, 0, 30));
     RoomArr[6,2,2].SetImagePathVisited('Images/Rooms_lvl3/RoomWithSwordOfMoonlight_itemless.png');

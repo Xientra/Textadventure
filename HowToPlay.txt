@@ -1,1 +1,27 @@
-Just click the head.
+How To Play "Adventure Game"
+von Yonas und Paul
+
+
+Grundlegende Steuerung und UI:
+Die grundlegende Steuerung sind die vier Knöpfe welche man auch mit den Pfeiltasten und WASD bedienen kann.
+Wenn man sich in Räumen bewegen will hat man unten links von den Knöpfen ein Koordinatensystem welches bei der räumlichen Orientierung helfen soll, da man dadurch, dass man nur ein Bild pro Raum hat und dessen Ansicht sich auch ändert schon mal Schwierigkeiten damit bekommen kann.
+Es kommt vor, dass über den Knöpfen Ketten erscheinen. Das ist der Fall, wenn die Richtung in die der Knopf geht durch eine Tür blockiert ist. Doch wenn man den passenden Schlüssel hat kann man einfach auf die Ketten drücken und die Tür öffnet sich.
+Wenn man im Kampf oder in einem Menü ist machen die Knöpfe genau das was sie sagen.
+Auf dem Bildschirm werden einem verschiedene Sachen angezeigt.
+Es gibt insgesamt drei Felder mit Informationen ein Bild und wie gesagt die Knöpfe und die Orientierungshilfe.
+Das Feld direkt über den Köpfen informiert über den aktuellen Spielverlauf es sagt einem zum Beispiel, dass man sich jetzt im Kampf befindet oder, das man mit etwas im Raum interagiert. Das Feld darüber rechts zeigt Informationen zum aktuellen stand des Spielers also seine Leben und ähnliches.
+Das Feld links davon ist nicht immer aktiv da es Informationen zu allem zeigt mit dem man gerade interagiert, weshalb es nichts zeigt wenn man auch mit nichts interagiert. Es zeigt Informationen wie die von Gegnern und Bossen oder von Items aus deinem Inventar.
+
+
+Spielmechaniken:
+Die Grundmechanik des Spiels ist der Kampf mit Gegnern und Bossen.
+Dieser erfolgt Rundenbasiert das heißt, dass erst der Spieler eine Aktion machen kann (Angriff, Items benutzen, etc.) und dann der Gegner eine Aktion ausführt.
+Wenn man den Gegner angreift werden die werte der momentan ausgerüsteten Waffe wichtig.
+Waffen könne vier Arten von Schaden haben: Strike/Schlag, Thrust/Stoß, Slash/Schneide und Magic/Magie Schaden haben.
+Die ersten drei davon werden allerdings mit den Resistenzen des Gegners multipliziert. Das heißt der gegner hat drei dezimalzahl Werte welcher wenn er unter 1 liegt den Gegner stark gegen diese Schadensart macht und wenn er über 1 liegt schwach gegen ihn macht.
+Magie schaden ist besonders, da er alle Resistenzen ignoriert und immer vollen Schaden macht.
+Gegner können allerdings noch ihre haltung im Kampf ändern was ihnen andere Stärken und Schwächen gibt. Das führt dazu, dass man die Waffe im Kampf ändern oder einen Skill benutzen muss.
+Skills sind die andere Besonderheit. Sie machen immer eine eigene, von der Waffe unabhängige Art von Schaden. Also selbst wenn man ein Dolch mit Thrust Schaden ausgerüstet hat macht man wenn man den Strike Skill benutzt Strike Schaden. Der schaden den die Skills machen ist immer ein einhalb mal so hoch wie der Schaden den deine Waffe normal machen würde.
+Man muss aber aufpassen denn Skills haben einen Cooldown (oder Abklingzeit) durch die man eine gewisse Anzahl Runden warten muss bevor man den Skill wieder einsetzen kann.
+Dieser Cooldown wird aber auch immer wieder zu Null wenn man einen Raum verlässt.
+Man kann im Kampf auch noch Items benutzen um verschiedene Effekte zu erzielen; wie Heilung oder einen Angriffs Schub.
