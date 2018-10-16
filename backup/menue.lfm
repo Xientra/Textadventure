@@ -3,7 +3,7 @@ object Form2: TForm2
   Height = 340
   Top = 372
   Width = 306
-  BorderStyle = bsNone
+  BorderStyle = bsDialog
   Caption = 'Main Menu'
   ClientHeight = 340
   ClientWidth = 306

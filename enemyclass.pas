@@ -17,7 +17,6 @@ type
     procedure SetResistances(_strikeResist, _thrustResist, _slashResist: real); //Gibt dem Gegner stärken oder Schwächen gegen bestimme Angriffe
     procedure SetSecondStance(_strikeResist2, _thrustResist2, _slashResist2: real); //Gibt dem Gegner eine zweite phase in der er andere stärken und schwächen hat
     procedure GoToSecondStance();
-    procedure HealFull();
 
     //GetStuff
     function GetName(): string;
@@ -130,11 +129,6 @@ begin
   if (health < 0) then health := 0;
   result := tempHealth - Health;
   //Round(Health);
-end;
-
-procedure TEnemy.HealFull();
-begin
-  health := maxHealth;
 end;
 
 //Get Stuff
