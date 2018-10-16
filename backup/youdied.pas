@@ -13,10 +13,10 @@ type
   { TForm3 }
 
   TForm3 = class(TForm)
-    Header_Label1: TLabel;
+    Header_Win: TLabel;
     Image1: TImage;
     Image2: TImage;
-    Header_Label: TLabel;
+    Header_Lose: TLabel;
     Label1: TLabel;
     Label2: TLabel;
     Timer1: TTimer;
