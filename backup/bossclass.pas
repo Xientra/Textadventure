@@ -17,6 +17,7 @@ type
     procedure SetStance1(_strikeResist, _thrustResist, _slashResist: real);
     procedure SetStance2(_strikeResist, _thrustResist, _slashResist: real);
     procedure SetStance3(_strikeResist, _thrustResist, _slashResist: real);
+    procedure HealFull();
 
     //GetStuff
     function GetName(): string;
@@ -152,6 +153,11 @@ begin
   if (health < 0) then health := 0;
   result := tempHealth - Health;
   //Round(Health);
+end;
+
+procedure TBoss.HealFull();
+begin
+
 end;
 
 //Get Stuff

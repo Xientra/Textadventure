@@ -17,6 +17,7 @@ type
     procedure SetResistances(_strikeResist, _thrustResist, _slashResist: real); //Gibt dem Gegner stärken oder Schwächen gegen bestimme Angriffe
     procedure SetSecondStance(_strikeResist2, _thrustResist2, _slashResist2: real); //Gibt dem Gegner eine zweite phase in der er andere stärken und schwächen hat
     procedure GoToSecondStance();
+    procedure TEnemy.HealFull();
 
     //GetStuff
     function GetName(): string;
@@ -30,6 +31,7 @@ type
     function GetSlashResist(): real;
 
     function GetIsInSecondStance(): boolean;
+    function GetHasSecondStance(): boolean;
 
     //Get/Set Stuff
     procedure SetWeaponDrop(_weapon: TWeapon);
@@ -97,7 +99,7 @@ begin
   slashResist := _slashResist;
 end;
 
-procedure TEnemy.SetSecondResistances(_strikeResist2, _thrustResist2, _slashResist2: real);
+procedure TEnemy.SetSecondStance(_strikeResist2, _thrustResist2, _slashResist2: real);
 begin
   strikeResist2 := _strikeResist2;
   thrustResist2 := _thrustResist2;
@@ -128,6 +130,11 @@ begin
   if (health < 0) then health := 0;
   result := tempHealth - Health;
   //Round(Health);
+end;
+
+procedure TEnemy.HealFull();
+begin
+  health := maxHealth;
 end;
 
 //Get Stuff
@@ -168,6 +175,10 @@ end;
 function TEnemy.GetIsInSecondStance(): boolean;
 begin
   result := isInSecondStance
+end;
+function TEnemy.GetHasSecondStance(): boolean;
+begin
+  result := hasSecondStance;
 end;
 
 //Get/Set Drop

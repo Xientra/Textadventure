@@ -18,7 +18,7 @@ object Form3: TForm3
   Font.Quality = fqDraft
   Position = poScreenCenter
   LCLVersion = '1.8.4.0'
-  object Header_Label: TLabel
+  object Header_Lose: TLabel
     Left = 560
     Height = 56
     Top = 16
@@ -162,7 +162,7 @@ object Form3: TForm3
     OnMouseLeave = Image2MouseLeave
     OnMouseUp = Image2MouseUp
   end
-  object Header_Label1: TLabel
+  object Header_Win: TLabel
     Left = 568
     Height = 56
     Top = 16
