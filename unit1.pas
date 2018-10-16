@@ -140,7 +140,6 @@ var
   multiAttack: integer; //gimick for daggers
   isplaying: boolean;
   secretroom: boolean;
-  bob: boolean;
 
 implementation
 
@@ -168,7 +167,6 @@ begin
 
   DelayedPhaseChange := false;
   secretroom := false;
-  bob := false;
 
   songPath := 'music\overworldTheme_loop.wav';
   songlength := 27; //27s ist die exakte länge von overworldTheme_loop
@@ -854,7 +852,6 @@ begin
   0: //das Bewegen in den Räumen
     begin
       currendSituation := 0;
-      bob := false;
 
       if (muted = false) then
       begin
@@ -895,11 +892,10 @@ begin
         isplaying := false;
         songlength := 32;
         songpath := 'music\FightinTrackAlternative.wav';
-        if (isplaying = false) and (bob = false) then
+        if isplaying = false then
         begin
           PlaySound(songPath,0,SND_ASYNC);
           isplaying := true;
-          bob := true;
         end;
       end;
 
@@ -952,11 +948,10 @@ begin
         songlength := 31;
         songpath := 'music\Textadventure_Track_3.wav';
         end;
-        if (isplaying = false) and (bob = false) then
+        if isplaying = false then
         begin
           PlaySound(songPath,0,SND_ASYNC);
           isplaying := true;
-          bob := true;
         end;
       end;
 
