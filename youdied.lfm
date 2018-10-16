@@ -1,7 +1,7 @@
 object Form3: TForm3
-  Left = 273
+  Left = 457
   Height = 195
-  Top = 395
+  Top = 382
   Width = 1400
   AlphaBlend = True
   BorderIcons = []
@@ -17,12 +17,12 @@ object Form3: TForm3
   Font.Pitch = fpVariable
   Font.Quality = fqDraft
   Position = poScreenCenter
-  LCLVersion = '1.8.4.0'
+  LCLVersion = '1.6.2.0'
   object Header_Lose: TLabel
     Left = 560
-    Height = 56
+    Height = 53
     Top = 16
-    Width = 233
+    Width = 245
     Caption = 'YOU DIED'
     Font.CharSet = ANSI_CHARSET
     Font.Color = clRed
@@ -164,14 +164,14 @@ object Form3: TForm3
   end
   object Header_Win: TLabel
     Left = 568
-    Height = 56
+    Height = 53
     Top = 16
-    Width = 217
+    Width = 231
     Caption = 'You Won!'
     Font.CharSet = ANSI_CHARSET
     Font.Color = clYellow
     Font.Height = -48
-    Font.Name = 'Arial'
+    Font.Name = 'OptimusPrinceps'
     Font.Pitch = fpVariable
     Font.Quality = fqDraft
     Font.Style = [fsBold]
